@@ -265,6 +265,7 @@ export default function AlquilarPage() {
             <AvailabilityCalendar
               vehiculoId={vehiculo.id}
               onDateSelect={handleDateSelect}
+              precioBase={vehiculo.precioDiario}
             />
           ) : (
             <div className={styles.loginPrompt}>
