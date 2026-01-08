@@ -15,12 +15,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Verificar conexión explícitamente
+    await prisma.$connect();
+    
     const { searchParams } = new URL(request.url);
     const soloDisponibles = searchParams.get('disponible') === 'true';
 
     const where = soloDisponibles ? { disponible: true } : {};
 
-    console.log('🔍 Buscando vehículos con filtro:', where);
+    console.log('🔍 Buscando vehículos con filtro:', JSON.stringify(where));
 
     const vehiculos = await prisma.vehiculo.findMany({
       where,
@@ -31,6 +34,15 @@ export async function GET(request: NextRequest) {
     
     if (vehiculos.length === 0) {
       console.log('⚠️  No se encontraron vehículos en la base de datos');
+      
+      // Verificar si la tabla existe y tiene algún registro
+      const totalCount = await prisma.vehiculo.count().catch(() => -1);
+      console.log(`📊 Total de vehículos en BD: ${totalCount}`);
+    }
+
+    // Desconectar solo en producción para evitar problemas de conexión
+    if (process.env.NODE_ENV === 'production') {
+      await prisma.$disconnect().catch(() => {});
     }
 
     return NextResponse.json(vehiculos, {
@@ -45,6 +57,9 @@ export async function GET(request: NextRequest) {
     const errorStack = error instanceof Error ? error.stack : undefined;
     
     console.error('❌ Stack trace:', errorStack);
+    
+    // Intentar desconectar en caso de error
+    await prisma.$disconnect().catch(() => {});
     
     return NextResponse.json(
       { 
