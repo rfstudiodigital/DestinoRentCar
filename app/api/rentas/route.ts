@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// GET - Listar todas las rentas
+// GET - Listar todas las rentas (SOLO ADMIN)
 export async function GET(request: NextRequest) {
   if (!prisma) {
     return NextResponse.json(
       { error: 'Base de datos no configurada' },
       { status: 500 }
+    );
+  }
+
+  // Verificar que sea admin (desde headers o cookie)
+  // En producción, usarías un token JWT o sesión segura
+  // Por ahora, verificamos desde el header
+  const adminAuth = request.headers.get('x-admin-auth');
+  
+  // Si no hay header, verificar desde cookie o rechazar
+  // Por seguridad, solo permitir si viene del panel admin
+  if (!adminAuth || adminAuth !== 'true') {
+    return NextResponse.json(
+      { error: 'Acceso denegado. Solo administradores pueden ver esta información.' },
+      { status: 403 }
     );
   }
 

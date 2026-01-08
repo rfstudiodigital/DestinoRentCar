@@ -48,10 +48,9 @@ export default function AlquilarPage() {
 
   const fetchClienteData = async (clienteId: string) => {
     try {
-      const res = await fetch('/api/clientes');
+      const res = await fetch(`/api/clientes/${clienteId}`);
       if (res.ok) {
-        const clientes = await res.json();
-        const cliente = clientes.find((c: any) => c.id === clienteId);
+        const cliente = await res.json();
         return cliente;
       }
     } catch (error) {
@@ -159,16 +158,22 @@ export default function AlquilarPage() {
           localStorage.setItem('clienteId', cliente.id);
           localStorage.setItem('clienteNombre', cliente.nombre);
         } else if (clienteRes.status === 400) {
-          // Cliente ya existe, buscarlo
-          const clientesRes = await fetch('/api/clientes');
-          const clientes = await clientesRes.json();
-          cliente = clientes.find((c: any) => c.email === email);
-          if (!cliente) {
+          // Cliente ya existe, necesitamos buscar su ID
+          // Usar la API de login para obtener su información
+          const loginRes = await fetch('/api/auth/cliente/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+          if (loginRes.ok) {
+            const loginData = await loginRes.json();
+            cliente = loginData.cliente;
+            // Guardar en localStorage
+            localStorage.setItem('clienteId', cliente.id);
+            localStorage.setItem('clienteNombre', cliente.nombre);
+          } else {
             throw new Error('Error al obtener información del cliente');
           }
-          // Guardar en localStorage
-          localStorage.setItem('clienteId', cliente.id);
-          localStorage.setItem('clienteNombre', cliente.nombre);
         } else {
           throw new Error('Error al crear cliente');
         }

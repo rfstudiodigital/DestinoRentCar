@@ -118,7 +118,11 @@ export default function AdminPage() {
       const url = rentaFilter !== 'todas' 
         ? `/api/rentas?estado=${rentaFilter}`
         : '/api/rentas';
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          'x-admin-auth': 'true',
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         setRentas(data);
@@ -130,7 +134,11 @@ export default function AdminPage() {
 
   const fetchClientes = async () => {
     try {
-      const res = await fetch('/api/clientes');
+      const res = await fetch('/api/clientes', {
+        headers: {
+          'x-admin-auth': 'true',
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         setClientes(data);
@@ -145,8 +153,16 @@ export default function AdminPage() {
       // Cargar todos los datos necesarios para las estadísticas
       const [vehiculosRes, rentasRes, clientesRes] = await Promise.all([
         fetch('/api/vehiculos'),
-        fetch('/api/rentas'),
-        fetch('/api/clientes'),
+        fetch('/api/rentas', {
+          headers: {
+            'x-admin-auth': 'true',
+          },
+        }),
+        fetch('/api/clientes', {
+          headers: {
+            'x-admin-auth': 'true',
+          },
+        }),
       ]);
 
       const vehiculosData = vehiculosRes.ok ? await vehiculosRes.json() : [];

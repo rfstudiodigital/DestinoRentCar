@@ -59,9 +59,6 @@ export default function VehiculosPage() {
               />
               <span>Solo disponibles</span>
             </label>
-            <Link href="/admin" style={{ padding: '0.75rem 1.5rem', background: 'var(--primary-color)', color: 'white', textDecoration: 'none', borderRadius: '8px', fontWeight: '600' }}>
-              Panel Admin
-            </Link>
           </div>
         </div>
 

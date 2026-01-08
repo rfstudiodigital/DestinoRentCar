@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// GET - Listar todos los clientes
+// GET - Listar todos los clientes (SOLO ADMIN)
 export async function GET(request: NextRequest) {
   if (!prisma) {
     return NextResponse.json(
       { error: 'Base de datos no configurada' },
       { status: 500 }
+    );
+  }
+
+  // Verificar que sea admin
+  const adminAuth = request.headers.get('x-admin-auth');
+  
+  if (!adminAuth || adminAuth !== 'true') {
+    return NextResponse.json(
+      { error: 'Acceso denegado. Solo administradores pueden ver esta información.' },
+      { status: 403 }
     );
   }
 

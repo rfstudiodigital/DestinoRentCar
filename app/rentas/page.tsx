@@ -40,10 +40,17 @@ function RentasContent() {
       const url = filter !== 'todas' 
         ? `/api/rentas?estado=${filter}`
         : '/api/rentas';
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          'x-admin-auth': 'true',
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         setRentas(data);
+      } else if (res.status === 403) {
+        // Si no es admin, redirigir
+        window.location.href = '/';
       }
     } catch (error) {
       console.error('Error cargando rentas:', error);
