@@ -21,13 +21,34 @@ export async function GET(request: NextRequest) {
     const where = soloDisponibles ? { disponible: true } : {};
 
     console.log('🔍 Buscando vehículos con filtro:', JSON.stringify(where));
+    console.log('📊 Prisma client estado:', prisma ? 'disponible' : 'no disponible');
 
-    const vehiculos = await prisma.vehiculo.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-    });
+    // Verificar que prisma esté disponible antes de usarlo
+    if (!prisma) {
+      throw new Error('Prisma client no está disponible');
+    }
 
-    console.log(`✅ Vehículos encontrados: ${vehiculos.length}`);
+    // Intentar query simple primero para verificar conexión
+    let vehiculos: any[] = [];
+    
+    try {
+      vehiculos = await prisma.vehiculo.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+      });
+      console.log(`✅ Vehículos encontrados: ${vehiculos.length}`);
+    } catch (queryError: any) {
+      console.error('❌ Error en query findMany:', queryError);
+      console.error('Error code:', queryError?.code);
+      console.error('Error message:', queryError?.message);
+      
+      // Si es un error de tabla no encontrada, informar mejor
+      if (queryError?.code === 'P2021' || queryError?.message?.includes('does not exist')) {
+        throw new Error('La tabla Vehiculo no existe. Ejecuta: npx prisma db push');
+      }
+      
+      throw queryError;
+    }
     
     if (vehiculos.length === 0) {
       console.log('⚠️  No se encontraron vehículos en la base de datos');
@@ -36,8 +57,11 @@ export async function GET(request: NextRequest) {
       try {
         const totalCount = await prisma.vehiculo.count();
         console.log(`📊 Total de vehículos en BD: ${totalCount}`);
-      } catch (countError) {
+      } catch (countError: any) {
         console.error('❌ Error contando vehículos:', countError);
+        if (countError?.code === 'P2021') {
+          throw new Error('La tabla Vehiculo no existe. Ejecuta: npx prisma db push');
+        }
       }
     }
 
@@ -52,15 +76,18 @@ export async function GET(request: NextRequest) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     const errorStack = error instanceof Error ? error.stack : undefined;
     const errorCode = (error as any)?.code;
+    const errorName = (error as any)?.name;
     
-    console.error('❌ Stack trace:', errorStack);
+    console.error('❌ Error name:', errorName);
     console.error('❌ Error code:', errorCode);
+    console.error('❌ Stack trace:', errorStack);
     
     return NextResponse.json(
       { 
         error: 'Error al obtener vehículos',
         message: errorMessage,
         code: errorCode,
+        name: errorName,
         ...(process.env.NODE_ENV === 'development' && { stack: errorStack }),
       },
       { status: 500 }
