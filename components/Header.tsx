@@ -23,11 +23,8 @@ export default function Header() {
         <Link href="/rentas" className={styles.navLink}>
           Rentas
         </Link>
-        <Link href="/clientes" className={styles.navLink}>
-          Clientes
-        </Link>
-        <Link href="/nueva-renta" className={styles.navLink}>
-          Nueva Renta
+        <Link href="/admin" className={styles.navLink}>
+          Admin
         </Link>
       </nav>
     </header>

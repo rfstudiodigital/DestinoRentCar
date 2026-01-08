@@ -24,23 +24,18 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link href="/vehiculos" className={styles.card}>
-            <h2>Vehículos &rarr;</h2>
-            <p>Explora nuestra flota de vehículos disponibles</p>
+            <h2>Ver Vehículos &rarr;</h2>
+            <p>Explora nuestra flota de vehículos disponibles para alquilar</p>
           </Link>
 
           <Link href="/rentas" className={styles.card}>
-            <h2>Rentas &rarr;</h2>
+            <h2>Mis Rentas &rarr;</h2>
             <p>Gestiona tus rentas activas y pasadas</p>
           </Link>
 
-          <Link href="/clientes" className={styles.card}>
-            <h2>Clientes &rarr;</h2>
-            <p>Administra la información de clientes</p>
-          </Link>
-
-          <Link href="/nueva-renta" className={styles.card}>
-            <h2>Nueva Renta &rarr;</h2>
-            <p>Registra una nueva renta de vehículo</p>
+          <Link href="/admin" className={styles.card}>
+            <h2>Panel Admin &rarr;</h2>
+            <p>Administra vehículos y gestiona el sistema</p>
           </Link>
         </div>
       </div>

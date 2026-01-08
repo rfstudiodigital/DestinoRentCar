@@ -1,8 +1,9 @@
-// Script para generar Prisma Client incluso sin DATABASE_URL
+// Script para generar Prisma Client y ejecutar migraciones
 const { execSync } = require('child_process');
 
 // Verificar si DATABASE_URL está definida
 const hasDatabaseUrl = !!process.env.DATABASE_URL;
+const isProduction = process.env.NODE_ENV === 'production';
 
 if (!hasDatabaseUrl) {
   console.log('⚠️  DATABASE_URL no está configurada. Usando URL temporal para generar Prisma Client...');
@@ -23,6 +24,22 @@ try {
     env: { ...process.env }
   });
   console.log('✅ Prisma Client generado exitosamente');
+  
+  // Si hay DATABASE_URL configurada y estamos en producción, ejecutar migraciones
+  if (hasDatabaseUrl && isProduction) {
+    console.log('🔄 Ejecutando migraciones de base de datos...');
+    try {
+      execSync('npx prisma migrate deploy', { 
+        stdio: 'inherit',
+        env: { ...process.env }
+      });
+      console.log('✅ Migraciones aplicadas exitosamente');
+    } catch (migrateError) {
+      console.warn('⚠️  Error ejecutando migraciones:', migrateError.message);
+      console.log('💡 Si es la primera vez, puedes ejecutar manualmente: npx prisma migrate deploy');
+      // No fallar el build si las migraciones fallan (podría ser que ya están aplicadas)
+    }
+  }
 } catch (error) {
   console.error('❌ Error generando Prisma Client');
   if (error.message) {
