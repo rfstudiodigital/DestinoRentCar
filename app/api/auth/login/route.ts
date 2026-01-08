@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar admin por email
+    // @ts-expect-error - Admin model may not be available until db is synced
     const admin = await prisma.admin.findUnique({
       where: { email },
     });
