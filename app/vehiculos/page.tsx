@@ -11,7 +11,6 @@ interface Vehiculo {
   marca: string;
   modelo: string;
   anio: number;
-  ano: number;
   color: string;
   precioDiario: number;
   disponible: boolean;

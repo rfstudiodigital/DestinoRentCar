@@ -36,7 +36,7 @@ export default function ReportExport({ tipo }: ReportExportProps) {
         { header: 'ID', key: 'id', width: 10 },
         { header: 'Marca', key: 'marca', width: 15 },
         { header: 'Modelo', key: 'modelo', width: 20 },
-        { header: 'Año', key: 'ano', width: 10 },
+        { header: 'Año', key: 'anio', width: 10 },
         { header: 'Precio/Día', key: 'precio', width: 12 },
         { header: 'Disponible', key: 'disponible', width: 12 },
         { header: 'Veces Rentado', key: 'vecesRentado', width: 15 },
