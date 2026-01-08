@@ -29,13 +29,28 @@ export default function VehiculosPage() {
   const fetchVehiculos = async () => {
     try {
       const res = await fetch('/api/vehiculos');
-      if (res.ok) {
-        const data = await res.json();
-        setTodosVehiculos(data);
-        setVehiculosFiltrados(data.filter((v: Vehiculo) => v.disponible));
+      console.log('📡 Respuesta API vehículos:', res.status, res.statusText);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Error desconocido' }));
+        console.error('❌ Error en API vehículos:', errorData);
+        alert(`Error cargando vehículos: ${errorData.error || errorData.message || 'Error desconocido'}`);
+        return;
       }
+
+      const data = await res.json();
+      console.log('✅ Vehículos recibidos:', data.length, 'vehículos');
+      
+      if (!Array.isArray(data)) {
+        console.error('❌ Los datos no son un array:', data);
+        return;
+      }
+
+      setTodosVehiculos(data);
+      setVehiculosFiltrados(data.filter((v: Vehiculo) => v.disponible));
     } catch (error) {
-      console.error('Error cargando vehículos:', error);
+      console.error('❌ Error cargando vehículos:', error);
+      alert(`Error de conexión: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }

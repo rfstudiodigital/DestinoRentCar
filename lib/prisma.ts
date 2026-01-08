@@ -17,12 +17,19 @@ const createPrismaClient = (): PrismaClient | null => {
   try {
     const client = new PrismaClient({
       log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+      errorFormat: 'pretty',
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
     });
     
-    // Verificar conexión al crear el cliente
+    // En producción, evitar conexiones persistentes en serverless
     if (process.env.NODE_ENV === 'production') {
-      client.$connect().catch((err) => {
-        console.error('❌ Error conectando a la base de datos:', err);
+      // Manejar desconexión al salir
+      process.on('beforeExit', async () => {
+        await client.$disconnect();
       });
     }
     
@@ -36,6 +43,7 @@ const createPrismaClient = (): PrismaClient | null => {
 export const prisma: PrismaClient | null =
   globalForPrisma.prisma ?? createPrismaClient();
 
+// Solo reutilizar en desarrollo, en producción cada request puede ser una nueva instancia
 if (process.env.NODE_ENV !== 'production' && prisma) {
   globalForPrisma.prisma = prisma;
 }

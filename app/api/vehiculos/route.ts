@@ -20,20 +20,37 @@ export async function GET(request: NextRequest) {
 
     const where = soloDisponibles ? { disponible: true } : {};
 
+    console.log('🔍 Buscando vehículos con filtro:', where);
+
     const vehiculos = await prisma.vehiculo.findMany({
       where,
       orderBy: { createdAt: 'desc' },
     });
 
     console.log(`✅ Vehículos encontrados: ${vehiculos.length}`);
-    return NextResponse.json(vehiculos);
+    
+    if (vehiculos.length === 0) {
+      console.log('⚠️  No se encontraron vehículos en la base de datos');
+    }
+
+    return NextResponse.json(vehiculos, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
     console.error('❌ Error obteniendo vehículos:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    console.error('❌ Stack trace:', errorStack);
+    
     return NextResponse.json(
       { 
         error: 'Error al obtener vehículos',
-        message: errorMessage
+        message: errorMessage,
+        ...(process.env.NODE_ENV === 'development' && { stack: errorStack }),
       },
       { status: 500 }
     );

@@ -190,12 +190,25 @@ export default function AdminPage() {
   const fetchVehiculos = async () => {
     try {
       const res = await fetch('/api/vehiculos');
-      if (res.ok) {
-        const data = await res.json();
-        setVehiculos(data);
+      console.log('📡 Admin - Respuesta API vehículos:', res.status, res.statusText);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Error desconocido' }));
+        console.error('❌ Admin - Error en API vehículos:', errorData);
+        return;
       }
+
+      const data = await res.json();
+      console.log('✅ Admin - Vehículos recibidos:', data.length, 'vehículos');
+      
+      if (!Array.isArray(data)) {
+        console.error('❌ Admin - Los datos no son un array:', data);
+        return;
+      }
+
+      setVehiculos(data);
     } catch (error) {
-      console.error('Error cargando vehículos:', error);
+      console.error('❌ Admin - Error cargando vehículos:', error);
     } finally {
       setLoading(false);
     }
