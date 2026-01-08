@@ -22,10 +22,6 @@ export default function VehiculosPage() {
   const [loading, setLoading] = useState(true);
   const [soloDisponibles, setSoloDisponibles] = useState(true);
 
-  useEffect(() => {
-    fetchVehiculos();
-  }, [soloDisponibles]);
-
   const fetchVehiculos = async () => {
     try {
       const url = soloDisponibles 
@@ -42,6 +38,11 @@ export default function VehiculosPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchVehiculos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [soloDisponibles]);
 
   return (
     <main className={styles.main}>
