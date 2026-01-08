@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import styles from './login.module.css';
 
-export default function ClienteLoginPage() {
+function ClienteLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
@@ -100,5 +100,21 @@ export default function ClienteLoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ClienteLoginPage() {
+  return (
+    <Suspense fallback={
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.loginBox}>
+            <div className={styles.loading}>Cargando...</div>
+          </div>
+        </div>
+      </main>
+    }>
+      <ClienteLoginForm />
+    </Suspense>
   );
 }
