@@ -1,7 +1,8 @@
 .main {
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #EBF4FF 0%, #FFF9E5 50%, #EBF4FF 100%);
+  position: relative;
 }
 
 .container {
@@ -20,9 +21,13 @@
 
 .title {
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-color);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .actions {
@@ -32,54 +37,82 @@
 }
 
 .link {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   background: white;
   color: var(--primary-color);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: all var(--transition-base);
   border: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  transform: translateY(100%);
+  transition: transform var(--transition-base);
+  z-index: -1;
+}
+
+.link:hover::before {
+  transform: translateY(0);
 }
 
 .link:hover {
-  background: var(--primary-color);
   color: white;
+  border-color: var(--primary-dark);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .logoutButton {
-  padding: 0.75rem 1.5rem;
-  background: #ef4444;
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
   color: white;
   text-decoration: none;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   font-size: 1rem;
+  box-shadow: var(--shadow-md);
 }
 
 .logoutButton:hover {
-  background: #dc2626;
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .addButton {
-  padding: 0.75rem 1.5rem;
-  background: var(--secondary-color);
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
   color: var(--text-color);
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   font-size: 1rem;
+  box-shadow: var(--shadow-md);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .addButton:hover {
-  background: #fbbf24;
-  transform: scale(1.05);
+  background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-color) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(251, 185, 19, 0.4);
 }
 
 .backButton {
@@ -128,25 +161,46 @@
 }
 
 .tab {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
   font-size: 1rem;
-  font-weight: 600;
-  color: #6b7280;
+  font-weight: 700;
+  color: var(--text-light);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   margin-bottom: -2px;
+  position: relative;
+}
+
+.tab::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  transition: width var(--transition-base);
 }
 
 .tab:hover {
   color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(251, 185, 19, 0.05) 100%);
+}
+
+.tab:hover::after {
+  width: 100%;
 }
 
 .tabActive {
   color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(251, 185, 19, 0.1) 100%);
+}
+
+.tabActive::after {
+  width: 100%;
 }
 
 /* Dashboard */
@@ -163,14 +217,29 @@
 
 .statCard {
   background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
 }
 
 .statCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--secondary-color);
 }
 
 .statCard h3 {
@@ -182,10 +251,14 @@
 }
 
 .statValue {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
+  font-size: 2.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .statSubtext {

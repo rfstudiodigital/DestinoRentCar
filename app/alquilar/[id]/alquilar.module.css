@@ -1,7 +1,7 @@
 .main {
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #EBF4FF 0%, #FFF9E5 50%, #EBF4FF 100%);
 }
 
 .container {
@@ -20,25 +20,32 @@
 
 .title {
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-color);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .backLink {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   background: white;
   color: var(--primary-color);
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: all var(--transition-base);
   border: 2px solid var(--primary-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .backLink:hover {
   background: var(--primary-color);
   color: white;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .content {
@@ -48,24 +55,34 @@
 }
 
 .vehiculoInfo {
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
   height: fit-content;
   position: sticky;
   top: 2rem;
+  border: 2px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.vehiculoInfo:hover {
+  border-color: var(--secondary-color);
+  box-shadow: var(--shadow-xl);
 }
 
 .vehiculoInfo h2 {
   font-size: 1.5rem;
   margin: 0 0 1rem 0;
-  color: var(--text-color);
+  font-weight: 800;
+  color: var(--primary-color);
 }
 
 .vehiculoInfo p {
   margin: 0.75rem 0;
-  color: #666;
+  color: var(--text-light);
+  font-weight: 500;
 }
 
 .resumenPrecio {

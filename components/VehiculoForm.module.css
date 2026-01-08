@@ -1,10 +1,26 @@
 .form {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
   max-width: 800px;
   margin: 0 auto;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--primary-color) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
 }
 
 .error {
@@ -41,17 +57,21 @@
 
 .field input,
 .field textarea {
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  padding: 0.875rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: all var(--transition-base);
+  background: var(--background);
 }
 
 .field input:focus,
 .field textarea:focus {
   outline: none;
   border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
 }
 
 .field textarea {
@@ -81,22 +101,25 @@
 
 .cancelButton,
 .submitButton {
-  padding: 0.75rem 2rem;
+  padding: 0.875rem 2rem;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
   font-size: 1rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .cancelButton {
-  background: #e5e7eb;
+  background: #E5E7EB;
   color: var(--text-color);
 }
 
 .cancelButton:hover {
-  background: #d1d5db;
+  background: #D1D5DB;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .submitButton {

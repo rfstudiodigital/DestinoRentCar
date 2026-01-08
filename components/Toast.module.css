@@ -4,32 +4,37 @@
   max-width: 500px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease-out;
+  box-shadow: var(--shadow-xl);
+  animation: slideInBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   border-left: 4px solid;
+  overflow: hidden;
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
+@keyframes slideInBounce {
+  0% {
+    transform: translateX(100%) scale(0.8);
     opacity: 0;
   }
-  to {
-    transform: translateX(0);
+  60% {
+    transform: translateX(-10px) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) scale(1);
     opacity: 1;
   }
 }
 
 .toast.success {
-  border-left-color: #10b981;
+  border-left-color: #10B981;
 }
 
 .toast.error {
-  border-left-color: #ef4444;
+  border-left-color: #EF4444;
 }
 
 .toast.info {
-  border-left-color: #3b82f6;
+  border-left-color: var(--primary-light);
 }
 
 .content {
@@ -42,27 +47,28 @@
 .icon {
   font-size: 1.5rem;
   font-weight: bold;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .success .icon {
-  background: #10b981;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: white;
 }
 
 .error .icon {
-  background: #ef4444;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
   color: white;
 }
 
 .info .icon {
-  background: #3b82f6;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   color: white;
 }
 
@@ -76,22 +82,23 @@
   background: transparent;
   border: none;
   font-size: 1.5rem;
-  color: #6b7280;
+  color: var(--text-light);
   cursor: pointer;
   padding: 0;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
   flex-shrink: 0;
 }
 
 .closeButton:hover {
-  background: #f3f4f6;
+  background: var(--background);
   color: var(--text-color);
+  transform: rotate(90deg);
 }
 
 @media (max-width: 768px) {
