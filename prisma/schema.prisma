@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Cliente {
@@ -16,9 +15,14 @@ model Cliente {
   email     String   @unique
   telefono  String
   direccion String?
+  licencia  String?  // Número de licencia de conducir
+  idioma    String   @default("es") // es, en
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   rentas    Renta[]
+  resenas   Resena[]
+  documentos Documento[]
+  notificaciones Notificacion[]
 }
 
 model Vehiculo {
@@ -30,11 +34,34 @@ model Vehiculo {
   color       String
   precioDiario Float
   disponible  Boolean  @default(true)
-  imagen      String?
+  imagen      String?  // Imagen principal
   descripcion String?
+  
+  // Especificaciones técnicas
+  tipoVehiculo String? // SUV, Sedan, Pickup, Compacto, etc.
+  transmision String? // Manual, Automática
+  combustible String? // Gasolina, Diesel, Híbrido, Eléctrico
+  pasajeros   Int?    // Número de pasajeros
+  puertas     Int?    // Número de puertas
+  motor       String? // Ej: 2.0L Turbo
+  
+  // Características
+  aireAcondicionado Boolean @default(true)
+  gps          Boolean @default(false)
+  bluetooth    Boolean @default(false)
+  camaraReversa Boolean @default(false)
+  sensoresEstacionamiento Boolean @default(false)
+  
+  // Estadísticas
+  vecesRentado Int @default(0)
+  calificacionPromedio Float @default(0)
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
   rentas      Renta[]
+  imagenes    ImagenVehiculo[]
+  resenas     Resena[]
 }
 
 model Renta {
@@ -46,14 +73,92 @@ model Renta {
   precioTotal     Float
   estado          String   @default("activa") // activa, completada, cancelada
   observaciones   String?
+  
+  // Información adicional
+  lugarRecogida   String?
+  lugarEntrega    String?
+  kmInicial       Int?
+  kmFinal         Int?
+  depositoSeguridad Float?
+  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
   cliente         Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   vehiculo        Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  resena          Resena?
   
   @@index([clienteId])
   @@index([vehiculoId])
   @@index([fechaInicio, fechaFin])
+  @@index([estado])
+}
+
+// Galería de imágenes para vehículos
+model ImagenVehiculo {
+  id         String   @id @default(cuid())
+  vehiculoId String
+  url        String
+  orden      Int      @default(0) // Para ordenar las imágenes
+  esPortada  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  vehiculo   Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  
+  @@index([vehiculoId])
+}
+
+// Sistema de reseñas y calificaciones
+model Resena {
+  id          String   @id @default(cuid())
+  rentaId     String   @unique
+  clienteId   String
+  vehiculoId  String
+  calificacion Int     // 1-5 estrellas
+  comentario  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  renta       Renta    @relation(fields: [rentaId], references: [id], onDelete: Cascade)
+  cliente     Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  vehiculo    Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  
+  @@index([vehiculoId])
+  @@index([clienteId])
+  @@index([calificacion])
+}
+
+// Sistema de notificaciones
+model Notificacion {
+  id        String   @id @default(cuid())
+  clienteId String?  // null para notificaciones de admin
+  tipo      String   // reserva_confirmada, recordatorio, cancelacion, etc.
+  titulo    String
+  mensaje   String
+  leida     Boolean  @default(false)
+  url       String?  // Link a la página relacionada
+  createdAt DateTime @default(now())
+  
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  
+  @@index([clienteId])
+  @@index([leida])
+  @@index([createdAt])
+}
+
+// Sistema de documentos
+model Documento {
+  id         String   @id @default(cuid())
+  clienteId  String
+  tipo       String   // licencia, identificacion, firma
+  nombre     String
+  url        String
+  verificado Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  cliente    Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  
+  @@index([clienteId])
+  @@index([tipo])
 }
 

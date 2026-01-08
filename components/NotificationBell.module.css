@@ -1,0 +1,149 @@
+.container {
+  position: relative;
+}
+
+.bellButton {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all var(--transition-base);
+  border-radius: 50%;
+}
+
+.bellButton:hover {
+  background: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.2rem 0.4rem;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 380px;
+  max-height: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border);
+  z-index: 1000;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.header h3 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.markAllButton {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.markAllButton:hover {
+  text-decoration: underline;
+}
+
+.list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+.notifItem {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.notifItem:last-child {
+  border-bottom: none;
+}
+
+.notifItem:hover {
+  background: var(--background);
+}
+
+.notifItem.unread {
+  background: rgba(59, 130, 246, 0.05);
+  border-left: 4px solid var(--primary-color);
+}
+
+.notifContent {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.tipo {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.mensaje {
+  color: var(--text-color);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.fecha {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  display: block;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .dropdown {
+    width: calc(100vw - 2rem);
+    right: -1rem;
+  }
+}

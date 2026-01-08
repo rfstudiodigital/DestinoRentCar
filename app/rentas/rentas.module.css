@@ -149,7 +149,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.875rem 0;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
   align-items: center;
 }
 
@@ -219,7 +219,7 @@
 
 .completeButton::before,
 .cancelButton::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -238,7 +238,7 @@
 }
 
 .completeButton {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
 }
 
@@ -249,12 +249,12 @@
 }
 
 .cancelButton {
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
 }
 
 .cancelButton:hover {
-  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.4);
   transform: translateY(-2px);
 }

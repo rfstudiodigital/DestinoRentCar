@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  font-size: 1.5rem;
+  padding: 0;
+  line-height: 1;
+  transition: all var(--transition-base);
+  cursor: default;
+}
+
+.star.filled {
+  color: var(--secondary-color);
+  text-shadow: 0 0 8px rgba(253, 185, 19, 0.5);
+}
+
+.star.interactive {
+  cursor: pointer;
+}
+
+.star.interactive:hover {
+  transform: scale(1.2);
+}
+
+/* Sizes */
+.small .star {
+  font-size: 1rem;
+}
+
+.medium .star {
+  font-size: 1.5rem;
+}
+
+.large .star {
+  font-size: 2rem;
+}

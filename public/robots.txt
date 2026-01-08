@@ -1,5 +1,16 @@
+# Robots.txt para Destino Rent Car
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /perfil
+Disallow: /documentos/
+
+# Sitemap
+Sitemap: https://destinorentcar.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
 
 Sitemap: https://destino-rent-car.vercel.app/sitemap.xml
 

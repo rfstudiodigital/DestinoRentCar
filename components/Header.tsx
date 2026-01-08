@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useToast } from '@/components/ToastProvider';
 import InstallPWAButton from '@/components/InstallPWAButton';
+import NotificationBell from '@/components/NotificationBell';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -67,6 +68,10 @@ export default function Header() {
         </Link>
         {clienteLogueado ? (
           <>
+            <Link href="/perfil" className={styles.navLink}>
+              Mi Perfil
+            </Link>
+            <NotificationBell />
             <span className={styles.userInfo}>
               Hola, {clienteLogueado.nombre}
             </span>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
+import SearchFilters from '@/components/SearchFilters';
 import styles from '../page.module.css';
 
 interface Vehiculo {
@@ -10,27 +11,29 @@ interface Vehiculo {
   marca: string;
   modelo: string;
   anio: number;
+  ano: number;
   color: string;
   precioDiario: number;
   disponible: boolean;
   imagen?: string | null;
   descripcion?: string | null;
+  tipoVehiculo?: string;
+  transmision?: string;
+  pasajeros?: number;
 }
 
 export default function VehiculosPage() {
-  const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+  const [todosVehiculos, setTodosVehiculos] = useState<Vehiculo[]>([]);
+  const [vehiculosFiltrados, setVehiculosFiltrados] = useState<Vehiculo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [soloDisponibles, setSoloDisponibles] = useState(true);
 
   const fetchVehiculos = async () => {
     try {
-      const url = soloDisponibles 
-        ? '/api/vehiculos?disponible=true'
-        : '/api/vehiculos';
-      const res = await fetch(url);
+      const res = await fetch('/api/vehiculos');
       if (res.ok) {
         const data = await res.json();
-        setVehiculos(data);
+        setTodosVehiculos(data);
+        setVehiculosFiltrados(data.filter((v: Vehiculo) => v.disponible));
       }
     } catch (error) {
       console.error('Error cargando vehículos:', error);
@@ -41,46 +44,115 @@ export default function VehiculosPage() {
 
   useEffect(() => {
     fetchVehiculos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [soloDisponibles]);
+  }, []);
+
+  const handleFilterChange = (filters: any) => {
+    let filtrados = [...todosVehiculos];
+
+    // Filtrar por búsqueda
+    if (filters.busqueda) {
+      const busqueda = filters.busqueda.toLowerCase();
+      filtrados = filtrados.filter(v => 
+        v.marca.toLowerCase().includes(busqueda) ||
+        v.modelo.toLowerCase().includes(busqueda)
+      );
+    }
+
+    // Filtrar por disponibilidad
+    if (filters.soloDisponibles) {
+      filtrados = filtrados.filter(v => v.disponible);
+    }
+
+    // Filtrar por tipo
+    if (filters.tipo && filters.tipo.length > 0) {
+      filtrados = filtrados.filter(v => 
+        v.tipoVehiculo && filters.tipo.includes(v.tipoVehiculo)
+      );
+    }
+
+    // Filtrar por transmisión
+    if (filters.transmision && filters.transmision.length > 0) {
+      filtrados = filtrados.filter(v => 
+        v.transmision && filters.transmision.includes(v.transmision)
+      );
+    }
+
+    // Filtrar por pasajeros
+    if (filters.pasajeros) {
+      filtrados = filtrados.filter(v => 
+        v.pasajeros && v.pasajeros >= filters.pasajeros
+      );
+    }
+
+    // Filtrar por precio
+    if (filters.precioMin || filters.precioMax) {
+      filtrados = filtrados.filter(v => {
+        const precio = v.precioDiario;
+        const cumpleMin = !filters.precioMin || precio >= filters.precioMin;
+        const cumpleMax = !filters.precioMax || precio <= filters.precioMax;
+        return cumpleMin && cumpleMax;
+      });
+    }
+
+    // Filtrar por año
+    if (filters.anoMin || filters.anoMax) {
+      filtrados = filtrados.filter(v => {
+        const ano = v.ano || v.anio;
+        const cumpleMin = !filters.anoMin || ano >= filters.anoMin;
+        const cumpleMax = !filters.anoMax || ano <= filters.anoMax;
+        return cumpleMin && cumpleMax;
+      });
+    }
+
+    // Ordenar
+    if (filters.ordenar) {
+      filtrados.sort((a, b) => {
+        switch (filters.ordenar) {
+          case 'precio_asc':
+            return a.precioDiario - b.precioDiario;
+          case 'precio_desc':
+            return b.precioDiario - a.precioDiario;
+          case 'ano_desc':
+            return (b.ano || b.anio) - (a.ano || a.anio);
+          case 'ano_asc':
+            return (a.ano || a.anio) - (b.ano || b.anio);
+          default:
+            return 0;
+        }
+      });
+    }
+
+    setVehiculosFiltrados(filtrados);
+  };
 
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h1 className={styles.title}>Vehículos Disponibles</h1>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={soloDisponibles}
-                onChange={(e) => setSoloDisponibles(e.target.checked)}
-                style={{ width: '1.25rem', height: '1.25rem' }}
-              />
-              <span>Solo disponibles</span>
-            </label>
-          </div>
-        </div>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', background: 'linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '2rem' }}>
+          Vehículos Disponibles
+        </h1>
+
+        <SearchFilters onFilterChange={handleFilterChange} />
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '12px' }}>
+          <div style={{ textAlign: 'center', padding: '4rem 0', fontSize: '1.25rem', color: '#6B7280' }}>
             Cargando vehículos...
           </div>
-        ) : vehiculos.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '12px' }}>
-            <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '1.5rem' }}>
-              No hay vehículos disponibles en este momento
-            </p>
-            <Link href="/" className={styles.card}>
-              ← Volver al inicio
-            </Link>
+        ) : vehiculosFiltrados.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '4rem 0', fontSize: '1.25rem', color: '#6B7280' }}>
+            No hay vehículos que coincidan con los filtros seleccionados.
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
-            {vehiculos.map((vehiculo) => (
-              <VehiculoCard key={vehiculo.id} vehiculo={vehiculo} />
-            ))}
-          </div>
+          <>
+            <div style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1rem', fontWeight: '600', color: 'var(--text-light)' }}>
+              {vehiculosFiltrados.length} vehículo{vehiculosFiltrados.length !== 1 ? 's' : ''} encontrado{vehiculosFiltrados.length !== 1 ? 's' : ''}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+              {vehiculosFiltrados.map((vehiculo) => (
+                <VehiculoCard key={vehiculo.id} vehiculo={vehiculo} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </main>
