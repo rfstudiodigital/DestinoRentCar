@@ -22,24 +22,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar admin por email
-    // Verificar si el modelo Admin existe en Prisma Client
-    let admin;
+    // Buscar admin por email usando SQL directo para mayor compatibilidad
+    let admin: any = null;
+    
     try {
-      // @ts-expect-error - Admin model may not be available until db is synced
-      admin = await prisma.admin.findUnique({
-        where: { email },
-      });
-    } catch (prismaError: any) {
-      // Si hay un error al acceder al modelo Admin, probablemente la tabla no existe
-      console.error('Error accediendo a tabla Admin:', prismaError);
-      if (prismaError.code === 'P2001' || prismaError.message?.includes('does not exist')) {
+      // Intentar primero con el modelo Prisma (si está disponible)
+      try {
+        // @ts-expect-error - Admin model may not be available until db is synced
+        admin = await prisma.admin.findUnique({
+          where: { email },
+        });
+      } catch (modelError: any) {
+        // Si el modelo no está disponible, usar SQL directo
+        console.log('Modelo Admin no disponible, usando SQL directo...');
+        const result = await prisma.$queryRaw<Array<{
+          id: string;
+          email: string;
+          password: string;
+          nombre: string | null;
+          createdAt: Date;
+          updatedAt: Date;
+        }>>`
+          SELECT id, email, password, nombre, "createdAt", "updatedAt"
+          FROM "Admin"
+          WHERE email = ${email}
+          LIMIT 1
+        `;
+        admin = result[0] || null;
+      }
+    } catch (sqlError: any) {
+      console.error('Error accediendo a tabla Admin:', sqlError);
+      // Verificar si el error es porque la tabla no existe
+      if (sqlError.message?.includes('does not exist') || 
+          sqlError.message?.includes('relation') ||
+          sqlError.code === '42P01') {
         return NextResponse.json(
-          { error: 'La tabla Admin no existe en la base de datos. Ejecuta el script SQL para crearla.' },
+          { 
+            error: 'La tabla Admin no existe en la base de datos. Por favor, ejecuta el script SQL en Neon Console para crearla.',
+            details: 'Ejecuta el código SQL del archivo scripts/admin-init.sql en el SQL Editor de Neon'
+          },
           { status: 500 }
         );
       }
-      throw prismaError;
+      throw sqlError;
     }
 
     if (!admin) {
