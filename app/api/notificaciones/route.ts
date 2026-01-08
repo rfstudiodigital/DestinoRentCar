@@ -43,20 +43,22 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { clienteId, mensaje, tipo } = body;
+    const { clienteId, mensaje, tipo, titulo, url } = body;
 
-    if (!mensaje || !tipo) {
+    if (!mensaje || !tipo || !titulo) {
       return NextResponse.json(
-        { error: 'Mensaje y tipo son requeridos' },
+        { error: 'Mensaje, tipo y titulo son requeridos' },
         { status: 400 }
       );
     }
 
     const notificacion = await prisma.notificacion.create({
       data: {
-        clienteId,
+        clienteId: clienteId || null,
         mensaje,
         tipo,
+        titulo,
+        ...(url && { url }),
       },
     });
 
