@@ -37,29 +37,96 @@ export default function PerfilPage() {
 
   const fetchClienteData = async () => {
     try {
-      // TODO: Obtener ID del cliente autenticado
-      const clienteResponse = await fetch('/api/clientes');
-      if (clienteResponse.ok) {
-        const clientes = await clienteResponse.json();
-        if (clientes.length > 0) {
-          setCliente(clientes[0]);
-          
-          // Obtener rentas del cliente
-          const rentasResponse = await fetch('/api/rentas');
-          if (rentasResponse.ok) {
-            const todasRentas = await rentasResponse.json();
-            const misRentas = todasRentas.filter((r: any) => r.clienteId === clientes[0].id);
-            
-            const activas = misRentas.filter((r: Renta) => r.estado === 'activa' || r.estado === 'pendiente');
-            const completadas = misRentas.filter((r: Renta) => r.estado === 'completada');
-            
-            setRentasActivas(activas);
-            setHistorial(completadas);
-          }
-        }
+      // Obtener ID del cliente autenticado del localStorage
+      const clienteId = localStorage.getItem('clienteId');
+      
+      if (!clienteId) {
+        console.error('❌ No hay sesión de cliente activa');
+        setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error fetching cliente data:', error);
+
+      console.log('🔍 Cargando perfil del cliente:', clienteId);
+      
+      // Obtener datos del cliente autenticado (incluye sus rentas)
+      const clienteResponse = await fetch(`/api/clientes/${clienteId}`);
+      
+      if (!clienteResponse.ok) {
+        const errorData = await clienteResponse.json().catch(() => ({ error: 'Error desconocido' }));
+        console.error('❌ Error cargando cliente:', errorData);
+        
+        // Si el cliente no existe o hay error, limpiar localStorage
+        if (clienteResponse.status === 404 || clienteResponse.status === 500) {
+          localStorage.removeItem('clienteId');
+          localStorage.removeItem('clienteNombre');
+          localStorage.removeItem('clienteEmail');
+          localStorage.removeItem('clienteTelefono');
+          localStorage.removeItem('clienteDireccion');
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      const clienteData = await clienteResponse.json();
+      console.log('✅ Cliente cargado:', clienteData);
+      
+      // Establecer datos del cliente
+      setCliente({
+        id: clienteData.id,
+        nombre: clienteData.nombre,
+        email: clienteData.email,
+        telefono: clienteData.telefono,
+        licencia: clienteData.licencia || null,
+      });
+
+      // Procesar rentas incluidas en la respuesta
+      if (clienteData.rentas && Array.isArray(clienteData.rentas)) {
+        console.log('📋 Rentas incluidas en respuesta:', clienteData.rentas.length);
+        
+        const activas = clienteData.rentas.filter((r: any) => 
+          r.estado === 'activa' || r.estado === 'pendiente'
+        );
+        const completadas = clienteData.rentas.filter((r: any) => 
+          r.estado === 'completada'
+        );
+        
+        console.log('✅ Rentas activas:', activas.length);
+        console.log('✅ Rentas completadas:', completadas.length);
+        
+        setRentasActivas(activas.map((r: any) => ({
+          id: r.id,
+          fechaInicio: r.fechaInicio,
+          fechaFin: r.fechaFin,
+          precioTotal: r.precioTotal,
+          estado: r.estado,
+          vehiculo: {
+            marca: r.vehiculo?.marca || '',
+            modelo: r.vehiculo?.modelo || '',
+            anio: r.vehiculo?.anio || 0,
+          },
+        })));
+        
+        setHistorial(completadas.map((r: any) => ({
+          id: r.id,
+          fechaInicio: r.fechaInicio,
+          fechaFin: r.fechaFin,
+          precioTotal: r.precioTotal,
+          estado: r.estado,
+          vehiculo: {
+            marca: r.vehiculo?.marca || '',
+            modelo: r.vehiculo?.modelo || '',
+            anio: r.vehiculo?.anio || 0,
+          },
+        })));
+      } else {
+        console.log('⚠️  No hay rentas en la respuesta');
+        setRentasActivas([]);
+        setHistorial([]);
+      }
+    } catch (error: any) {
+      console.error('❌ Error fetching cliente data:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error stack:', error?.stack);
     } finally {
       setIsLoading(false);
     }
