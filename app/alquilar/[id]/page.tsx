@@ -16,6 +16,7 @@ interface Vehiculo {
   precioDiario: number;
   disponible: boolean;
   imagen?: string | null;
+  placa?: string;
   descripcion?: string | null;
 }
 

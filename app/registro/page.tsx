@@ -111,7 +111,7 @@ export default function RegistroPage() {
                 id="telefono"
                 name="telefono"
                 required
-                placeholder="+54 9 11 1234-5678"
+                placeholder="+598 99 123 456"
               />
             </div>
 
