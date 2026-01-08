@@ -53,7 +53,7 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const { calificacion, comentario } = body;
+    const { calificacion, comentario, rentaId } = body;
 
     // Validaciones
     if (!calificacion || calificacion < 1 || calificacion > 5) {
@@ -81,8 +81,69 @@ export async function POST(
       );
     }
 
+    // Si no se proporciona rentaId, buscar una renta del cliente para este vehículo
+    let rentaIdFinal = rentaId;
+    if (!rentaIdFinal) {
+      const renta = await prisma.renta.findFirst({
+        where: {
+          clienteId: primeCliente.id,
+          vehiculoId: params.id,
+          estado: { in: ['completada', 'activa'] },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (!renta) {
+        return NextResponse.json(
+          { error: 'Debes tener una renta activa o completada de este vehículo para dejar una reseña' },
+          { status: 400 }
+        );
+      }
+
+      rentaIdFinal = renta.id;
+    }
+
+    // Verificar que la renta existe y pertenece al cliente
+    const renta = await prisma.renta.findUnique({
+      where: { id: rentaIdFinal },
+    });
+
+    if (!renta) {
+      return NextResponse.json(
+        { error: 'Renta no encontrada' },
+        { status: 404 }
+      );
+    }
+
+    if (renta.clienteId !== primeCliente.id) {
+      return NextResponse.json(
+        { error: 'No tienes permiso para dejar una reseña en esta renta' },
+        { status: 403 }
+      );
+    }
+
+    if (renta.vehiculoId !== params.id) {
+      return NextResponse.json(
+        { error: 'La renta no corresponde a este vehículo' },
+        { status: 400 }
+      );
+    }
+
+    // Verificar si ya existe una reseña para esta renta
+    const resenaExistente = await prisma.resena.findUnique({
+      where: { rentaId: rentaIdFinal },
+    });
+
+    if (resenaExistente) {
+      return NextResponse.json(
+        { error: 'Ya existe una reseña para esta renta' },
+        { status: 400 }
+      );
+    }
+
     const resena = await prisma.resena.create({
       data: {
+        rentaId: rentaIdFinal,
         vehiculoId: params.id,
         clienteId: primeCliente.id,
         calificacion,
