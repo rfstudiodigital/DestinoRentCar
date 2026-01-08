@@ -30,15 +30,18 @@ export default function VehiculoForm({ vehiculo, onSubmit, onCancel }: VehiculoF
     setError(null);
 
     const formData = new FormData(e.currentTarget);
+    const imagenValue = (formData.get('imagen') as string)?.trim();
+    const descripcionValue = (formData.get('descripcion') as string)?.trim();
+    
     const data = {
-      marca: formData.get('marca') as string,
-      modelo: formData.get('modelo') as string,
+      marca: (formData.get('marca') as string)?.trim(),
+      modelo: (formData.get('modelo') as string)?.trim(),
       anio: formData.get('anio') as string,
-      placa: formData.get('placa') as string,
-      color: formData.get('color') as string,
+      placa: (formData.get('placa') as string)?.trim().toUpperCase(),
+      color: (formData.get('color') as string)?.trim(),
       precioDiario: formData.get('precioDiario') as string,
-      imagen: formData.get('imagen') as string,
-      descripcion: formData.get('descripcion') as string,
+      imagen: imagenValue || null,
+      descripcion: descripcionValue || null,
       disponible: formData.get('disponible') === 'on',
     };
 
@@ -124,7 +127,7 @@ export default function VehiculoForm({ vehiculo, onSubmit, onCancel }: VehiculoF
         </div>
         
         <div className={styles.field}>
-          <label htmlFor="precioDiario">Precio Diario (USD) *</label>
+          <label htmlFor="precioDiario">Precio Diario ($) *</label>
           <input
             type="number"
             id="precioDiario"

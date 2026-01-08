@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
+import { formatearPrecioSimple } from '@/lib/formatters';
 import styles from './alquilar.module.css';
 
 interface Vehiculo {
@@ -30,12 +31,33 @@ export default function AlquilarPage() {
   const [fechaFin, setFechaFin] = useState<string>('');
   const [precioTotal, setPrecioTotal] = useState<number>(0);
   const [dias, setDias] = useState<number>(0);
+  const [clienteRegistrado, setClienteRegistrado] = useState<{ id: string; nombre: string } | null>(null);
 
   useEffect(() => {
     if (params.id) {
       fetchVehiculo(params.id as string);
     }
+    // Cargar datos del cliente registrado
+    const clienteId = localStorage.getItem('clienteId');
+    const clienteNombre = localStorage.getItem('clienteNombre');
+    if (clienteId && clienteNombre) {
+      setClienteRegistrado({ id: clienteId, nombre: clienteNombre });
+    }
   }, [params.id]);
+
+  const fetchClienteData = async (clienteId: string) => {
+    try {
+      const res = await fetch('/api/clientes');
+      if (res.ok) {
+        const clientes = await res.json();
+        const cliente = clientes.find((c: any) => c.id === clienteId);
+        return cliente;
+      }
+    } catch (error) {
+      console.error('Error cargando datos del cliente:', error);
+    }
+    return null;
+  };
 
   const fetchVehiculo = async (id: string) => {
     try {
@@ -98,33 +120,57 @@ export default function AlquilarPage() {
     }
 
     const formData = new FormData(e.currentTarget);
-    const nombre = formData.get('nombre') as string;
-    const email = formData.get('email') as string;
-    const telefono = formData.get('telefono') as string;
-    const direccion = formData.get('direccion') as string;
-    const observaciones = formData.get('observaciones') as string;
+    const observaciones = (formData.get('observaciones') as string) || '';
+    
+    // Si el cliente está registrado, no necesitamos estos datos
+    let nombre = '';
+    let email = '';
+    let telefono = '';
+    let direccion = '';
+    
+    if (!clienteRegistrado) {
+      nombre = formData.get('nombre') as string;
+      email = formData.get('email') as string;
+      telefono = formData.get('telefono') as string;
+      direccion = (formData.get('direccion') as string) || '';
+    }
 
     try {
-      // Primero crear o buscar cliente
-      let clienteRes = await fetch('/api/clientes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, telefono, direccion }),
-      });
-
+      // Si hay un cliente registrado, obtener sus datos completos
       let cliente;
-      if (clienteRes.status === 201) {
-        cliente = await clienteRes.json();
-      } else if (clienteRes.status === 400) {
-        // Cliente ya existe, buscarlo
-        const clientesRes = await fetch('/api/clientes');
-        const clientes = await clientesRes.json();
-        cliente = clientes.find((c: any) => c.email === email);
-        if (!cliente) {
-          throw new Error('Error al obtener información del cliente');
+      if (clienteRegistrado) {
+        const clienteData = await fetchClienteData(clienteRegistrado.id);
+        if (!clienteData) {
+          throw new Error('No se pudo obtener la información del cliente registrado');
         }
+        cliente = clienteData;
       } else {
-        throw new Error('Error al crear cliente');
+        // Primero crear o buscar cliente
+        let clienteRes = await fetch('/api/clientes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, email, telefono, direccion }),
+        });
+
+        if (clienteRes.status === 201) {
+          cliente = await clienteRes.json();
+          // Guardar en localStorage para futuras reservas
+          localStorage.setItem('clienteId', cliente.id);
+          localStorage.setItem('clienteNombre', cliente.nombre);
+        } else if (clienteRes.status === 400) {
+          // Cliente ya existe, buscarlo
+          const clientesRes = await fetch('/api/clientes');
+          const clientes = await clientesRes.json();
+          cliente = clientes.find((c: any) => c.email === email);
+          if (!cliente) {
+            throw new Error('Error al obtener información del cliente');
+          }
+          // Guardar en localStorage
+          localStorage.setItem('clienteId', cliente.id);
+          localStorage.setItem('clienteNombre', cliente.nombre);
+        } else {
+          throw new Error('Error al crear cliente');
+        }
       }
 
       // Crear renta
@@ -197,7 +243,7 @@ export default function AlquilarPage() {
           <div className={styles.vehiculoInfo}>
             <h2>{vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}</h2>
             <p><strong>Color:</strong> {vehiculo.color}</p>
-            <p><strong>Precio por día:</strong> ${vehiculo.precioDiario.toFixed(2)}</p>
+            <p><strong>Precio por día:</strong> {formatearPrecioSimple(vehiculo.precioDiario)}</p>
             {vehiculo.descripcion && (
               <p><strong>Descripción:</strong> {vehiculo.descripcion}</p>
             )}
@@ -211,11 +257,11 @@ export default function AlquilarPage() {
                 </div>
                 <div className={styles.resumenLine}>
                   <span>Precio por día:</span>
-                  <strong>${vehiculo.precioDiario.toFixed(2)}</strong>
+                  <strong>{formatearPrecioSimple(vehiculo.precioDiario)}</strong>
                 </div>
                 <div className={styles.resumenTotal}>
                   <span>Total a pagar:</span>
-                  <strong>${precioTotal.toFixed(2)}</strong>
+                  <strong>{formatearPrecioSimple(precioTotal)}</strong>
                 </div>
               </div>
             )}
@@ -224,29 +270,49 @@ export default function AlquilarPage() {
           <form onSubmit={handleSubmit} className={styles.form}>
             {error && <div className={styles.errorMessage}>{error}</div>}
 
-            <h3>Información del Cliente</h3>
-            
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label htmlFor="nombre">Nombre Completo *</label>
-                <input type="text" id="nombre" name="nombre" required />
+            {clienteRegistrado ? (
+              <div className={styles.clienteRegistrado}>
+                <h3>Información del Cliente</h3>
+                <p className={styles.clienteInfo}>
+                  <strong>Cliente registrado:</strong> {clienteRegistrado.nombre}
+                </p>
+                <p className={styles.clienteNote}>
+                  Usaremos tu información de registro para hacer la reserva.
+                </p>
               </div>
-              <div className={styles.field}>
-                <label htmlFor="email">Email *</label>
-                <input type="email" id="email" name="email" required />
-              </div>
-            </div>
+            ) : (
+              <>
+                <h3>Información del Cliente</h3>
+                <p className={styles.registerPrompt}>
+                  ¿Ya tienes cuenta?{' '}
+                  <Link href="/registro" className={styles.registerLink}>
+                    Regístrate aquí
+                  </Link>
+                  {' '}para agilizar tus reservas
+                </p>
+                <div className={styles.row}>
+                  <div className={styles.field}>
+                    <label htmlFor="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" required />
+                  </div>
+                  <div className={styles.field}>
+                    <label htmlFor="email">Email *</label>
+                    <input type="email" id="email" name="email" required />
+                  </div>
+                </div>
 
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label htmlFor="telefono">Teléfono *</label>
-                <input type="tel" id="telefono" name="telefono" required />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="direccion">Dirección</label>
-                <input type="text" id="direccion" name="direccion" />
-              </div>
-            </div>
+                <div className={styles.row}>
+                  <div className={styles.field}>
+                    <label htmlFor="telefono">Teléfono *</label>
+                    <input type="tel" id="telefono" name="telefono" required />
+                  </div>
+                  <div className={styles.field}>
+                    <label htmlFor="direccion">Dirección</label>
+                    <input type="text" id="direccion" name="direccion" />
+                  </div>
+                </div>
+              </>
+            )}
 
             <h3>Detalles del Alquiler</h3>
 

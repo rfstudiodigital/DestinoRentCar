@@ -28,6 +28,11 @@ export default function Home() {
             <p>Explora nuestra flota de vehículos disponibles para alquilar</p>
           </Link>
 
+          <Link href="/registro" className={styles.card}>
+            <h2>Registrarse &rarr;</h2>
+            <p>Regístrate como cliente para hacer reservas online</p>
+          </Link>
+
           <Link href="/rentas" className={styles.card}>
             <h2>Mis Rentas &rarr;</h2>
             <p>Gestiona tus rentas activas y pasadas</p>

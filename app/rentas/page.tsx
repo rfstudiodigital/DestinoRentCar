@@ -91,9 +91,11 @@ function RentasContent() {
   };
 
   const formatearPrecio = (precio: number) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-UY', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'UYU',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(precio);
   };
 

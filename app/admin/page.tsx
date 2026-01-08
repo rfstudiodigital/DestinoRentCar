@@ -173,6 +173,7 @@ export default function AdminPage() {
     });
 
     if (res.ok) {
+      showToast('Vehículo creado exitosamente', 'success');
       await fetchVehiculos();
       if (activeTab === 'dashboard') {
         await calcularEstadisticas();
@@ -194,6 +195,7 @@ export default function AdminPage() {
     });
 
     if (res.ok) {
+      showToast('Vehículo actualizado exitosamente', 'success');
       await fetchVehiculos();
       if (activeTab === 'dashboard') {
         await calcularEstadisticas();
@@ -268,9 +270,11 @@ export default function AdminPage() {
   };
 
   const formatearPrecio = (precio: number) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat('es-UY', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'UYU',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(precio);
   };
 
