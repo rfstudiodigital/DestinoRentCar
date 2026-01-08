@@ -1,9 +1,94 @@
--- Script SQL SIMPLIFICADO para poblar la base de datos en Neon Console
--- Este script NO requiere gen_random_uuid(), usa IDs simples
--- Ejecuta estos comandos en el SQL Editor de Neon
+-- ============================================
+-- SCRIPT COMPLETO PARA CREAR LA BASE DE DATOS
+-- Destino Rent Car - Sistema de Renta de Autos
+-- ============================================
+-- Ejecuta este script completo en Neon Console SQL Editor
+-- Este script crea las tablas, columnas, constraints y datos iniciales
 
 -- ============================================
--- VEHÍCULOS FICTICIOS (12 vehículos)
+-- ELIMINAR TABLAS EXISTENTES (si existen)
+-- ============================================
+-- Descomenta las siguientes líneas si quieres empezar desde cero
+-- DROP TABLE IF EXISTS "Renta" CASCADE;
+-- DROP TABLE IF EXISTS "Vehiculo" CASCADE;
+-- DROP TABLE IF EXISTS "Cliente" CASCADE;
+
+-- ============================================
+-- CREAR TABLA: Cliente
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS "Cliente" (
+    id TEXT NOT NULL PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    telefono TEXT NOT NULL,
+    direccion TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- ============================================
+-- CREAR TABLA: Vehiculo
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS "Vehiculo" (
+    id TEXT NOT NULL PRIMARY KEY,
+    marca TEXT NOT NULL,
+    modelo TEXT NOT NULL,
+    "año" INTEGER NOT NULL,
+    placa TEXT NOT NULL UNIQUE,
+    color TEXT NOT NULL,
+    "precioDiario" DOUBLE PRECISION NOT NULL,
+    disponible BOOLEAN NOT NULL DEFAULT true,
+    imagen TEXT,
+    descripcion TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- ============================================
+-- CREAR TABLA: Admin
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS "Admin" (
+    id TEXT NOT NULL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    nombre TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- ============================================
+-- CREAR TABLA: Renta
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS "Renta" (
+    id TEXT NOT NULL PRIMARY KEY,
+    "clienteId" TEXT NOT NULL,
+    "vehiculoId" TEXT NOT NULL,
+    "fechaInicio" TIMESTAMP(3) NOT NULL,
+    "fechaFin" TIMESTAMP(3) NOT NULL,
+    "precioTotal" DOUBLE PRECISION NOT NULL,
+    estado TEXT NOT NULL DEFAULT 'activa',
+    observaciones TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "Renta_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "Cliente"(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Renta_vehiculoId_fkey" FOREIGN KEY ("vehiculoId") REFERENCES "Vehiculo"(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ============================================
+-- CREAR ÍNDICES
+-- ============================================
+
+-- Índices para la tabla Renta
+CREATE INDEX IF NOT EXISTS "Renta_clienteId_idx" ON "Renta"("clienteId");
+CREATE INDEX IF NOT EXISTS "Renta_vehiculoId_idx" ON "Renta"("vehiculoId");
+CREATE INDEX IF NOT EXISTS "Renta_fechaInicio_fechaFin_idx" ON "Renta"("fechaInicio", "fechaFin");
+
+-- ============================================
+-- INSERTAR VEHÍCULOS FICTICIOS (12 vehículos)
 -- ============================================
 
 INSERT INTO "Vehiculo" (id, marca, modelo, "año", placa, color, "precioDiario", disponible, imagen, descripcion, "createdAt", "updatedAt")
@@ -32,20 +117,8 @@ ON CONFLICT (placa) DO UPDATE SET
   "updatedAt" = NOW();
 
 -- ============================================
--- ADMINISTRADOR
+-- INSERTAR ADMINISTRADOR
 -- ============================================
--- Credenciales:
--- Email: admin@demo.com
--- Password: Admin123
-
-CREATE TABLE IF NOT EXISTS "Admin" (
-    id TEXT NOT NULL PRIMARY KEY,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    nombre TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL
-);
 
 INSERT INTO "Admin" (id, email, password, nombre, "createdAt", "updatedAt")
 VALUES 
@@ -56,7 +129,7 @@ ON CONFLICT (email) DO UPDATE SET
   "updatedAt" = NOW();
 
 -- ============================================
--- CLIENTES FICTICIOS (8 clientes)
+-- INSERTAR CLIENTES FICTICIOS (8 clientes)
 -- ============================================
 
 INSERT INTO "Cliente" (id, nombre, email, telefono, direccion, "createdAt", "updatedAt")
@@ -76,10 +149,23 @@ ON CONFLICT (email) DO UPDATE SET
   "updatedAt" = NOW();
 
 -- ============================================
--- VERIFICACIÓN (opcional - ejecuta después)
+-- VERIFICACIÓN (ejecuta después para confirmar)
 -- ============================================
 
--- SELECT COUNT(*) as total_vehiculos FROM "Vehiculo";
--- SELECT COUNT(*) as total_clientes FROM "Cliente";
--- SELECT marca, modelo, "año", placa, "precioDiario" FROM "Vehiculo" ORDER BY marca;
--- SELECT nombre, email, telefono FROM "Cliente" ORDER BY nombre;
+-- Verificar cantidad de registros
+SELECT COUNT(*) as total_vehiculos FROM "Vehiculo";
+SELECT COUNT(*) as total_clientes FROM "Cliente";
+
+-- Ver todos los vehículos
+SELECT id, marca, modelo, "año", placa, color, "precioDiario", disponible FROM "Vehiculo" ORDER BY marca;
+
+-- Ver todos los clientes
+SELECT id, nombre, email, telefono, direccion FROM "Cliente" ORDER BY nombre;
+
+-- ============================================
+-- FIN DEL SCRIPT
+-- ============================================
+-- Si todo salió bien, deberías ver:
+-- - 12 vehículos insertados
+-- - 8 clientes insertados
+-- ============================================

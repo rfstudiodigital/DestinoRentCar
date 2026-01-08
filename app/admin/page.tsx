@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
 import VehiculoForm from '@/components/VehiculoForm';
@@ -65,18 +66,37 @@ interface Estadisticas {
 type TabType = 'dashboard' | 'vehiculos' | 'rentas' | 'clientes';
 
 export default function AdminPage() {
+  const router = useRouter();
   const { showToast } = useToast();
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
   const [rentas, setRentas] = useState<Renta[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingVehiculo, setEditingVehiculo] = useState<Vehiculo | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [rentaFilter, setRentaFilter] = useState<string>('todas');
 
+  // Verificar autenticación al cargar
   useEffect(() => {
+    const checkAuth = () => {
+      const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+      if (!isAuthenticated) {
+        router.push('/admin/login');
+      } else {
+        setAuthenticated(true);
+      }
+      setCheckingAuth(false);
+    };
+    checkAuth();
+  }, [router]);
+
+  useEffect(() => {
+    if (!authenticated) return;
+    
     const loadData = async () => {
       await fetchVehiculos();
       if (activeTab === 'dashboard' || activeTab === 'rentas') {
@@ -91,7 +111,7 @@ export default function AdminPage() {
     };
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, rentaFilter]);
+  }, [activeTab, rentaFilter, authenticated]);
 
   const fetchRentas = async () => {
     try {
@@ -291,6 +311,30 @@ export default function AdminPage() {
     }
   };
 
+  // Mostrar loading mientras verifica autenticación
+  if (checkingAuth) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.loading}>Verificando acceso...</div>
+        </div>
+      </main>
+    );
+  }
+
+  // Si no está autenticado, no mostrar nada (ya redirigió)
+  if (!authenticated) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminEmail');
+    localStorage.removeItem('adminNombre');
+    router.push('/admin/login');
+    showToast('Sesión cerrada', 'info');
+  };
+
   if (showForm) {
     return (
       <main className={styles.main}>
@@ -322,6 +366,9 @@ export default function AdminPage() {
             <Link href="/" className={styles.link}>
               Ver como Cliente
             </Link>
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              Cerrar Sesión
+            </button>
           </div>
         </div>
 

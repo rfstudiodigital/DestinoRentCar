@@ -23,7 +23,7 @@ export default function Header() {
         <Link href="/rentas" className={styles.navLink}>
           Rentas
         </Link>
-        <Link href="/admin" className={styles.navLink}>
+        <Link href="/admin/login" className={styles.navLink}>
           Admin
         </Link>
       </nav>
