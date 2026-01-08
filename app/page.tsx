@@ -7,14 +7,16 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.container}>
         <div className={styles.logoContainer}>
-          <Image
-            src="/logo.svg.jpeg"
-            alt="Destino Rent Car Logo"
-            width={400}
-            height={200}
-            priority
-            style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
-          />
+          <div className={styles.logoWrapper}>
+            <Image
+              src="/logo.svg.jpeg"
+              alt="Destino Rent Car Logo"
+              width={500}
+              height={250}
+              priority
+              className={styles.logoImage}
+            />
+          </div>
         </div>
         
         <h1 className={styles.title}>Bienvenido a Destino Rent Car</h1>

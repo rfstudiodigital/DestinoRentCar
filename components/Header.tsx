@@ -50,14 +50,16 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.logoLink}>
-        <Image
-          src="/logo.svg.jpeg"
-          alt="Destino Rent Car"
-          width={180}
-          height={60}
-          priority
-          style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
-        />
+        <div className={styles.logoWrapper}>
+          <Image
+            src="/logo.svg.jpeg"
+            alt="Destino Rent Car"
+            width={200}
+            height={80}
+            priority
+            className={styles.logoImage}
+          />
+        </div>
       </Link>
       <nav className={styles.nav}>
         <Link href="/vehiculos" className={styles.navLink}>

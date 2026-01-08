@@ -24,13 +24,26 @@
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   min-height: 150px;
+  width: 100%;
 }
 
-.logoContainer img {
-  max-width: 100%;
+.logoWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
   height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoImage {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 500px;
+  max-height: 250px;
   object-fit: contain;
-  max-height: 200px;
+  object-position: center center;
 }
 
 .title {
@@ -84,13 +97,78 @@
   color: #666;
 }
 
+@media (max-width: 768px) {
+  .logoContainer {
+    padding: 1.5rem;
+    min-height: 120px;
+  }
+
+  .logoWrapper {
+    max-width: 400px;
+  }
+
+  .logoImage {
+    max-width: 400px !important;
+    max-height: 200px !important;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
 @media (max-width: 600px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .logoContainer {
+    padding: 1rem;
+    min-height: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .logoWrapper {
+    max-width: 300px;
+  }
+
+  .logoImage {
+    max-width: 300px !important;
+    max-height: 150px !important;
+  }
+
   .title {
     font-size: 2rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    margin-bottom: 2rem;
   }
   
   .grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoContainer {
+    padding: 0.75rem;
+    min-height: 80px;
+  }
+
+  .logoWrapper {
+    max-width: 250px;
+  }
+
+  .logoImage {
+    max-width: 250px !important;
+    max-height: 120px !important;
+  }
+
+  .title {
+    font-size: 1.75rem;
   }
 }
 
