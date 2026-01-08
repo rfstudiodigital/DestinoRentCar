@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useToast } from '@/components/ToastProvider';
 import InstallPWAButton from '@/components/InstallPWAButton';
 import NotificationBell from '@/components/NotificationBell';
+import LocaleSwitcher from '@/components/LocaleSwitcher';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -84,6 +85,7 @@ export default function Header() {
             Iniciar Sesión
           </Link>
         )}
+        <LocaleSwitcher />
         <InstallPWAButton />
         <Link href="/admin/login" className={styles.adminLink}>
           Admin
