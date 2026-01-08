@@ -1,0 +1,37 @@
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Líneas del carro que se cruzan -->
+  <!-- Línea superior amarilla (techo y capó/baúl) -->
+  <path d="M 30 70 Q 70 45 140 55 Q 210 60 280 58 Q 340 55 370 65" 
+        stroke="#FFD700" 
+        stroke-width="10" 
+        fill="none" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Línea inferior azul oscuro (parte inferior del carro/carretera) -->
+  <path d="M 30 95 Q 70 105 140 100 Q 210 95 280 97 Q 340 100 370 110" 
+        stroke="#1E3A8A" 
+        stroke-width="10" 
+        fill="none" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Texto DESTINO -->
+  <text x="200" y="145" 
+        font-family="Georgia, serif" 
+        font-size="40" 
+        font-weight="bold" 
+        fill="#2C2C2C" 
+        text-anchor="middle" 
+        letter-spacing="3px">DESTINO</text>
+  
+  <!-- Texto RENT A CAR -->
+  <text x="200" y="175" 
+        font-family="Georgia, serif" 
+        font-size="20" 
+        font-weight="bold" 
+        fill="#2C2C2C" 
+        text-anchor="middle" 
+        letter-spacing="2px">RENT A CAR</text>
+</svg>
+

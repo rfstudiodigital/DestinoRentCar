@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://destino-rent-car.vercel.app/sitemap.xml
+

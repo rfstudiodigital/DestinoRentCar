@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id        String   @id @default(cuid())
+  nombre    String
+  email     String   @unique
+  telefono  String
+  direccion String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rentas    Renta[]
+}
+
+model Vehiculo {
+  id          String   @id @default(cuid())
+  marca       String
+  modelo      String
+  año         Int
+  placa       String   @unique
+  color       String
+  precioDiario Float
+  disponible  Boolean  @default(true)
+  imagen      String?
+  descripcion String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rentas      Renta[]
+}
+
+model Renta {
+  id              String   @id @default(cuid())
+  clienteId       String
+  vehiculoId      String
+  fechaInicio     DateTime
+  fechaFin        DateTime
+  precioTotal     Float
+  estado          String   @default("activa") // activa, completada, cancelada
+  observaciones   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  cliente         Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  vehiculo        Vehiculo @relation(fields: [vehiculoId], references: [id], onDelete: Cascade)
+  
+  @@index([clienteId])
+  @@index([vehiculoId])
+  @@index([fechaInicio, fechaFin])
+}
+
