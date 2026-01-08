@@ -61,9 +61,6 @@ export default function Header() {
         <Link href="/vehiculos" className={styles.navLink}>
           Vehículos
         </Link>
-        <Link href="/rentas" className={styles.navLink}>
-          Rentas
-        </Link>
         {clienteLogueado ? (
           <>
             <span className={styles.userInfo}>
@@ -78,9 +75,6 @@ export default function Header() {
             Iniciar Sesión
           </Link>
         )}
-        <Link href="/admin/login" className={styles.navLink}>
-          Admin
-        </Link>
       </nav>
     </header>
   );

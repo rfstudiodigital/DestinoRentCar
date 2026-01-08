@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
 import styles from './rentas.module.css';
@@ -227,6 +227,30 @@ function RentasContent() {
 }
 
 export default function RentasPage() {
+  const router = useRouter();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    // Verificar si es admin
+    const isAdmin = localStorage.getItem('adminAuthenticated') === 'true';
+    if (!isAdmin) {
+      // Si no es admin, redirigir a la página principal
+      router.push('/');
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [router]);
+
+  if (checkingAuth) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.loading}>Verificando acceso...</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.container}>

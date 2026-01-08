@@ -33,15 +33,6 @@ export default function Home() {
             <p>Regístrate como cliente para hacer reservas online</p>
           </Link>
 
-          <Link href="/rentas" className={styles.card}>
-            <h2>Mis Rentas &rarr;</h2>
-            <p>Gestiona tus rentas activas y pasadas</p>
-          </Link>
-
-          <Link href="/admin" className={styles.card}>
-            <h2>Panel Admin &rarr;</h2>
-            <p>Administra vehículos y gestiona el sistema</p>
-          </Link>
         </div>
       </div>
     </main>
