@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useToast } from '@/components/ToastProvider';
+import InstallPWAButton from '@/components/InstallPWAButton';
 import styles from './Header.module.css';
 
 export default function Header() {
