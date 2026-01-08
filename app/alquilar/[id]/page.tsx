@@ -21,8 +21,11 @@ interface Vehiculo {
   precioDiario: number;
   disponible: boolean;
   imagen?: string | null;
+  imagenes?: Array<{ id: string; url: string; alt?: string }>;
   placa?: string;
+  placas?: string;
   descripcion?: string | null;
+  caracteristicas?: string;
   tipoVehiculo?: string;
   transmision?: string;
   combustible?: string;

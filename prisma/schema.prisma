@@ -37,6 +37,7 @@ model Vehiculo {
   disponible  Boolean  @default(true)
   imagen      String?  // Imagen principal
   descripcion String?
+  caracteristicas String? // Lista de características separadas por comas
   
   // Especificaciones técnicas
   tipoVehiculo String? // SUV, Sedan, Pickup, Compacto, etc.
