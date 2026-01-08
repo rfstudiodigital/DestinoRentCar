@@ -4,6 +4,13 @@ import { writeFile } from 'fs/promises';
 import { join } from 'path';
 
 export async function POST(request: NextRequest) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -50,6 +57,13 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const clienteId = searchParams.get('clienteId');

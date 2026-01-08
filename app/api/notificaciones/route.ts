@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     // TODO: Obtener clienteId del usuario autenticado
     const primeCliente = await prisma.cliente.findFirst();
@@ -27,6 +34,13 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { clienteId, mensaje, tipo } = body;

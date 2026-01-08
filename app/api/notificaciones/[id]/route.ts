@@ -5,6 +5,13 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { leida } = body;

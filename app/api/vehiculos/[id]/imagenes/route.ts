@@ -6,8 +6,15 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
-    const imagenes = await prisma?.imagenVehiculo.findMany({
+    const imagenes = await prisma.imagenVehiculo.findMany({
       where: {
         vehiculoId: params.id,
       },
@@ -17,7 +24,7 @@ export async function GET(
       ],
     });
 
-    return NextResponse.json(imagenes || []);
+    return NextResponse.json(imagenes);
   } catch (error) {
     console.error('Error al obtener imágenes:', error);
     return NextResponse.json(
@@ -31,6 +38,13 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { url, orden = 0, esPortada = false } = body;
@@ -42,7 +56,7 @@ export async function POST(
       );
     }
 
-    const imagen = await prisma?.imagenVehiculo.create({
+    const imagen = await prisma.imagenVehiculo.create({
       data: {
         vehiculoId: params.id,
         url,

@@ -5,6 +5,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const resenas = await prisma.resena.findMany({
       where: { vehiculoId: params.id },
@@ -37,6 +44,13 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  if (!prisma) {
+    return NextResponse.json(
+      { error: 'Base de datos no configurada' },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { calificacion, comentario } = body;
