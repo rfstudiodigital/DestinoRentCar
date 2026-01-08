@@ -12,7 +12,7 @@
 }
 
 .card::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -20,7 +20,11 @@
   bottom: 0;
   border-radius: 16px;
   padding: 2px;
-  background: linear-gradient(135deg, var(--primary-light), var(--secondary-color));
+  background: linear-gradient(
+    135deg,
+    var(--primary-light),
+    var(--secondary-color)
+  );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -63,7 +67,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   padding: 6px 14px;
   border-radius: 20px;
@@ -106,7 +110,11 @@
 .price {
   font-size: 1.75rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-light) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -144,7 +152,7 @@
 
 .editButton::before,
 .deleteButton::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -163,23 +171,31 @@
 }
 
 .editButton {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-light) 100%
+  );
   color: white;
 }
 
 .editButton:hover {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark) 0%,
+    var(--primary-color) 100%
+  );
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
 .deleteButton {
-  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
 }
 
 .deleteButton:hover {
-  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
@@ -188,7 +204,11 @@
   display: block;
   margin-top: 1rem;
   padding: 0.875rem;
-  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color) 0%,
+    var(--secondary-light) 100%
+  );
   color: var(--text-color);
   text-align: center;
   border-radius: 10px;
@@ -204,13 +224,18 @@
 }
 
 .rentButton::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -219,7 +244,11 @@
 }
 
 .rentButton:hover {
-  background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-color) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--secondary-dark) 0%,
+    var(--secondary-color) 100%
+  );
   transform: translateY(-3px) scale(1.02);
   box-shadow: var(--shadow-lg), 0 0 20px rgba(251, 185, 19, 0.4);
 }
@@ -228,13 +257,12 @@
   .imageContainer {
     height: 150px;
   }
-  
+
   .title {
     font-size: 1.1rem;
   }
-  
+
   .price {
     font-size: 1.25rem;
   }
 }
-
