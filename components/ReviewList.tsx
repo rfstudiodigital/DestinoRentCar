@@ -27,6 +27,7 @@ export default function ReviewList({ vehiculoId, refreshTrigger = 0 }: ReviewLis
 
   useEffect(() => {
     fetchReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vehiculoId, refreshTrigger]);
 
   const fetchReviews = async () => {

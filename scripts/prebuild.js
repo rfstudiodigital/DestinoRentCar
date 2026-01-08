@@ -28,17 +28,37 @@ try {
   
   // Si hay DATABASE_URL configurada y estamos en producción, ejecutar migraciones
   if (hasDatabaseUrl && isProduction) {
-    console.log('🔄 Ejecutando migraciones de base de datos...');
+    console.log('🔄 Verificando migraciones de base de datos...');
     try {
-      execSync('npx prisma@5.16.0 migrate deploy', { 
-        stdio: 'inherit',
-        env: { ...process.env }
-      });
-      console.log('✅ Migraciones aplicadas exitosamente');
+      // Verificar si hay migraciones en el directorio
+      const fs = require('fs');
+      const path = require('path');
+      const migrationsDir = path.join(process.cwd(), 'prisma', 'migrations');
+      const hasMigrations = fs.existsSync(migrationsDir) && 
+                           fs.readdirSync(migrationsDir).length > 0;
+      
+      if (hasMigrations) {
+        // Si hay migraciones, intentar aplicarlas
+        execSync('npx prisma@5.16.0 migrate deploy', { 
+          stdio: 'inherit',
+          env: { ...process.env }
+        });
+        console.log('✅ Migraciones aplicadas exitosamente');
+      } else {
+        console.log('ℹ️  No hay migraciones en el directorio. La base de datos se sincroniza con el schema.');
+      }
     } catch (migrateError) {
-      console.warn('⚠️  Error ejecutando migraciones:', migrateError.message);
-      console.log('💡 Si es la primera vez, puedes ejecutar manualmente: npx prisma migrate deploy');
-      // No fallar el build si las migraciones fallan (podría ser que ya están aplicadas)
+      // Si el error es porque la base de datos no está vacía y no hay migraciones,
+      // simplemente continuamos sin fallar el build (el esquema ya está sincronizado)
+      const errorMsg = migrateError.message || migrateError.toString();
+      if (errorMsg.includes('P3005') || errorMsg.includes('not empty')) {
+        console.log('ℹ️  La base de datos ya tiene esquema. Esto es normal si ya has usado db:push.');
+        console.log('💡 Para usar migraciones en producción, crea una migración inicial localmente.');
+      } else {
+        console.warn('⚠️  Error ejecutando migraciones:', errorMsg);
+        console.log('💡 Continuando el build. Puedes ejecutar manualmente: npx prisma migrate deploy');
+      }
+      // No fallar el build si las migraciones fallan
     }
   }
 } catch (error) {

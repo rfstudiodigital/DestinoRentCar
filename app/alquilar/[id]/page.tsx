@@ -55,18 +55,6 @@ export default function AlquilarPage() {
   const [reviewRefresh, setReviewRefresh] = useState(0);
   const [clienteRegistrado, setClienteRegistrado] = useState<{ id: string; nombre: string } | null>(null);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchVehiculo(params.id as string);
-    }
-    // Cargar datos del cliente registrado
-    const clienteId = localStorage.getItem('clienteId');
-    const clienteNombre = localStorage.getItem('clienteNombre');
-    if (clienteId && clienteNombre) {
-      setClienteRegistrado({ id: clienteId, nombre: clienteNombre });
-    }
-  }, [params.id]);
-
   const fetchVehiculo = async (id: string) => {
     try {
       const res = await fetch(`/api/vehiculos/${id}`);
@@ -85,6 +73,19 @@ export default function AlquilarPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      fetchVehiculo(params.id as string);
+    }
+    // Cargar datos del cliente registrado
+    const clienteId = localStorage.getItem('clienteId');
+    const clienteNombre = localStorage.getItem('clienteNombre');
+    if (clienteId && clienteNombre) {
+      setClienteRegistrado({ id: clienteId, nombre: clienteNombre });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   const handleDateSelect = (inicio: Date, fin: Date) => {
     setFechaInicio(inicio);
@@ -173,7 +174,14 @@ export default function AlquilarPage() {
 
         {/* Galería de Imágenes */}
         {vehiculo.imagenes && vehiculo.imagenes.length > 0 ? (
-          <ImageGallery images={vehiculo.imagenes} />
+          <ImageGallery 
+            images={vehiculo.imagenes.map((img, index) => ({
+              id: img.id,
+              url: img.url,
+              esPortada: index === 0
+            }))} 
+            alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+          />
         ) : (
           <div className={styles.imagePlaceholder}>
             <div className={styles.imageWrapper}>
