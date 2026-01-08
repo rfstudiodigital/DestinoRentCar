@@ -14,25 +14,8 @@ export async function GET() {
       }, { status: 500 });
     }
 
-    // Test 2: Verificar conexión con query simple
-    try {
-      const testQuery = await prisma.$queryRaw`SELECT 1 as test`;
-      console.log('✅ Test query exitoso:', testQuery);
-    } catch (queryError: any) {
-      return NextResponse.json({
-        test: 'failed',
-        step: 'connection',
-        error: queryError.message,
-        code: queryError.code,
-        suggestion: queryError.message.includes('SSL') 
-          ? 'Agrega ?sslmode=require a tu DATABASE_URL'
-          : queryError.message.includes('timeout')
-          ? 'Verifica que Neon esté activo y usa la URL con pooler'
-          : 'Verifica la conexión a la base de datos',
-      }, { status: 500 });
-    }
-
-    // Test 3: Verificar si existe la tabla Vehiculo
+    // Test 2: Verificar conexión y tabla Vehiculo con count
+    // Usamos count directamente para verificar tanto conexión como existencia de tabla
     try {
       const count = await prisma.vehiculo.count();
       return NextResponse.json({
@@ -44,20 +27,59 @@ export async function GET() {
           : `Base de datos funcionando correctamente con ${count} vehículos`,
       });
     } catch (tableError: any) {
-      if (tableError.code === 'P2021' || tableError.message.includes('does not exist')) {
+      console.error('❌ Error en test-db:', tableError);
+      
+      // Error de tabla no existe
+      if (tableError.code === 'P2021' || tableError.message?.includes('does not exist')) {
         return NextResponse.json({
           test: 'failed',
           step: 'table_exists',
           error: 'La tabla Vehiculo no existe',
+          code: tableError.code,
           suggestion: 'Ejecuta: npx prisma db push (localmente) o verifica que las migraciones se hayan aplicado en producción',
         }, { status: 500 });
       }
       
+      // Error de conexión SSL
+      if (tableError.message?.includes('SSL') || tableError.message?.includes('ssl')) {
+        return NextResponse.json({
+          test: 'failed',
+          step: 'connection',
+          error: tableError.message,
+          code: tableError.code,
+          suggestion: 'Agrega ?sslmode=require a tu DATABASE_URL\nFormato: postgresql://user:pass@host/db?sslmode=require',
+        }, { status: 500 });
+      }
+      
+      // Error de timeout
+      if (tableError.message?.includes('timeout')) {
+        return NextResponse.json({
+          test: 'failed',
+          step: 'connection',
+          error: tableError.message,
+          code: tableError.code,
+          suggestion: 'Verifica que Neon esté activo y usa la URL con pooler\nEjemplo: ep-xxx-pooler.us-east-2.aws.neon.tech',
+        }, { status: 500 });
+      }
+      
+      // Error de autenticación
+      if (tableError.message?.includes('password') || tableError.message?.includes('authentication')) {
+        return NextResponse.json({
+          test: 'failed',
+          step: 'connection',
+          error: tableError.message,
+          code: tableError.code,
+          suggestion: 'Verifica las credenciales en DATABASE_URL\nObtén una nueva URL de conexión desde Neon',
+        }, { status: 500 });
+      }
+      
+      // Otro error
       return NextResponse.json({
         test: 'failed',
         step: 'query_table',
-        error: tableError.message,
+        error: tableError.message || 'Error desconocido',
         code: tableError.code,
+        suggestion: 'Revisa los logs en Vercel para más detalles',
       }, { status: 500 });
     }
   } catch (error: any) {
