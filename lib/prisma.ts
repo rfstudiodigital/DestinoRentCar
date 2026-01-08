@@ -14,9 +14,23 @@ const createPrismaClient = (): PrismaClient | null => {
     return null;
   }
   
-  return new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  });
+  try {
+    const client = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    });
+    
+    // Verificar conexión al crear el cliente
+    if (process.env.NODE_ENV === 'production') {
+      client.$connect().catch((err) => {
+        console.error('❌ Error conectando a la base de datos:', err);
+      });
+    }
+    
+    return client;
+  } catch (error) {
+    console.error('❌ Error creando PrismaClient:', error);
+    return null;
+  }
 };
 
 export const prisma: PrismaClient | null =

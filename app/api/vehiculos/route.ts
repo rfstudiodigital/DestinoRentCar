@@ -4,8 +4,12 @@ import { prisma } from '@/lib/prisma';
 // GET - Listar todos los vehículos
 export async function GET(request: NextRequest) {
   if (!prisma) {
+    console.error('❌ Prisma client no disponible. DATABASE_URL:', !!process.env.DATABASE_URL);
     return NextResponse.json(
-      { error: 'Base de datos no configurada' },
+      { 
+        error: 'Base de datos no configurada',
+        message: 'DATABASE_URL no está configurada en las variables de entorno'
+      },
       { status: 500 }
     );
   }
@@ -21,11 +25,16 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
+    console.log(`✅ Vehículos encontrados: ${vehiculos.length}`);
     return NextResponse.json(vehiculos);
   } catch (error) {
-    console.error('Error obteniendo vehículos:', error);
+    console.error('❌ Error obteniendo vehículos:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Error al obtener vehículos' },
+      { 
+        error: 'Error al obtener vehículos',
+        message: errorMessage
+      },
       { status: 500 }
     );
   }
