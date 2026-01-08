@@ -28,10 +28,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const estado = searchParams.get('estado');
     const clienteId = searchParams.get('clienteId');
+    const vehiculoId = searchParams.get('vehiculoId');
 
     const where: any = {};
     if (estado) where.estado = estado;
     if (clienteId) where.clienteId = clienteId;
+    if (vehiculoId) where.vehiculoId = vehiculoId;
 
     const rentas = await prisma.renta.findMany({
       where,

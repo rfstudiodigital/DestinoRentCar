@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styles from './AvailabilityCalendar.module.css';
@@ -18,6 +18,25 @@ export default function AvailabilityCalendar({
 }: AvailabilityCalendarProps) {
   const [fechaRango, setFechaRango] = useState<[Date, Date] | null>(null);
   const [rentasExistentes, setRentasExistentes] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Cargar rentas existentes para este vehículo
+    const fetchRentas = async () => {
+      try {
+        const response = await fetch(`/api/rentas?vehiculoId=${vehiculoId}&estado=activa`);
+        if (response.ok) {
+          const data = await response.json();
+          setRentasExistentes(data || []);
+        }
+      } catch (error) {
+        console.error('Error cargando rentas:', error);
+      }
+    };
+
+    if (vehiculoId) {
+      fetchRentas();
+    }
+  }, [vehiculoId]);
 
   const handleDateChange = (value: any) => {
     if (Array.isArray(value) && value.length === 2) {
@@ -72,7 +91,6 @@ export default function AvailabilityCalendar({
           tileDisabled={tileDisabled}
           tileClassName={tileClassName}
           className={styles.calendar}
-          locale="es"
         />
       </div>
 
