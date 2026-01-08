@@ -1,0 +1,42 @@
+.installButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.installButton:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.installIcon {
+  font-size: 1rem;
+}
+
+.installText {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .installButton {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .installText {
+    display: none;
+  }
+
+  .installIcon {
+    font-size: 1.2rem;
+  }
+}

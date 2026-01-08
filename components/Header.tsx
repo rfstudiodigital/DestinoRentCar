@@ -75,6 +75,7 @@ export default function Header() {
             Iniciar Sesión
           </Link>
         )}
+        <InstallPWAButton />
         <Link href="/admin/login" className={styles.adminLink}>
           Admin
         </Link>
