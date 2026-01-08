@@ -34,6 +34,45 @@
   background: rgba(30, 58, 138, 0.1);
 }
 
+.userInfo {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+}
+
+.loginLink {
+  color: var(--primary-color);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  border: 2px solid var(--primary-color);
+}
+
+.loginLink:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.logoutButton {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.logoutButton:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;

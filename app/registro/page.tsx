@@ -40,19 +40,10 @@ export default function RegistroPage() {
       } else {
         const errorData = await res.json();
         if (res.status === 400 && errorData.error?.includes('Ya existe')) {
-          showToast('Ya tienes una cuenta con este email. Puedes hacer reservas directamente', 'info');
-          // Si el cliente ya existe, buscar su ID
-          const clientesRes = await fetch('/api/clientes');
-          if (clientesRes.ok) {
-            const clientes = await clientesRes.json();
-            const clienteExistente = clientes.find((c: any) => c.email === email);
-            if (clienteExistente) {
-              localStorage.setItem('clienteId', clienteExistente.id);
-              localStorage.setItem('clienteNombre', clienteExistente.nombre);
-              router.push('/vehiculos');
-              return;
-            }
-          }
+          showToast('Ya tienes una cuenta con este email. Redirigiendo al login...', 'info');
+          // Redirigir al login con el email prellenado
+          router.push(`/login?email=${encodeURIComponent(email)}`);
+          return;
         }
         throw new Error(errorData.error || 'Error al registrar cliente');
       }

@@ -239,6 +239,24 @@
   text-decoration: underline;
 }
 
+.loginPrompt {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.loginLink {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
 .actions {
   display: flex;
   gap: 1rem;

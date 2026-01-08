@@ -284,13 +284,21 @@ export default function AlquilarPage() {
             ) : (
               <>
                 <h3>Información del Cliente</h3>
-                <p className={styles.registerPrompt}>
-                  ¿Ya tienes cuenta?{' '}
-                  <Link href="/registro" className={styles.registerLink}>
-                    Regístrate aquí
-                  </Link>
-                  {' '}para agilizar tus reservas
-                </p>
+                <div className={styles.loginPrompt}>
+                  <p className={styles.registerPrompt}>
+                    ¿Ya tienes cuenta?{' '}
+                    <Link href={`/login?redirect=${encodeURIComponent(`/alquilar/${params.id}`)}`} className={styles.loginLink}>
+                      Inicia sesión aquí
+                    </Link>
+                    {' '}para agilizar tus reservas
+                  </p>
+                  <p className={styles.registerPrompt}>
+                    ¿No tienes cuenta?{' '}
+                    <Link href="/registro" className={styles.registerLink}>
+                      Regístrate aquí
+                    </Link>
+                  </p>
+                </div>
                 <div className={styles.row}>
                   <div className={styles.field}>
                     <label htmlFor="nombre">Nombre Completo *</label>
