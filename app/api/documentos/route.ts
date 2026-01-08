@@ -41,8 +41,9 @@ export async function POST(request: NextRequest) {
       data: {
         clienteId,
         tipo,
+        nombre: file.name,
         url: `/documentos/${filename}`,
-        estado: 'pendiente',
+        verificado: false,
       },
     });
 
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
         cliente: {
           select: {
             nombre: true,
-            apellido: true,
+            email: true,
           },
         },
       },
