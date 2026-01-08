@@ -92,6 +92,9 @@ export async function GET(request: NextRequest) {
     if (errorCode === 'P2021') {
       userMessage = 'La tabla Vehiculo no existe en la base de datos';
       suggestion = 'Ejecuta: npx prisma db push (localmente) para crear las tablas';
+    } else if (errorCode === 'P2022') {
+      userMessage = 'El schema de Prisma no está sincronizado con la base de datos';
+      suggestion = 'El campo "caracteristicas" (u otro campo) no existe en la base de datos. Ejecuta: npx prisma db push. Esto debería ejecutarse automáticamente en el próximo build.';
     } else if (errorCode === 'P1001') {
       userMessage = 'No se puede alcanzar el servidor de base de datos';
       suggestion = 'Verifica que Neon esté activo y la URL de conexión sea correcta';

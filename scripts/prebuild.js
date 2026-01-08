@@ -26,9 +26,9 @@ try {
   });
   console.log('✅ Prisma Client generado exitosamente');
   
-  // Si hay DATABASE_URL configurada y estamos en producción, ejecutar migraciones
+  // Si hay DATABASE_URL configurada y estamos en producción, sincronizar el schema
   if (hasDatabaseUrl && isProduction) {
-    console.log('🔄 Verificando migraciones de base de datos...');
+    console.log('🔄 Sincronizando schema con la base de datos...');
     try {
       // Verificar si hay migraciones en el directorio
       const fs = require('fs');
@@ -39,26 +39,45 @@ try {
       
       if (hasMigrations) {
         // Si hay migraciones, intentar aplicarlas
+        console.log('📋 Aplicando migraciones existentes...');
         execSync('npx prisma@5.16.0 migrate deploy', { 
           stdio: 'inherit',
           env: { ...process.env }
         });
         console.log('✅ Migraciones aplicadas exitosamente');
       } else {
-        console.log('ℹ️  No hay migraciones en el directorio. La base de datos se sincroniza con el schema.');
+        // Si no hay migraciones, usar db push para sincronizar el schema
+        console.log('📤 Sincronizando schema con prisma db push...');
+        execSync('npx prisma@5.16.0 db push --accept-data-loss', { 
+          stdio: 'inherit',
+          env: { ...process.env }
+        });
+        console.log('✅ Schema sincronizado exitosamente');
       }
-    } catch (migrateError) {
+    } catch (syncError) {
       // Si el error es porque la base de datos no está vacía y no hay migraciones,
       // simplemente continuamos sin fallar el build (el esquema ya está sincronizado)
-      const errorMsg = migrateError.message || migrateError.toString();
+      const errorMsg = syncError.message || syncError.toString();
       if (errorMsg.includes('P3005') || errorMsg.includes('not empty')) {
         console.log('ℹ️  La base de datos ya tiene esquema. Esto es normal si ya has usado db:push.');
         console.log('💡 Para usar migraciones en producción, crea una migración inicial localmente.');
+        // Intentar db push de todas formas para asegurar que el schema esté sincronizado
+        try {
+          console.log('🔄 Intentando sincronizar schema con db push...');
+          execSync('npx prisma@5.16.0 db push --accept-data-loss', { 
+            stdio: 'inherit',
+            env: { ...process.env }
+          });
+          console.log('✅ Schema sincronizado exitosamente');
+        } catch (pushError) {
+          console.warn('⚠️  Error sincronizando schema:', pushError.message || pushError.toString());
+          console.log('💡 Continuando el build. Verifica que el schema esté sincronizado manualmente.');
+        }
       } else {
-        console.warn('⚠️  Error ejecutando migraciones:', errorMsg);
-        console.log('💡 Continuando el build. Puedes ejecutar manualmente: npx prisma migrate deploy');
+        console.warn('⚠️  Error sincronizando schema:', errorMsg);
+        console.log('💡 Continuando el build. Puedes ejecutar manualmente: npx prisma db push');
       }
-      // No fallar el build si las migraciones fallan
+      // No fallar el build si la sincronización falla (pero registrar el warning)
     }
   }
 } catch (error) {
