@@ -16,7 +16,6 @@ export default function ClienteLoginPage() {
   // Obtener la URL de redirección si existe
   const redirectTo = searchParams.get('redirect') || '/vehiculos';
   const emailParam = searchParams.get('email') || '';
-  const emailParam = searchParams.get('email') || '';
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
