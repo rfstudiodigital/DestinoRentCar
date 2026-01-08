@@ -127,9 +127,6 @@ function RentasContent() {
             <option value="completada">Completadas</option>
             <option value="cancelada">Canceladas</option>
           </select>
-          <Link href="/vehiculos" className={styles.link}>
-            Ver Vehículos
-          </Link>
           <Link href="/admin" className={styles.link}>
             Panel Admin
           </Link>
