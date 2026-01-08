@@ -1,42 +1,39 @@
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Fondo -->
-  <rect width="512" height="512" fill="#1E3A8A" rx="100"/>
+  <!-- Fondo azul oscuro -->
+  <rect width="512" height="512" fill="#1E3A8A" rx="80"/>
   
-  <!-- Líneas del carro - Escaladas -->
-  <!-- Línea superior amarilla -->
-  <path d="M 80 200 Q 150 150 250 160 T 430 170 T 580 180" 
+  <!-- Líneas onduladas del auto (escaladas para icono) -->
+  <!-- Línea amarilla superior -->
+  <path d="M 100 180 Q 200 140 300 150 Q 400 155 412 170" 
         stroke="#FFD700" 
-        stroke-width="20" 
+        stroke-width="25" 
         fill="none" 
         stroke-linecap="round" 
-        stroke-linejoin="round"
-        transform="translate(-80, 50)"/>
+        stroke-linejoin="round"/>
   
-  <!-- Línea inferior azul claro -->
-  <path d="M 80 280 Q 150 320 250 310 T 430 300 T 580 290" 
-        stroke="#FFD700" 
-        stroke-width="20" 
+  <!-- Línea azul inferior -->
+  <path d="M 100 220 Q 200 260 300 250 Q 400 245 412 230" 
+        stroke="#FFFFFF" 
+        stroke-width="25" 
         fill="none" 
         stroke-linecap="round" 
-        stroke-linejoin="round"
-        transform="translate(-80, 50)"/>
+        stroke-linejoin="round"/>
   
-  <!-- Texto DESTINO -->
-  <text x="256" y="350" 
+  <!-- Texto DESTINO (más pequeño para icono) -->
+  <text x="256" y="320" 
         font-family="Georgia, serif" 
-        font-size="60" 
+        font-size="50" 
         font-weight="bold" 
         fill="#FFFFFF" 
         text-anchor="middle" 
-        letter-spacing="3px">DESTINO</text>
+        letter-spacing="2px">DESTINO</text>
   
   <!-- Texto RENT A CAR -->
-  <text x="256" y="400" 
+  <text x="256" y="360" 
         font-family="Georgia, serif" 
-        font-size="28" 
+        font-size="24" 
         font-weight="bold" 
         fill="#FFD700" 
         text-anchor="middle" 
-        letter-spacing="2px">RENT A CAR</text>
+        letter-spacing="1px">RENT A CAR</text>
 </svg>
-
