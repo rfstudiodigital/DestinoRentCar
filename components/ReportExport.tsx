@@ -148,7 +148,7 @@ export default function ReportExport({ tipo }: ReportExportProps) {
       if (tipo === 'rentas') {
         data = data.map((r: any) => ({
           id: r.id,
-          cliente: `${r.cliente.nombre} ${r.cliente.apellido}`,
+          cliente: r.cliente.nombre || r.cliente.email || 'N/A',
           vehiculo: `${r.vehiculo.marca} ${r.vehiculo.modelo}`,
           fechaInicio: r.fechaInicio,
           fechaFin: r.fechaFin,

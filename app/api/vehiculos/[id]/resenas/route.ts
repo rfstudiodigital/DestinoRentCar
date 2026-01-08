@@ -19,7 +19,7 @@ export async function GET(
         cliente: {
           select: {
             nombre: true,
-            apellido: true,
+            email: true,
           },
         },
       },
@@ -92,7 +92,7 @@ export async function POST(
         cliente: {
           select: {
             nombre: true,
-            apellido: true,
+            email: true,
           },
         },
       },

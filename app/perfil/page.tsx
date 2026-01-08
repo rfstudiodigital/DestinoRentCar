@@ -7,10 +7,9 @@ import styles from './perfil.module.css';
 interface Cliente {
   id: string;
   nombre: string;
-  apellido: string;
   email: string;
   telefono: string;
-  licencia: string;
+  licencia?: string | null;
 }
 
 interface Renta {
@@ -91,7 +90,7 @@ export default function PerfilPage() {
         <div className={styles.infoGrid}>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Nombre Completo</span>
-            <span className={styles.infoValue}>{cliente.nombre} {cliente.apellido}</span>
+            <span className={styles.infoValue}>{cliente.nombre}</span>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.infoLabel}>Email</span>

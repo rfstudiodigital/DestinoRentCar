@@ -11,7 +11,7 @@ interface Review {
   createdAt: string;
   cliente: {
     nombre: string;
-    apellido: string;
+    email: string;
   };
 }
 
@@ -75,11 +75,11 @@ export default function ReviewList({ vehiculoId, refreshTrigger = 0 }: ReviewLis
               <div className={styles.reviewHeader}>
                 <div className={styles.authorInfo}>
                   <div className={styles.avatar}>
-                    {review.cliente.nombre.charAt(0)}{review.cliente.apellido.charAt(0)}
+                    {review.cliente.nombre.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className={styles.authorName}>
-                      {review.cliente.nombre} {review.cliente.apellido}
+                      {review.cliente.nombre}
                     </div>
                     <div className={styles.date}>
                       {new Date(review.createdAt).toLocaleDateString('es-ES', {
