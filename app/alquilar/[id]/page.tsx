@@ -326,7 +326,6 @@ export default function AlquilarPage() {
           {clienteRegistrado && (
             <ReviewForm
               vehiculoId={vehiculo.id}
-              clienteId={clienteRegistrado.id}
               onReviewSubmitted={() => setReviewRefresh(prev => prev + 1)}
             />
           )}
