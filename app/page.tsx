@@ -8,7 +8,7 @@ export default function Home() {
       <div className={styles.container}>
         <div className={styles.logoContainer}>
           <Image
-            src="/logo.svg"
+            src="/logo.svg.jpeg"
             alt="Destino Rent Car Logo"
             width={400}
             height={200}

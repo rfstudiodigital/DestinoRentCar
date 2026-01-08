@@ -51,7 +51,7 @@ export default function Header() {
     <header className={styles.header}>
       <Link href="/" className={styles.logoLink}>
         <Image
-          src="/logo.svg"
+          src="/logo.svg.jpeg"
           alt="Destino Rent Car"
           width={180}
           height={60}
