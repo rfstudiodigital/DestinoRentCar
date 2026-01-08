@@ -20,7 +20,7 @@ if (!hasDatabaseUrl) {
 try {
   console.log('📦 Generando Prisma Client...');
   // Usar la versión específica de Prisma del package.json
-  execSync('npx prisma@5.16.0 generate', { 
+  execSync('npx prisma@7.2.0 generate', { 
     stdio: 'inherit',
     env: { ...process.env }
   });
@@ -30,7 +30,7 @@ try {
   if (hasDatabaseUrl && isProduction) {
     console.log('🔄 Ejecutando migraciones de base de datos...');
     try {
-      execSync('npx prisma@5.16.0 migrate deploy', { 
+      execSync('npx prisma@7.2.0 migrate deploy', { 
         stdio: 'inherit',
         env: { ...process.env }
       });
