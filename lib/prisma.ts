@@ -17,21 +17,7 @@ const createPrismaClient = (): PrismaClient | null => {
   try {
     const client = new PrismaClient({
       log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-      errorFormat: 'pretty',
-      datasources: {
-        db: {
-          url: process.env.DATABASE_URL,
-        },
-      },
     });
-    
-    // En producción, evitar conexiones persistentes en serverless
-    if (process.env.NODE_ENV === 'production') {
-      // Manejar desconexión al salir
-      process.on('beforeExit', async () => {
-        await client.$disconnect();
-      });
-    }
     
     return client;
   } catch (error) {

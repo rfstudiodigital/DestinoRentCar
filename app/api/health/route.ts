@@ -18,7 +18,8 @@ export async function GET() {
   
   try {
     // Verificar conexión a la base de datos
-    await prisma.$queryRaw`SELECT 1`;
+    // Usar una query simple que Prisma maneja automáticamente
+    await prisma.vehiculo.count();
     
     // Intentar obtener conteo de vehículos para verificar que hay datos
     const vehiculosCount = await prisma.vehiculo.count().catch(() => 0);

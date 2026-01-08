@@ -38,15 +38,15 @@ export async function GET() {
   }
 
   try {
-    // Intentar conectar
-    await prisma.$connect();
-    debug.connectionStatus = 'connected';
+    // Prisma se conecta automáticamente en la primera query
+    // No necesitamos llamar $connect() explícitamente en serverless
+    debug.connectionStatus = 'ready';
 
-    // Intentar una query simple
+    // Intentar una query simple usando count
     try {
-      const result = await prisma.$queryRaw`SELECT 1 as test`;
+      const testCount = await prisma.vehiculo.count();
       debug.rawQueryTest = 'success';
-      debug.rawQueryResult = result;
+      debug.rawQueryResult = { count: testCount };
     } catch (error) {
       debug.rawQueryTest = 'failed';
       debug.rawQueryError = error instanceof Error ? error.message : 'Unknown error';
@@ -97,7 +97,7 @@ export async function GET() {
       // Ignorar errores de otras tablas
     }
 
-    await prisma.$disconnect().catch(() => {});
+    // No desconectar en serverless - Prisma maneja las conexiones automáticamente
 
     return NextResponse.json({
       ...debug,
