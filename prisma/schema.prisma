@@ -25,7 +25,7 @@ model Vehiculo {
   id          String   @id @default(cuid())
   marca       String
   modelo      String
-  año         Int
+  anio        Int      @map("año")
   placa       String   @unique
   color       String
   precioDiario Float
