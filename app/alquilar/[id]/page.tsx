@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useToast } from '@/components/ToastProvider';
 import styles from './alquilar.module.css';
 
 interface Vehiculo {
@@ -20,10 +21,15 @@ interface Vehiculo {
 export default function AlquilarPage() {
   const params = useParams();
   const router = useRouter();
+  const { showToast } = useToast();
   const [vehiculo, setVehiculo] = useState<Vehiculo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fechaInicio, setFechaInicio] = useState<string>('');
+  const [fechaFin, setFechaFin] = useState<string>('');
+  const [precioTotal, setPrecioTotal] = useState<number>(0);
+  const [dias, setDias] = useState<number>(0);
 
   useEffect(() => {
     if (params.id) {
@@ -47,18 +53,55 @@ export default function AlquilarPage() {
     }
   };
 
+  // Calcular precio cuando cambian las fechas
+  useEffect(() => {
+    if (vehiculo && fechaInicio && fechaFin) {
+      const inicio = new Date(fechaInicio);
+      const fin = new Date(fechaFin);
+      
+      // Validar que fecha fin sea después de fecha inicio
+      if (fin <= inicio) {
+        setPrecioTotal(0);
+        setDias(0);
+        return;
+      }
+      
+      const diasCalculados = Math.ceil((fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24));
+      const precioCalculado = diasCalculados * vehiculo.precioDiario;
+      setDias(diasCalculados);
+      setPrecioTotal(precioCalculado);
+    } else {
+      setPrecioTotal(0);
+      setDias(0);
+    }
+  }, [fechaInicio, fechaFin, vehiculo]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
+
+    // Validar fechas
+    if (!fechaInicio || !fechaFin) {
+      setError('Por favor selecciona ambas fechas');
+      setSubmitting(false);
+      return;
+    }
+
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+
+    if (fin <= inicio) {
+      setError('La fecha de fin debe ser posterior a la fecha de inicio');
+      setSubmitting(false);
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const nombre = formData.get('nombre') as string;
     const email = formData.get('email') as string;
     const telefono = formData.get('telefono') as string;
     const direccion = formData.get('direccion') as string;
-    const fechaInicio = formData.get('fechaInicio') as string;
-    const fechaFin = formData.get('fechaFin') as string;
     const observaciones = formData.get('observaciones') as string;
 
     try {
@@ -98,7 +141,9 @@ export default function AlquilarPage() {
       });
 
       if (rentaRes.ok) {
-        router.push('/rentas?success=true');
+        // Mostrar mensaje de éxito y redirigir
+        showToast('¡Alquiler creado exitosamente!', 'success');
+        router.push('/rentas');
       } else {
         const errorData = await rentaRes.json();
         throw new Error(errorData.error || 'Error al crear renta');
@@ -156,6 +201,24 @@ export default function AlquilarPage() {
             {vehiculo.descripcion && (
               <p><strong>Descripción:</strong> {vehiculo.descripcion}</p>
             )}
+            
+            {(dias > 0 && precioTotal > 0) && (
+              <div className={styles.resumenPrecio}>
+                <h3>Resumen del Alquiler</h3>
+                <div className={styles.resumenLine}>
+                  <span>Días:</span>
+                  <strong>{dias} día{dias !== 1 ? 's' : ''}</strong>
+                </div>
+                <div className={styles.resumenLine}>
+                  <span>Precio por día:</span>
+                  <strong>${vehiculo.precioDiario.toFixed(2)}</strong>
+                </div>
+                <div className={styles.resumenTotal}>
+                  <span>Total a pagar:</span>
+                  <strong>${precioTotal.toFixed(2)}</strong>
+                </div>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
@@ -197,6 +260,14 @@ export default function AlquilarPage() {
                   required
                   min={fechaMinima}
                   max={fechaMaxima}
+                  value={fechaInicio}
+                  onChange={(e) => {
+                    setFechaInicio(e.target.value);
+                    // Si fecha fin es anterior a nueva fecha inicio, limpiar fecha fin
+                    if (fechaFin && new Date(e.target.value) >= new Date(fechaFin)) {
+                      setFechaFin('');
+                    }
+                  }}
                 />
               </div>
               <div className={styles.field}>
@@ -206,9 +277,16 @@ export default function AlquilarPage() {
                   id="fechaFin"
                   name="fechaFin"
                   required
-                  min={fechaMinima}
+                  min={fechaInicio || fechaMinima}
                   max={fechaMaxima}
+                  value={fechaFin}
+                  onChange={(e) => setFechaFin(e.target.value)}
                 />
+                {fechaFin && fechaInicio && new Date(fechaFin) <= new Date(fechaInicio) && (
+                  <span className={styles.fieldError}>
+                    La fecha de fin debe ser posterior a la fecha de inicio
+                  </span>
+                )}
               </div>
             </div>
 

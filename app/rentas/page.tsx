@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useToast } from '@/components/ToastProvider';
 import styles from './rentas.module.css';
 
 interface Renta {
@@ -29,6 +30,7 @@ interface Renta {
 
 function RentasContent() {
   const searchParams = useSearchParams();
+  const { showToast } = useToast();
   const [rentas, setRentas] = useState<Renta[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('todas');
@@ -55,7 +57,7 @@ function RentasContent() {
     
     // Mostrar mensaje de éxito si viene de crear renta
     if (searchParams.get('success') === 'true') {
-      alert('¡Renta creada exitosamente!');
+      showToast('¡Renta creada exitosamente!', 'success');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter, searchParams]);
@@ -70,12 +72,13 @@ function RentasContent() {
 
       if (res.ok) {
         await fetchRentas();
+        showToast('Renta actualizada exitosamente', 'success');
       } else {
         const error = await res.json();
-        alert(error.error || 'Error al actualizar renta');
+        showToast(error.error || 'Error al actualizar renta', 'error');
       }
     } catch (error) {
-      alert('Error al actualizar renta');
+      showToast('Error al actualizar renta', 'error');
     }
   };
 

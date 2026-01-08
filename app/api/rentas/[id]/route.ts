@@ -29,11 +29,31 @@ export async function PUT(
       );
     }
 
-    // Si se completa o cancela la renta, marcar vehículo como disponible
+    // Si se completa o cancela la renta, verificar si hay otras rentas activas antes de marcar como disponible
     if (estado === 'completada' || estado === 'cancelada') {
+      // Verificar si hay otras rentas activas para este vehículo
+      const otrasRentasActivas = await prisma.renta.count({
+        where: {
+          vehiculoId: renta.vehiculoId,
+          estado: 'activa',
+          id: { not: params.id }, // Excluir la renta actual
+        },
+      });
+
+      // Solo marcar como disponible si no hay otras rentas activas
+      if (otrasRentasActivas === 0) {
+        await prisma.vehiculo.update({
+          where: { id: renta.vehiculoId },
+          data: { disponible: true },
+        });
+      }
+    }
+
+    // Si se activa una renta (estado cambia a 'activa'), marcar vehículo como no disponible
+    if (estado === 'activa' && renta.estado !== 'activa') {
       await prisma.vehiculo.update({
         where: { id: renta.vehiculoId },
-        data: { disponible: true },
+        data: { disponible: false },
       });
     }
 

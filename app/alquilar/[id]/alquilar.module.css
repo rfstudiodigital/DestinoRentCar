@@ -68,6 +68,46 @@
   color: #666;
 }
 
+.resumenPrecio {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e5e7eb;
+}
+
+.resumenPrecio h3 {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  border-bottom: none;
+  padding: 0;
+}
+
+.resumenLine {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  color: #666;
+}
+
+.resumenLine strong {
+  color: var(--text-color);
+}
+
+.resumenTotal {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e5e7eb;
+  font-size: 1.25rem;
+  color: var(--text-color);
+}
+
+.resumenTotal strong {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
 .form {
   background: white;
   padding: 2rem;
@@ -133,6 +173,13 @@
 
 .field textarea {
   resize: vertical;
+}
+
+.fieldError {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
 }
 
 .actions {

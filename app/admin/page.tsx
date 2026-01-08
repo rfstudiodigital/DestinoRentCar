@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
 import VehiculoForm from '@/components/VehiculoForm';
+import { useToast } from '@/components/ToastProvider';
 import styles from './admin.module.css';
 
 interface Vehiculo {
@@ -19,15 +20,136 @@ interface Vehiculo {
   descripcion?: string | null;
 }
 
+interface Renta {
+  id: string;
+  fechaInicio: string;
+  fechaFin: string;
+  precioTotal: number;
+  estado: string;
+  observaciones?: string | null;
+  cliente: {
+    id: string;
+    nombre: string;
+    email: string;
+    telefono: string;
+  };
+  vehiculo: {
+    id: string;
+    marca: string;
+    modelo: string;
+    anio: number;
+    placa: string;
+  };
+}
+
+interface Cliente {
+  id: string;
+  nombre: string;
+  email: string;
+  telefono: string;
+  direccion?: string | null;
+  createdAt: string;
+  rentas?: Renta[];
+}
+
+interface Estadisticas {
+  totalVehiculos: number;
+  vehiculosDisponibles: number;
+  totalRentas: number;
+  rentasActivas: number;
+  rentasCompletadas: number;
+  ingresosTotales: number;
+  totalClientes: number;
+}
+
+type TabType = 'dashboard' | 'vehiculos' | 'rentas' | 'clientes';
+
 export default function AdminPage() {
+  const { showToast } = useToast();
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+  const [rentas, setRentas] = useState<Renta[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingVehiculo, setEditingVehiculo] = useState<Vehiculo | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
+  const [rentaFilter, setRentaFilter] = useState<string>('todas');
 
   useEffect(() => {
-    fetchVehiculos();
-  }, []);
+    const loadData = async () => {
+      await fetchVehiculos();
+      if (activeTab === 'dashboard' || activeTab === 'rentas') {
+        await fetchRentas();
+      }
+      if (activeTab === 'dashboard' || activeTab === 'clientes') {
+        await fetchClientes();
+      }
+      if (activeTab === 'dashboard') {
+        await calcularEstadisticas();
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, rentaFilter]);
+
+  const fetchRentas = async () => {
+    try {
+      const url = rentaFilter !== 'todas' 
+        ? `/api/rentas?estado=${rentaFilter}`
+        : '/api/rentas';
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setRentas(data);
+      }
+    } catch (error) {
+      console.error('Error cargando rentas:', error);
+    }
+  };
+
+  const fetchClientes = async () => {
+    try {
+      const res = await fetch('/api/clientes');
+      if (res.ok) {
+        const data = await res.json();
+        setClientes(data);
+      }
+    } catch (error) {
+      console.error('Error cargando clientes:', error);
+    }
+  };
+
+  const calcularEstadisticas = async () => {
+    try {
+      // Cargar todos los datos necesarios para las estadísticas
+      const [vehiculosRes, rentasRes, clientesRes] = await Promise.all([
+        fetch('/api/vehiculos'),
+        fetch('/api/rentas'),
+        fetch('/api/clientes'),
+      ]);
+
+      const vehiculosData = vehiculosRes.ok ? await vehiculosRes.json() : [];
+      const rentasData = rentasRes.ok ? await rentasRes.json() : [];
+      const clientesData = clientesRes.ok ? await clientesRes.json() : [];
+
+      const stats: Estadisticas = {
+        totalVehiculos: vehiculosData.length,
+        vehiculosDisponibles: vehiculosData.filter((v: Vehiculo) => v.disponible).length,
+        totalRentas: rentasData.length,
+        rentasActivas: rentasData.filter((r: Renta) => r.estado === 'activa').length,
+        rentasCompletadas: rentasData.filter((r: Renta) => r.estado === 'completada').length,
+        ingresosTotales: rentasData
+          .filter((r: Renta) => r.estado === 'completada')
+          .reduce((sum: number, r: Renta) => sum + r.precioTotal, 0),
+        totalClientes: clientesData.length,
+      };
+
+      setEstadisticas(stats);
+    } catch (error) {
+      console.error('Error calculando estadísticas:', error);
+    }
+  };
 
   const fetchVehiculos = async () => {
     try {
@@ -52,6 +174,9 @@ export default function AdminPage() {
 
     if (res.ok) {
       await fetchVehiculos();
+      if (activeTab === 'dashboard') {
+        await calcularEstadisticas();
+      }
       setShowForm(false);
     } else {
       const error = await res.json();
@@ -70,6 +195,9 @@ export default function AdminPage() {
 
     if (res.ok) {
       await fetchVehiculos();
+      if (activeTab === 'dashboard') {
+        await calcularEstadisticas();
+      }
       setEditingVehiculo(null);
       setShowForm(false);
     } else {
@@ -87,9 +215,12 @@ export default function AdminPage() {
 
     if (res.ok) {
       await fetchVehiculos();
+      if (activeTab === 'dashboard') {
+        await calcularEstadisticas();
+      }
     } else {
       const error = await res.json();
-      alert(error.error || 'Error al eliminar vehículo');
+      showToast(error.error || 'Error al eliminar vehículo', 'error');
     }
   };
 
@@ -104,6 +235,56 @@ export default function AdminPage() {
   const handleCancel = () => {
     setShowForm(false);
     setEditingVehiculo(null);
+  };
+
+  const handleCambiarEstadoRenta = async (id: string, nuevoEstado: string) => {
+    try {
+      const res = await fetch(`/api/rentas/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: nuevoEstado }),
+      });
+
+    if (res.ok) {
+      await fetchRentas();
+      await fetchVehiculos();
+      await calcularEstadisticas();
+      showToast('Renta actualizada exitosamente', 'success');
+    } else {
+      const error = await res.json();
+      showToast(error.error || 'Error al actualizar renta', 'error');
+    }
+  } catch (error) {
+    showToast('Error al actualizar renta', 'error');
+  }
+  };
+
+  const formatearFecha = (fecha: string) => {
+    return new Date(fecha).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+  };
+
+  const formatearPrecio = (precio: number) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(precio);
+  };
+
+  const getEstadoColor = (estado: string) => {
+    switch (estado) {
+      case 'activa':
+        return '#10b981';
+      case 'completada':
+        return '#3b82f6';
+      case 'cancelada':
+        return '#ef4444';
+      default:
+        return '#6b7280';
+    }
   };
 
   if (showForm) {
@@ -137,32 +318,223 @@ export default function AdminPage() {
             <Link href="/" className={styles.link}>
               Ver como Cliente
             </Link>
-            <button onClick={() => setShowForm(true)} className={styles.addButton}>
-              + Agregar Vehículo
-            </button>
           </div>
         </div>
 
-        {loading ? (
-          <div className={styles.loading}>Cargando vehículos...</div>
-        ) : vehiculos.length === 0 ? (
-          <div className={styles.empty}>
-            <p>No hay vehículos registrados</p>
-            <button onClick={() => setShowForm(true)} className={styles.addButton}>
-              Agregar Primer Vehículo
-            </button>
+        {/* Tabs de navegación */}
+        <div className={styles.tabs}>
+          <button
+            className={`${styles.tab} ${activeTab === 'dashboard' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            📊 Dashboard
+          </button>
+          <button
+            className={`${styles.tab} ${activeTab === 'vehiculos' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('vehiculos')}
+          >
+            🚗 Vehículos
+          </button>
+          <button
+            className={`${styles.tab} ${activeTab === 'rentas' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('rentas')}
+          >
+            📋 Rentas
+          </button>
+          <button
+            className={`${styles.tab} ${activeTab === 'clientes' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('clientes')}
+          >
+            👥 Clientes
+          </button>
+        </div>
+
+        {/* Contenido de las tabs */}
+        {activeTab === 'dashboard' && estadisticas && (
+          <div className={styles.dashboard}>
+            <div className={styles.statsGrid}>
+              <div className={styles.statCard}>
+                <h3>Vehículos Totales</h3>
+                <p className={styles.statValue}>{estadisticas.totalVehiculos}</p>
+                <span className={styles.statSubtext}>
+                  {estadisticas.vehiculosDisponibles} disponibles
+                </span>
+              </div>
+              <div className={styles.statCard}>
+                <h3>Rentas Activas</h3>
+                <p className={styles.statValue}>{estadisticas.rentasActivas}</p>
+                <span className={styles.statSubtext}>
+                  {estadisticas.totalRentas} totales
+                </span>
+              </div>
+              <div className={styles.statCard}>
+                <h3>Ingresos Totales</h3>
+                <p className={styles.statValue}>{formatearPrecio(estadisticas.ingresosTotales)}</p>
+                <span className={styles.statSubtext}>
+                  {estadisticas.rentasCompletadas} rentas completadas
+                </span>
+              </div>
+              <div className={styles.statCard}>
+                <h3>Total Clientes</h3>
+                <p className={styles.statValue}>{estadisticas.totalClientes}</p>
+                <span className={styles.statSubtext}>Registrados</span>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className={styles.grid}>
-            {vehiculos.map((vehiculo) => (
-              <VehiculoCard
-                key={vehiculo.id}
-                vehiculo={vehiculo}
-                showActions
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+        )}
+
+        {activeTab === 'vehiculos' && (
+          <div>
+            <div className={styles.sectionHeader}>
+              <h2>Gestión de Vehículos</h2>
+              <button onClick={() => setShowForm(true)} className={styles.addButton}>
+                + Agregar Vehículo
+              </button>
+            </div>
+            {loading ? (
+              <div className={styles.loading}>Cargando vehículos...</div>
+            ) : vehiculos.length === 0 ? (
+              <div className={styles.empty}>
+                <p>No hay vehículos registrados</p>
+                <button onClick={() => setShowForm(true)} className={styles.addButton}>
+                  Agregar Primer Vehículo
+                </button>
+              </div>
+            ) : (
+              <div className={styles.grid}>
+                {vehiculos.map((vehiculo) => (
+                  <VehiculoCard
+                    key={vehiculo.id}
+                    vehiculo={vehiculo}
+                    showActions
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'rentas' && (
+          <div>
+            <div className={styles.sectionHeader}>
+              <h2>Gestión de Rentas</h2>
+              <select
+                value={rentaFilter}
+                onChange={(e) => setRentaFilter(e.target.value)}
+                className={styles.filter}
+              >
+                <option value="todas">Todas las rentas</option>
+                <option value="activa">Activas</option>
+                <option value="completada">Completadas</option>
+                <option value="cancelada">Canceladas</option>
+              </select>
+            </div>
+            {rentas.length === 0 ? (
+              <div className={styles.empty}>
+                <p>No hay rentas registradas</p>
+              </div>
+            ) : (
+              <div className={styles.rentasGrid}>
+                {rentas.map((renta) => (
+                  <div key={renta.id} className={styles.rentaCard}>
+                    <div className={styles.rentaHeader}>
+                      <h3>
+                        {renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}
+                      </h3>
+                      <span
+                        className={styles.badge}
+                        style={{ backgroundColor: getEstadoColor(renta.estado) }}
+                      >
+                        {renta.estado.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className={styles.rentaBody}>
+                      <div className={styles.rentaInfo}>
+                        <strong>Cliente:</strong> {renta.cliente.nombre}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Email:</strong> {renta.cliente.email}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Teléfono:</strong> {renta.cliente.telefono}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Placa:</strong> {renta.vehiculo.placa}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Inicio:</strong> {formatearFecha(renta.fechaInicio)}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Fin:</strong> {formatearFecha(renta.fechaFin)}
+                      </div>
+                      <div className={styles.rentaInfo}>
+                        <strong>Total:</strong> <span className={styles.price}>{formatearPrecio(renta.precioTotal)}</span>
+                      </div>
+                      {renta.observaciones && (
+                        <div className={styles.observaciones}>
+                          <strong>Observaciones:</strong>
+                          <p>{renta.observaciones}</p>
+                        </div>
+                      )}
+                    </div>
+                    {renta.estado === 'activa' && (
+                      <div className={styles.rentaActions}>
+                        <button
+                          onClick={() => handleCambiarEstadoRenta(renta.id, 'completada')}
+                          className={styles.completeButton}
+                        >
+                          Completar
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Estás seguro de cancelar esta renta?')) {
+                              handleCambiarEstadoRenta(renta.id, 'cancelada');
+                            }
+                          }}
+                          className={styles.cancelButton}
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'clientes' && (
+          <div>
+            <div className={styles.sectionHeader}>
+              <h2>Gestión de Clientes</h2>
+            </div>
+            {clientes.length === 0 ? (
+              <div className={styles.empty}>
+                <p>No hay clientes registrados</p>
+              </div>
+            ) : (
+              <div className={styles.clientesGrid}>
+                {clientes.map((cliente) => (
+                  <div key={cliente.id} className={styles.clienteCard}>
+                    <h3>{cliente.nombre}</h3>
+                    <div className={styles.clienteInfo}>
+                      <p><strong>Email:</strong> {cliente.email}</p>
+                      <p><strong>Teléfono:</strong> {cliente.telefono}</p>
+                      {cliente.direccion && (
+                        <p><strong>Dirección:</strong> {cliente.direccion}</p>
+                      )}
+                      <p><strong>Total rentas:</strong> {cliente.rentas?.length || 0}</p>
+                      <p className={styles.fechaRegistro}>
+                        Registrado: {formatearFecha(cliente.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
