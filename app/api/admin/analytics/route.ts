@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
           select: {
             marca: true,
             modelo: true,
-            ano: true,
+            anio: true,
           },
         },
       },

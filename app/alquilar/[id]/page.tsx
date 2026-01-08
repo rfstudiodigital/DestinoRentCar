@@ -16,7 +16,6 @@ interface Vehiculo {
   marca: string;
   modelo: string;
   anio: number;
-  ano: number;
   color: string;
   precioDiario: number;
   disponible: boolean;
@@ -192,7 +191,7 @@ export default function AlquilarPage() {
 
         {/* Información Principal */}
         <div className={styles.header}>
-          <h1 className={styles.title}>{vehiculo.marca} {vehiculo.modelo} ({vehiculo.ano})</h1>
+          <h1 className={styles.title}>{vehiculo.marca} {vehiculo.modelo} ({vehiculo.anio})</h1>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <span className={styles.statValue}>{formatearPrecioSimple(vehiculo.precioDiario)}</span>

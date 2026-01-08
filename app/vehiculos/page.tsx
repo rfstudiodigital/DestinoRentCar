@@ -97,9 +97,9 @@ export default function VehiculosPage() {
     // Filtrar por año
     if (filters.anoMin || filters.anoMax) {
       filtrados = filtrados.filter(v => {
-        const ano = v.ano || v.anio;
-        const cumpleMin = !filters.anoMin || ano >= filters.anoMin;
-        const cumpleMax = !filters.anoMax || ano <= filters.anoMax;
+        const anio = v.anio;
+        const cumpleMin = !filters.anoMin || anio >= filters.anoMin;
+        const cumpleMax = !filters.anoMax || anio <= filters.anoMax;
         return cumpleMin && cumpleMax;
       });
     }
@@ -113,9 +113,9 @@ export default function VehiculosPage() {
           case 'precio_desc':
             return b.precioDiario - a.precioDiario;
           case 'ano_desc':
-            return (b.ano || b.anio) - (a.ano || a.anio);
+            return b.anio - a.anio;
           case 'ano_asc':
-            return (a.ano || a.anio) - (b.ano || b.anio);
+            return a.anio - b.anio;
           default:
             return 0;
         }

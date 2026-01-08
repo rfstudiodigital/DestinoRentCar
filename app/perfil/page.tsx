@@ -22,7 +22,7 @@ interface Renta {
   vehiculo: {
     marca: string;
     modelo: string;
-    ano: number;
+    anio: number;
   };
 }
 
@@ -123,7 +123,7 @@ export default function PerfilPage() {
             {rentasActivas.map((renta) => (
               <div key={renta.id} className={`${styles.rentaCard} ${styles.active}`}>
                 <div className={styles.rentaHeader}>
-                  <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.ano}</h3>
+                  <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}</h3>
                   <span className={`${styles.badge} ${styles[renta.estado]}`}>
                     {renta.estado.toUpperCase()}
                   </span>
@@ -160,7 +160,7 @@ export default function PerfilPage() {
             {historial.map((renta) => (
               <div key={renta.id} className={styles.rentaCard}>
                 <div className={styles.rentaHeader}>
-                  <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.ano}</h3>
+                  <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}</h3>
                   <span className={`${styles.badge} ${styles.completada}`}>
                     COMPLETADA
                   </span>
