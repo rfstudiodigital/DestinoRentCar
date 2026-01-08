@@ -23,10 +23,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar admin por email
-    // @ts-expect-error - Admin model may not be available until db is synced
-    const admin = await prisma.admin.findUnique({
-      where: { email },
-    });
+    // Verificar si el modelo Admin existe en Prisma Client
+    let admin;
+    try {
+      // @ts-expect-error - Admin model may not be available until db is synced
+      admin = await prisma.admin.findUnique({
+        where: { email },
+      });
+    } catch (prismaError: any) {
+      // Si hay un error al acceder al modelo Admin, probablemente la tabla no existe
+      console.error('Error accediendo a tabla Admin:', prismaError);
+      if (prismaError.code === 'P2001' || prismaError.message?.includes('does not exist')) {
+        return NextResponse.json(
+          { error: 'La tabla Admin no existe en la base de datos. Ejecuta el script SQL para crearla.' },
+          { status: 500 }
+        );
+      }
+      throw prismaError;
+    }
 
     if (!admin) {
       return NextResponse.json(
@@ -51,10 +65,20 @@ export async function POST(request: NextRequest) {
       success: true,
       admin: adminWithoutPassword,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error en login:', error);
+    
+    // Dar mensajes de error más específicos
+    let errorMessage = 'Error al procesar el login';
+    
+    if (error.code === 'P2001' || error.message?.includes('does not exist')) {
+      errorMessage = 'La tabla Admin no existe en la base de datos. Por favor, ejecuta el script SQL para crearla.';
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+    
     return NextResponse.json(
-      { error: 'Error al procesar el login' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
