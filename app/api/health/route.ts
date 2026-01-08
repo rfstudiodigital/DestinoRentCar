@@ -17,14 +17,37 @@ export async function GET() {
   }
   
   try {
-    // Verificar conexión a la base de datos
-    // Usar una query simple que Prisma maneja automáticamente
-    await prisma.vehiculo.count();
+    // Verificar conexión a la base de datos usando count
+    // Prisma maneja las conexiones automáticamente en serverless
+    console.log('🔍 Verificando conexión a base de datos...');
     
-    // Intentar obtener conteo de vehículos para verificar que hay datos
-    const vehiculosCount = await prisma.vehiculo.count().catch(() => 0);
-    const clientesCount = await prisma.cliente.count().catch(() => 0);
-    const rentasCount = await prisma.renta.count().catch(() => 0);
+    let vehiculosCount = 0;
+    let clientesCount = 0;
+    let rentasCount = 0;
+    
+    try {
+      vehiculosCount = await prisma.vehiculo.count();
+      console.log(`✅ Conteo vehículos: ${vehiculosCount}`);
+    } catch (countError: any) {
+      console.error('❌ Error contando vehículos:', countError);
+      console.error('Error code:', countError?.code);
+      console.error('Error message:', countError?.message);
+      throw countError; // Relanzar para que se capture en el catch general
+    }
+    
+    try {
+      clientesCount = await prisma.cliente.count();
+      console.log(`✅ Conteo clientes: ${clientesCount}`);
+    } catch (error) {
+      console.error('⚠️  Error contando clientes (ignorado):', error);
+    }
+    
+    try {
+      rentasCount = await prisma.renta.count();
+      console.log(`✅ Conteo rentas: ${rentasCount}`);
+    } catch (error) {
+      console.error('⚠️  Error contando rentas (ignorado):', error);
+    }
     
     return NextResponse.json({
       status: 'ok',
