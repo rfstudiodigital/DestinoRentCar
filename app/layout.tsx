@@ -32,8 +32,8 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icon.svg" />
+        <link rel="icon" href="/logo.svg.jpeg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/logo.svg.jpeg" />
       </head>
       <body className={inter.className}>
         <ToastProvider>
