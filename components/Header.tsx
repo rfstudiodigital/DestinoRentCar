@@ -53,9 +53,10 @@ export default function Header() {
         <Image
           src="/logo.svg"
           alt="Destino Rent Car"
-          width={200}
-          height={100}
+          width={180}
+          height={60}
           priority
+          style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
         />
       </Link>
       <nav className={styles.nav}>

@@ -13,6 +13,14 @@
 .logoLink {
   display: flex;
   align-items: center;
+  height: 60px;
+  max-width: 200px;
+}
+
+.logoLink img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav {
@@ -106,6 +114,12 @@
   
   .logoLink {
     margin-bottom: 1rem;
+    max-width: 150px;
+  }
+
+  .logoLink img {
+    max-width: 100%;
+    height: auto;
   }
 }
 

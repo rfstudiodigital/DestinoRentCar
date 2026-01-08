@@ -10,9 +10,10 @@ export default function Home() {
           <Image
             src="/logo.svg"
             alt="Destino Rent Car Logo"
-            width={300}
-            height={150}
+            width={400}
+            height={200}
             priority
+            style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }}
           />
         </div>
         
