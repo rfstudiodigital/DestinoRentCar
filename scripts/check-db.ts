@@ -27,7 +27,8 @@ async function checkDatabase() {
     const vehiculosCount = await prisma.vehiculo.count();
     const clientesCount = await prisma.cliente.count();
     const rentasCount = await prisma.renta.count();
-    const resenasCount = await prisma.resena.count();
+    // El modelo Resena no existe en el schema actual
+    const resenasCount = 0; // await prisma.resena.count();
     const documentosCount = await prisma.documento.count();
     const notificacionesCount = await prisma.notificacion.count();
 
