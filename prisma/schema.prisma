@@ -1,4 +1,4 @@
-// This is your Prisma schema file,
+﻿// This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -25,7 +25,7 @@ model Vehiculo {
   id          String   @id @default(cuid())
   marca       String
   modelo      String
-  anio        Int      @map("año")
+  anio        Int      @map("aÃ±o")
   placa       String   @unique
   color       String
   precioDiario Float
@@ -76,7 +76,7 @@ model Notificacion {
   titulo    String
   mensaje   String
   leida     Boolean  @default(false)
-  url       String?  // Link a la página relacionada (ej: /admin, /rentas)
+  url       String?  // Link a la pÃ¡gina relacionada (ej: /admin, /rentas)
   rentaId   String?  // ID de la renta relacionada
   createdAt DateTime @default(now())
   
