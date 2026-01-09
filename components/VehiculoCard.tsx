@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatearPrecioSimple } from '@/lib/formatters';
 import styles from './VehiculoCard.module.css';
 
 interface VehiculoCardProps {
@@ -55,7 +56,7 @@ export default function VehiculoCard({
         </h3>
         <p className={styles.color}>Color: {vehiculo.color}</p>
         <p className={styles.price}>
-          ${vehiculo.precioDiario.toFixed(2)} / día
+          {formatearPrecioSimple(vehiculo.precioDiario)} / día
         </p>
         {vehiculo.descripcion && (
           <p className={styles.description}>{vehiculo.descripcion}</p>
