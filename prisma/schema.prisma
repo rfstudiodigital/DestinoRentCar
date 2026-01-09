@@ -21,6 +21,8 @@ model Cliente {
   rentas    Renta[]
   notificaciones Notificacion[]
   documentos Documento[]
+  notificaciones Notificacion[]
+  documentos Documento[]
 }
 
 model Vehiculo {
