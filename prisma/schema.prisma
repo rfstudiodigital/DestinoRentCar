@@ -18,7 +18,7 @@ model Cliente {
   direccion String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rentas    Renta[]
+  rentas    Renta[]`r`n  notificaciones Notificacion[]`r`n  documentos Documento[]
   notificaciones Notificacion[]
 }
 
@@ -89,4 +89,20 @@ model Notificacion {
   @@index([tipo])
   @@index([createdAt])
   @@index([rentaId])
+}
+
+// Sistema de documentos
+model Documento {
+  id         String   @id @default(cuid())
+  clienteId  String
+  tipo       String   // licencia, identificacion, firma
+  nombre     String
+  url        String
+  verificado Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  cliente    Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  
+  @@index([clienteId])
+  @@index([tipo])
 }
