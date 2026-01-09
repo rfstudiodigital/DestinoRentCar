@@ -1,6 +1,3 @@
-﻿// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,14 +15,16 @@ model Cliente {
   direccion String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rentas    Renta[]`r`n  notificaciones Notificacion[]`r`n  documentos Documento[]
+  rentas    Renta[]
+  notificaciones Notificacion[]
+  documentos Documento[]
 }
 
 model Vehiculo {
   id          String   @id @default(cuid())
   marca       String
   modelo      String
-  anio        Int      @map("aÃ±o")
+  anio        Int      @map("año")
   placa       String   @unique
   color       String
   precioDiario Float
@@ -44,7 +43,7 @@ model Renta {
   fechaInicio     DateTime
   fechaFin        DateTime
   precioTotal     Float
-  estado          String   @default("pendiente") // pendiente, activa, completada, cancelada, rechazada
+  estado          String   @default("pendiente")
   observaciones   String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -67,17 +66,16 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
-// Sistema de notificaciones
 model Notificacion {
   id        String   @id @default(cuid())
-  clienteId String?  // null para notificaciones de admin
-  adminId   String?  // null para notificaciones de cliente, o 'admin' para todas las notificaciones de admin
-  tipo      String   // nueva_reserva, reserva_confirmada, reserva_cancelada, reserva_rechazada, recordatorio, etc.
+  clienteId String?
+  adminId   String?
+  tipo      String
   titulo    String
   mensaje   String
   leida     Boolean  @default(false)
-  url       String?  // Link a la pÃ¡gina relacionada (ej: /admin, /rentas)
-  rentaId   String?  // ID de la renta relacionada
+  url       String?
+  rentaId   String?
   createdAt DateTime @default(now())
   
   cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: Cascade)
@@ -90,11 +88,10 @@ model Notificacion {
   @@index([rentaId])
 }
 
-// Sistema de documentos
 model Documento {
   id         String   @id @default(cuid())
   clienteId  String
-  tipo       String   // licencia, identificacion, firma
+  tipo       String
   nombre     String
   url        String
   verificado Boolean  @default(false)
