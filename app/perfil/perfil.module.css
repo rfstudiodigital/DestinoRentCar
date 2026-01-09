@@ -174,17 +174,17 @@
 }
 
 .badge.activa {
-  background: #10b981;
+  background: var(--success-color);
   color: white;
 }
 
 .badge.pendiente {
-  background: #f59e0b;
+  background: var(--warning-color);
   color: white;
 }
 
 .badge.completada {
-  background: #6b7280;
+  background: var(--gray-color);
   color: white;
 }
 

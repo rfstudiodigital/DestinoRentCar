@@ -38,6 +38,18 @@ body {
   --white: #ffffff;
   --border: #e5e7eb;
 
+  /* Colores de estado */
+  --success-color: #10b981;
+  --success-light: #059669;
+  --success-bg: #f0fdf4;
+  --error-color: #ef4444;
+  --error-dark: #dc2626;
+  --error-bg: #fee2e2;
+  --error-border: #fecaca;
+  --info-bg: #f0f9ff;
+  --warning-color: #f59e0b;
+  --gray-color: #6b7280;
+
   /* Sombras */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),

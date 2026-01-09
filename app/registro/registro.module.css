@@ -82,7 +82,7 @@
 
 .description {
   text-align: center;
-  color: #666;
+  color: var(--text-light);
   margin-bottom: 2rem;
   font-size: 1.1rem;
 }
@@ -94,12 +94,12 @@
 }
 
 .errorMessage {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--error-bg);
+  color: var(--error-dark);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--error-border);
 }
 
 .field {
@@ -226,8 +226,8 @@
   margin-top: 2rem;
   text-align: center;
   padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
-  color: #666;
+  border-top: 1px solid var(--border);
+  color: var(--text-light);
 }
 
 .loginLink {

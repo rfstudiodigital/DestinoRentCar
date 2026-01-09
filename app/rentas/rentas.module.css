@@ -41,11 +41,19 @@
 
 .filter {
   padding: 0.75rem 1rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
   font-size: 1rem;
-  background: white;
+  background: var(--white);
   cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: inherit;
+}
+
+.filter:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 .link {
@@ -149,7 +157,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0.875rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border);
   align-items: center;
 }
 
@@ -177,7 +185,7 @@
 .observaciones {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 2px solid #e5e7eb;
+  border-top: 2px solid var(--border);
 }
 
 .observaciones strong {
@@ -188,7 +196,7 @@
 
 .observaciones p {
   margin: 0;
-  color: #666;
+  color: var(--text-light);
   font-style: italic;
 }
 
@@ -196,8 +204,8 @@
   display: flex;
   gap: 0.5rem;
   padding: 1rem 1.5rem;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
+  background: var(--background);
+  border-top: 1px solid var(--border);
 }
 
 .completeButton,
@@ -238,23 +246,23 @@
 }
 
 .completeButton {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--success-color) 0%, var(--success-light) 100%);
   color: white;
 }
 
 .completeButton:hover {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  background: linear-gradient(135deg, var(--success-light) 0%, #047857 100%);
   box-shadow: var(--shadow-lg), 0 0 20px rgba(16, 185, 129, 0.4);
   transform: translateY(-2px);
 }
 
 .cancelButton {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: linear-gradient(135deg, var(--error-color) 0%, var(--error-dark) 100%);
   color: white;
 }
 
 .cancelButton:hover {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  background: linear-gradient(135deg, var(--error-dark) 0%, #b91c1c 100%);
   box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.4);
   transform: translateY(-2px);
 }
@@ -263,30 +271,44 @@
 .empty {
   text-align: center;
   padding: 4rem 2rem;
-  background: white;
+  background: var(--white);
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .empty p {
   font-size: 1.25rem;
-  color: #666;
+  color: var(--text-light);
   margin-bottom: 1.5rem;
 }
 
 .button {
-  padding: 0.75rem 2rem;
-  background: var(--primary-color);
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--primary-light) 100%
+  );
   color: white;
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 10px;
+  font-weight: 700;
   display: inline-block;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.875rem;
 }
 
 .button:hover {
-  background: #1e40af;
+  background: linear-gradient(
+    135deg,
+    var(--primary-dark) 0%,
+    var(--primary-color) 100%
+  );
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
