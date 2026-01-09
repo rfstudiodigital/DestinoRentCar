@@ -14,15 +14,32 @@ export async function GET(
   }
 
   try {
-    const imagenes = await prisma.imagenVehiculo.findMany({
-      where: {
-        vehiculoId: params.id,
-      },
-      orderBy: [
-        { esPortada: 'desc' },
-        { orden: 'asc' },
-      ],
+    // Obtener el vehículo para acceder a su campo imagen
+    const vehiculo = await prisma.vehiculo.findUnique({
+      where: { id: params.id },
+      select: { imagen: true },
     });
+
+    if (!vehiculo) {
+      return NextResponse.json(
+        { error: 'Vehículo no encontrado' },
+        { status: 404 }
+      );
+    }
+
+    // Convertir el campo imagen (singular) a un array de imágenes
+    // Si hay imagen, la retornamos como array, si no, retornamos array vacío
+    const imagenes = vehiculo.imagen
+      ? [
+          {
+            id: 'main',
+            url: vehiculo.imagen,
+            alt: 'Imagen principal del vehículo',
+            esPortada: true,
+            orden: 0,
+          },
+        ]
+      : [];
 
     return NextResponse.json(imagenes);
   } catch (error) {
@@ -47,7 +64,7 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const { url, orden = 0, esPortada = false } = body;
+    const { url } = body;
 
     if (!url) {
       return NextResponse.json(
@@ -56,18 +73,28 @@ export async function POST(
       );
     }
 
-    const imagen = await prisma.imagenVehiculo.create({
-      data: {
-        vehiculoId: params.id,
-        url,
-        orden,
-        esPortada,
-      },
+    // Actualizar el campo imagen del vehículo (ya que no tenemos tabla separada)
+    const vehiculo = await prisma.vehiculo.update({
+      where: { id: params.id },
+      data: { imagen: url },
     });
 
-    return NextResponse.json(imagen);
-  } catch (error) {
+    // Retornar en el formato esperado
+    return NextResponse.json({
+      id: 'main',
+      url: vehiculo.imagen,
+      alt: 'Imagen principal del vehículo',
+      esPortada: true,
+      orden: 0,
+    });
+  } catch (error: any) {
     console.error('Error al crear imagen:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json(
+        { error: 'Vehículo no encontrado' },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
       { error: 'Error al crear imagen' },
       { status: 500 }
