@@ -22,40 +22,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar admin por email usando SQL directo para mayor compatibilidad
+    // Buscar admin por email
     let admin: any = null;
     
     try {
-      // Intentar primero con el modelo Prisma (si está disponible)
-      try {
-        // @ts-expect-error - Admin model may not be available until db is synced
-        admin = await prisma.admin.findUnique({
-          where: { email },
-        });
-      } catch (modelError: any) {
-        // Si el modelo no está disponible, usar SQL directo
-        console.log('Modelo Admin no disponible, usando SQL directo...');
-        const result = await prisma.$queryRaw<Array<{
-          id: string;
-          email: string;
-          password: string;
-          nombre: string | null;
-          createdAt: Date;
-          updatedAt: Date;
-        }>>`
-          SELECT id, email, password, nombre, "createdAt", "updatedAt"
-          FROM "Admin"
-          WHERE email = ${email}
-          LIMIT 1
-        `;
-        admin = result[0] || null;
-      }
-    } catch (sqlError: any) {
-      console.error('Error accediendo a tabla Admin:', sqlError);
+      admin = await prisma.admin.findUnique({
+        where: { email },
+      });
+    } catch (error: any) {
+      console.error('Error accediendo a tabla Admin:', error);
       // Verificar si el error es porque la tabla no existe
-      if (sqlError.message?.includes('does not exist') || 
-          sqlError.message?.includes('relation') ||
-          sqlError.code === '42P01') {
+      if (error.message?.includes('does not exist') || 
+          error.message?.includes('relation') ||
+          error.code === '42P01') {
         return NextResponse.json(
           { 
             error: 'La tabla Admin no existe en la base de datos. Por favor, ejecuta el script SQL en Neon Console para crearla.',
@@ -64,7 +43,7 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
-      throw sqlError;
+      throw error;
     }
 
     if (!admin) {
