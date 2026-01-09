@@ -18,8 +18,9 @@ model Cliente {
   direccion String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rentas    Renta[]`r`n  notificaciones Notificacion[]`r`n  documentos Documento[]
+  rentas    Renta[]
   notificaciones Notificacion[]
+  documentos Documento[]
 }
 
 model Vehiculo {
