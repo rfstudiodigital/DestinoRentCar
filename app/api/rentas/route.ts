@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { validarFechasRenta, isAdminAuthenticated } from '@/lib/auth-helpers';
 
 // GET - Listar todas las rentas (SOLO ADMIN)
 export async function GET(request: NextRequest) {
@@ -10,14 +11,8 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Verificar que sea admin (desde headers o cookie)
-  // En producción, usarías un token JWT o sesión segura
-  // Por ahora, verificamos desde el header
-  const adminAuth = request.headers.get('x-admin-auth');
-  
-  // Si no hay header, verificar desde cookie o rechazar
-  // Por seguridad, solo permitir si viene del panel admin
-  if (!adminAuth || adminAuth !== 'true') {
+  // Verificar que sea admin
+  if (!isAdminAuthenticated(request)) {
     return NextResponse.json(
       { error: 'Acceso denegado. Solo administradores pueden ver esta información.' },
       { status: 403 }
@@ -67,10 +62,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { clienteId, vehiculoId, fechaInicio, fechaFin, observaciones } = body;
 
-    // Validaciones
+    // Validaciones básicas
     if (!clienteId || !vehiculoId || !fechaInicio || !fechaFin) {
       return NextResponse.json(
         { error: 'Faltan campos requeridos' },
+        { status: 400 }
+      );
+    }
+
+    // Validar fechas
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+    const validacionFechas = validarFechasRenta(inicio, fin);
+    
+    if (!validacionFechas.isValid) {
+      return NextResponse.json(
+        { error: validacionFechas.errorMessage },
         { status: 400 }
       );
     }
@@ -89,33 +96,34 @@ export async function POST(request: NextRequest) {
 
     if (!vehiculo.disponible) {
       return NextResponse.json(
-        { error: 'El vehículo no está disponible' },
+        { error: 'El vehículo no está disponible actualmente' },
         { status: 400 }
       );
     }
 
-    // Verificar que no haya rentas activas en ese período
+    // Verificar que no haya rentas activas o pendientes en ese período
+    // (las pendientes podrían ser aprobadas y conflictuar)
     const rentasConflictivas = await prisma.renta.findFirst({
       where: {
         vehiculoId,
-        estado: 'activa',
+        estado: { in: ['activa', 'pendiente'] }, // Verificar activas y pendientes
         OR: [
           {
             AND: [
-              { fechaInicio: { lte: new Date(fechaInicio) } },
-              { fechaFin: { gte: new Date(fechaInicio) } },
+              { fechaInicio: { lte: inicio } },
+              { fechaFin: { gte: inicio } },
             ],
           },
           {
             AND: [
-              { fechaInicio: { lte: new Date(fechaFin) } },
-              { fechaFin: { gte: new Date(fechaFin) } },
+              { fechaInicio: { lte: fin } },
+              { fechaFin: { gte: fin } },
             ],
           },
           {
             AND: [
-              { fechaInicio: { gte: new Date(fechaInicio) } },
-              { fechaFin: { lte: new Date(fechaFin) } },
+              { fechaInicio: { gte: inicio } },
+              { fechaFin: { lte: fin } },
             ],
           },
         ],
@@ -124,14 +132,15 @@ export async function POST(request: NextRequest) {
 
     if (rentasConflictivas) {
       return NextResponse.json(
-        { error: 'El vehículo ya está rentado en ese período' },
+        { 
+          error: 'El vehículo ya tiene una reserva en ese período',
+          detalles: `Hay una reserva ${rentasConflictivas.estado} del ${new Date(rentasConflictivas.fechaInicio).toLocaleDateString('es-ES')} al ${new Date(rentasConflictivas.fechaFin).toLocaleDateString('es-ES')}`
+        },
         { status: 400 }
       );
     }
 
     // Calcular precio total
-    const inicio = new Date(fechaInicio);
-    const fin = new Date(fechaFin);
     const dias = Math.ceil((fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24));
     const precioTotal = dias * vehiculo.precioDiario;
 
@@ -152,8 +161,8 @@ export async function POST(request: NextRequest) {
       data: {
         clienteId,
         vehiculoId,
-        fechaInicio: new Date(fechaInicio),
-        fechaFin: new Date(fechaFin),
+        fechaInicio: inicio,
+        fechaFin: fin,
         precioTotal,
         observaciones: observaciones || null,
         estado: 'pendiente', // Estado inicial pendiente, el admin debe aprobar

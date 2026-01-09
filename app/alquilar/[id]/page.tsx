@@ -77,11 +77,17 @@ export default function AlquilarPage() {
     if (params.id) {
       fetchVehiculo(params.id as string);
     }
-    // Cargar datos del cliente registrado
-    const clienteId = localStorage.getItem('clienteId');
-    const clienteNombre = localStorage.getItem('clienteNombre');
-    if (clienteId && clienteNombre) {
-      setClienteRegistrado({ id: clienteId, nombre: clienteNombre });
+    // Cargar datos del cliente registrado (solo en cliente)
+    if (typeof window !== 'undefined') {
+      try {
+        const clienteId = localStorage.getItem('clienteId');
+        const clienteNombre = localStorage.getItem('clienteNombre');
+        if (clienteId && clienteNombre) {
+          setClienteRegistrado({ id: clienteId, nombre: clienteNombre });
+        }
+      } catch (error) {
+        console.error('Error leyendo localStorage:', error);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
@@ -106,6 +112,30 @@ export default function AlquilarPage() {
 
     if (!fechaInicio || !fechaFin) {
       showToast('Selecciona las fechas de renta', 'error');
+      return;
+    }
+
+    // Validar que la fecha de inicio sea anterior a la de fin
+    if (fechaFin <= fechaInicio) {
+      showToast('La fecha de fin debe ser posterior a la fecha de inicio', 'error');
+      return;
+    }
+
+    // Validar que la fecha de inicio no sea en el pasado
+    const ahora = new Date();
+    ahora.setHours(0, 0, 0, 0);
+    const inicio = new Date(fechaInicio);
+    inicio.setHours(0, 0, 0, 0);
+    
+    if (inicio < ahora) {
+      showToast('La fecha de inicio no puede ser en el pasado', 'error');
+      return;
+    }
+
+    // Validar que la renta sea de al menos 1 día
+    const dias = Math.ceil((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24));
+    if (dias < 1) {
+      showToast('La renta debe ser de al menos 1 día', 'error');
       return;
     }
 

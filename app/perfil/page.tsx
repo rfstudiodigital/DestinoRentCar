@@ -37,11 +37,15 @@ export default function PerfilPage() {
 
   const fetchClienteData = async () => {
     try {
-      // Obtener ID del cliente autenticado del localStorage
+      // Obtener ID del cliente autenticado del localStorage (solo en cliente)
+      if (typeof window === 'undefined') {
+        setIsLoading(false);
+        return;
+      }
+
       const clienteId = localStorage.getItem('clienteId');
       
       if (!clienteId) {
-        console.error('❌ No hay sesión de cliente activa');
         setIsLoading(false);
         return;
       }
@@ -55,8 +59,8 @@ export default function PerfilPage() {
         const errorData = await clienteResponse.json().catch(() => ({ error: 'Error desconocido' }));
         console.error('❌ Error cargando cliente:', errorData);
         
-        // Si el cliente no existe o hay error, limpiar localStorage
-        if (clienteResponse.status === 404 || clienteResponse.status === 500) {
+        // Si el cliente no existe o hay error, limpiar localStorage (solo en cliente)
+        if ((clienteResponse.status === 404 || clienteResponse.status === 500) && typeof window !== 'undefined') {
           localStorage.removeItem('clienteId');
           localStorage.removeItem('clienteNombre');
           localStorage.removeItem('clienteEmail');

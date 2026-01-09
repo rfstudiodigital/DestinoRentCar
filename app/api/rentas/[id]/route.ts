@@ -30,18 +30,18 @@ export async function PUT(
     }
 
     // Si se completa o cancela la renta, verificar si hay otras rentas activas antes de marcar como disponible
-    if (estado === 'completada' || estado === 'cancelada') {
-      // Verificar si hay otras rentas activas para este vehículo
-      const otrasRentasActivas = await prisma.renta.count({
+    if (estado === 'completada' || estado === 'cancelada' || estado === 'rechazada') {
+      // Verificar si hay otras rentas activas o pendientes para este vehículo
+      const otrasRentas = await prisma.renta.count({
         where: {
           vehiculoId: renta.vehiculoId,
-          estado: 'activa',
+          estado: { in: ['activa', 'pendiente'] },
           id: { not: params.id }, // Excluir la renta actual
         },
       });
 
-      // Solo marcar como disponible si no hay otras rentas activas
-      if (otrasRentasActivas === 0) {
+      // Solo marcar como disponible si no hay otras rentas activas o pendientes
+      if (otrasRentas === 0) {
         await prisma.vehiculo.update({
           where: { id: renta.vehiculoId },
           data: { disponible: true },
@@ -51,6 +51,49 @@ export async function PUT(
 
     // Si se activa una renta (estado cambia a 'activa'), marcar vehículo como no disponible
     if (estado === 'activa' && renta.estado !== 'activa') {
+      // Verificar que no haya conflictos con otras rentas activas
+      const rentasConflictivas = await prisma.renta.findFirst({
+        where: {
+          vehiculoId: renta.vehiculoId,
+          estado: 'activa',
+          id: { not: params.id },
+          OR: [
+            {
+              AND: [
+                { fechaInicio: { lte: renta.fechaInicio } },
+                { fechaFin: { gte: renta.fechaInicio } },
+              ],
+            },
+            {
+              AND: [
+                { fechaInicio: { lte: renta.fechaFin } },
+                { fechaFin: { gte: renta.fechaFin } },
+              ],
+            },
+            {
+              AND: [
+                { fechaInicio: { gte: renta.fechaInicio } },
+                { fechaFin: { lte: renta.fechaFin } },
+              ],
+            },
+          ],
+        },
+      });
+
+      if (rentasConflictivas) {
+        return NextResponse.json(
+          { 
+            error: 'No se puede activar esta renta porque hay otra renta activa en el mismo período',
+            conflicto: {
+              rentaId: rentasConflictivas.id,
+              fechaInicio: rentasConflictivas.fechaInicio,
+              fechaFin: rentasConflictivas.fechaFin,
+            }
+          },
+          { status: 400 }
+        );
+      }
+
       await prisma.vehiculo.update({
         where: { id: renta.vehiculoId },
         data: { disponible: false },

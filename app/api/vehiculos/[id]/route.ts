@@ -18,8 +18,9 @@ export async function GET(
       where: { id: params.id },
       include: {
         rentas: {
-          where: { estado: 'activa' },
+          where: { estado: { in: ['activa', 'pendiente'] } },
           include: { cliente: true },
+          orderBy: { fechaInicio: 'asc' },
         },
       },
     });

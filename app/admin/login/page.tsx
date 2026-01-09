@@ -32,10 +32,12 @@ export default function AdminLoginPage() {
 
       if (res.ok && data.success) {
         // Guardar sesión en localStorage
-        localStorage.setItem('adminAuthenticated', 'true');
-        localStorage.setItem('adminEmail', data.admin.email);
-        if (data.admin.nombre) {
-          localStorage.setItem('adminNombre', data.admin.nombre);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('adminAuthenticated', 'true');
+          localStorage.setItem('adminEmail', data.admin.email);
+          if (data.admin.nombre) {
+            localStorage.setItem('adminNombre', data.admin.nombre);
+          }
         }
         showToast('Login exitoso', 'success');
         router.push('/admin');

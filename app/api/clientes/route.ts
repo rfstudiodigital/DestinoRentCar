@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { isAdminAuthenticated } from '@/lib/auth-helpers';
 
 // GET - Listar todos los clientes (SOLO ADMIN)
 export async function GET(request: NextRequest) {
@@ -11,9 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Verificar que sea admin
-  const adminAuth = request.headers.get('x-admin-auth');
-  
-  if (!adminAuth || adminAuth !== 'true') {
+  if (!isAdminAuthenticated(request)) {
     return NextResponse.json(
       { error: 'Acceso denegado. Solo administradores pueden ver esta información.' },
       { status: 403 }

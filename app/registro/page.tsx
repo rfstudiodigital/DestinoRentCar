@@ -34,8 +34,10 @@ export default function RegistroPage() {
         const cliente = await res.json();
         showToast('¡Registro exitoso! Ya puedes hacer reservas', 'success');
         // Guardar ID del cliente en localStorage para futuras reservas
-        localStorage.setItem('clienteId', cliente.id);
-        localStorage.setItem('clienteNombre', cliente.nombre);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('clienteId', cliente.id);
+          localStorage.setItem('clienteNombre', cliente.nombre);
+        }
         router.push('/vehiculos');
       } else {
         const errorData = await res.json();

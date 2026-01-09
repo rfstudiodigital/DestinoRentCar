@@ -84,7 +84,7 @@ export default function AdminPage() {
   // Verificar autenticación al cargar
   useEffect(() => {
     const checkAuth = () => {
-      const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+      const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('adminAuthenticated') === 'true';
       if (!isAuthenticated) {
         router.push('/admin/login');
       } else {
@@ -358,9 +358,11 @@ export default function AdminPage() {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated');
-    localStorage.removeItem('adminEmail');
-    localStorage.removeItem('adminNombre');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('adminAuthenticated');
+      localStorage.removeItem('adminEmail');
+      localStorage.removeItem('adminNombre');
+    }
     router.push('/admin/login');
     showToast('Sesión cerrada', 'info');
   };

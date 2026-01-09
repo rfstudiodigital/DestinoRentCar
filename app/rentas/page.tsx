@@ -235,13 +235,15 @@ export default function RentasPage() {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Verificar si es admin
-    const isAdmin = localStorage.getItem('adminAuthenticated') === 'true';
-    if (!isAdmin) {
-      // Si no es admin, redirigir a la página principal
-      router.push('/');
-    } else {
-      setCheckingAuth(false);
+    // Verificar si es admin (solo en cliente)
+    if (typeof window !== 'undefined') {
+      const isAdmin = localStorage.getItem('adminAuthenticated') === 'true';
+      if (!isAdmin) {
+        // Si no es admin, redirigir a la página principal
+        router.push('/');
+      } else {
+        setCheckingAuth(false);
+      }
     }
   }, [router]);
 

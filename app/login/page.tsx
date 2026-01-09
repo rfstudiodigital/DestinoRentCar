@@ -36,12 +36,14 @@ function ClienteLoginForm() {
 
       if (res.ok && data.success) {
         // Guardar sesión en localStorage
-        localStorage.setItem('clienteId', data.cliente.id);
-        localStorage.setItem('clienteNombre', data.cliente.nombre);
-        localStorage.setItem('clienteEmail', data.cliente.email);
-        localStorage.setItem('clienteTelefono', data.cliente.telefono);
-        if (data.cliente.direccion) {
-          localStorage.setItem('clienteDireccion', data.cliente.direccion);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('clienteId', data.cliente.id);
+          localStorage.setItem('clienteNombre', data.cliente.nombre);
+          localStorage.setItem('clienteEmail', data.cliente.email);
+          localStorage.setItem('clienteTelefono', data.cliente.telefono);
+          if (data.cliente.direccion) {
+            localStorage.setItem('clienteDireccion', data.cliente.direccion);
+          }
         }
         showToast('¡Bienvenido de vuelta!', 'success');
         router.push(redirectTo);
