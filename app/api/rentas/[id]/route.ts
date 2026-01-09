@@ -57,6 +57,11 @@ export async function PUT(
       });
     }
 
+    // Obtener información del cliente antes de actualizar
+    const cliente = await prisma.cliente.findUnique({
+      where: { id: renta.clienteId },
+    });
+
     const rentaActualizada = await prisma.renta.update({
       where: { id: params.id },
       data: {
@@ -68,6 +73,53 @@ export async function PUT(
         vehiculo: true,
       },
     });
+
+    // Crear notificaciones cuando el admin cambia el estado de una reserva
+    if (estado && estado !== renta.estado && cliente) {
+      try {
+        let tipoNotif = '';
+        let tituloNotif = '';
+        let mensajeNotif = '';
+        const fechaInicio = new Date(renta.fechaInicio).toLocaleDateString('es-ES');
+        const fechaFin = new Date(renta.fechaFin).toLocaleDateString('es-ES');
+        const precioTotal = renta.precioTotal.toLocaleString('es-UY', { style: 'currency', currency: 'UYU' });
+
+        if (estado === 'activa') {
+          tipoNotif = 'reserva_confirmada';
+          tituloNotif = '¡Reserva Confirmada!';
+          mensajeNotif = `Tu reserva para ${rentaActualizada.vehiculo.marca} ${rentaActualizada.vehiculo.modelo} (${rentaActualizada.vehiculo.placa}) del ${fechaInicio} al ${fechaFin} ha sido confirmada. Total: ${precioTotal}`;
+        } else if (estado === 'rechazada') {
+          tipoNotif = 'reserva_rechazada';
+          tituloNotif = 'Reserva Rechazada';
+          mensajeNotif = `Tu reserva para ${rentaActualizada.vehiculo.marca} ${rentaActualizada.vehiculo.modelo} del ${fechaInicio} al ${fechaFin} ha sido rechazada. Por favor, contacta con nosotros para más información.`;
+        } else if (estado === 'cancelada') {
+          tipoNotif = 'reserva_cancelada';
+          tituloNotif = 'Reserva Cancelada';
+          mensajeNotif = `Tu reserva para ${rentaActualizada.vehiculo.marca} ${rentaActualizada.vehiculo.modelo} del ${fechaInicio} al ${fechaFin} ha sido cancelada.`;
+        } else if (estado === 'completada') {
+          tipoNotif = 'reserva_completada';
+          tituloNotif = 'Reserva Completada';
+          mensajeNotif = `Tu reserva para ${rentaActualizada.vehiculo.marca} ${rentaActualizada.vehiculo.modelo} ha sido completada. ¡Gracias por elegirnos!`;
+        }
+
+        if (tipoNotif) {
+          // Notificar al cliente
+          await prisma.notificacion.create({
+            data: {
+              clienteId: cliente.id,
+              tipo: tipoNotif,
+              titulo: tituloNotif,
+              mensaje: mensajeNotif,
+              url: '/rentas',
+              rentaId: renta.id,
+              leida: false,
+            },
+          });
+        }
+      } catch (notifError) {
+        console.error('Error creando notificación para cliente:', notifError);
+      }
+    }
 
     return NextResponse.json(rentaActualizada);
   } catch (error: any) {

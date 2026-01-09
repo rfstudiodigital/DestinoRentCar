@@ -10,15 +10,22 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // TODO: Obtener clienteId del usuario autenticado
-    const primeCliente = await prisma.cliente.findFirst();
-    
-    if (!primeCliente) {
-      return NextResponse.json([]);
+    // Obtener clienteId desde los query params (el cliente lo pasa desde el frontend)
+    const { searchParams } = new URL(request.url);
+    const clienteId = searchParams.get('clienteId');
+
+    if (!clienteId) {
+      return NextResponse.json(
+        { error: 'clienteId es requerido' },
+        { status: 400 }
+      );
     }
 
     const notificaciones = await prisma.notificacion.findMany({
-      where: { clienteId: primeCliente.id },
+      where: { 
+        clienteId: clienteId,
+        adminId: null, // Solo notificaciones de cliente, no de admin
+      },
       orderBy: { createdAt: 'desc' },
       take: 50, // Limitar a las últimas 50
     });

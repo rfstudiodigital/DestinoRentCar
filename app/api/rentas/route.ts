@@ -135,7 +135,19 @@ export async function POST(request: NextRequest) {
     const dias = Math.ceil((fin.getTime() - inicio.getTime()) / (1000 * 60 * 60 * 24));
     const precioTotal = dias * vehiculo.precioDiario;
 
-    // Crear la renta
+    // Obtener información del cliente
+    const cliente = await prisma.cliente.findUnique({
+      where: { id: clienteId },
+    });
+
+    if (!cliente) {
+      return NextResponse.json(
+        { error: 'Cliente no encontrado' },
+        { status: 404 }
+      );
+    }
+
+    // Crear la renta con estado pendiente
     const renta = await prisma.renta.create({
       data: {
         clienteId,
@@ -144,7 +156,7 @@ export async function POST(request: NextRequest) {
         fechaFin: new Date(fechaFin),
         precioTotal,
         observaciones: observaciones || null,
-        estado: 'activa',
+        estado: 'pendiente', // Estado inicial pendiente, el admin debe aprobar
       },
       include: {
         cliente: true,
@@ -152,11 +164,43 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Marcar vehículo como no disponible
-    await prisma.vehiculo.update({
-      where: { id: vehiculoId },
-      data: { disponible: false },
-    });
+    // Crear notificación para el ADMIN sobre la nueva reserva
+    try {
+      await prisma.notificacion.create({
+        data: {
+          adminId: 'admin', // Para todas las notificaciones de admin
+          tipo: 'nueva_reserva',
+          titulo: 'Nueva Reserva Solicitada',
+          mensaje: `${cliente.nombre} ha solicitado una reserva para ${vehiculo.marca} ${vehiculo.modelo} (${vehiculo.placa}) del ${inicio.toLocaleDateString('es-ES')} al ${fin.toLocaleDateString('es-ES')}. Total: ${precioTotal.toLocaleString('es-UY', { style: 'currency', currency: 'UYU' })}`,
+          url: '/admin?tab=rentas',
+          rentaId: renta.id,
+          leida: false,
+        },
+      });
+    } catch (notifError) {
+      // Si falla la notificación, no romper el flujo de creación de renta
+      console.error('Error creando notificación para admin:', notifError);
+    }
+
+    // Crear notificación para el CLIENTE
+    try {
+      await prisma.notificacion.create({
+        data: {
+          clienteId: cliente.id,
+          tipo: 'reserva_enviada',
+          titulo: 'Reserva Enviada',
+          mensaje: `Tu reserva para ${vehiculo.marca} ${vehiculo.modelo} ha sido enviada. Esperando confirmación del administrador.`,
+          url: '/rentas',
+          rentaId: renta.id,
+          leida: false,
+        },
+      });
+    } catch (notifError) {
+      console.error('Error creando notificación para cliente:', notifError);
+    }
+
+    // NO marcar vehículo como no disponible todavía
+    // El vehículo solo se marcará como no disponible cuando el admin apruebe la reserva
 
     return NextResponse.json(renta, { status: 201 });
   } catch (error: any) {

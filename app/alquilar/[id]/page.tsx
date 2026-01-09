@@ -130,7 +130,7 @@ export default function AlquilarPage() {
         throw new Error(error.error || 'Error al crear renta');
       }
 
-      showToast('¡Renta creada exitosamente!', 'success');
+      showToast('¡Reserva enviada exitosamente! El administrador revisará tu solicitud y te notificará.', 'success');
       router.push('/rentas');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error al crear renta', 'error');

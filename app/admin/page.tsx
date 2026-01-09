@@ -6,6 +6,7 @@ import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
 import VehiculoForm from '@/components/VehiculoForm';
 import { useToast } from '@/components/ToastProvider';
+import AdminNotificationBell from '@/components/AdminNotificationBell';
 import styles from './admin.module.css';
 
 interface Vehiculo {
@@ -392,6 +393,7 @@ export default function AdminPage() {
         <div className={styles.header}>
           <h1 className={styles.title}>Panel de Administración</h1>
           <div className={styles.actions}>
+            <AdminNotificationBell />
             <Link href="/" className={styles.link}>
               Ver como Cliente
             </Link>
@@ -506,9 +508,11 @@ export default function AdminPage() {
                 className={styles.filter}
               >
                 <option value="todas">Todas las rentas</option>
+                <option value="pendiente">Pendientes</option>
                 <option value="activa">Activas</option>
                 <option value="completada">Completadas</option>
                 <option value="cancelada">Canceladas</option>
+                <option value="rechazada">Rechazadas</option>
               </select>
             </div>
             {rentas.length === 0 ? (
@@ -559,6 +563,31 @@ export default function AdminPage() {
                         </div>
                       )}
                     </div>
+                    {renta.estado === 'pendiente' && (
+                      <div className={styles.rentaActions}>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Confirmar esta reserva? El vehículo quedará no disponible durante el período de alquiler.')) {
+                              handleCambiarEstadoRenta(renta.id, 'activa');
+                            }
+                          }}
+                          className={styles.confirmButton}
+                          style={{ backgroundColor: '#10b981', color: 'white' }}
+                        >
+                          ✓ Aprobar Reserva
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Estás seguro de rechazar esta reserva?')) {
+                              handleCambiarEstadoRenta(renta.id, 'rechazada');
+                            }
+                          }}
+                          className={styles.cancelButton}
+                        >
+                          ✗ Rechazar
+                        </button>
+                      </div>
+                    )}
                     {renta.estado === 'activa' && (
                       <div className={styles.rentaActions}>
                         <button

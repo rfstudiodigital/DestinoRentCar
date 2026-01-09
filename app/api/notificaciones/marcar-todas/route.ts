@@ -10,20 +10,32 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // TODO: Obtener clienteId del usuario autenticado
-    const primeCliente = await prisma.cliente.findFirst();
+    // Verificar si es admin o cliente
+    const adminAuth = request.headers.get('x-admin-auth');
     
-    if (!primeCliente) {
-      return NextResponse.json({ error: 'Cliente no encontrado' }, { status: 404 });
-    }
+    if (adminAuth === 'true') {
+      // Si es admin, marcar todas las notificaciones de admin
+      await prisma.notificacion.updateMany({
+        where: { adminId: 'admin', leida: false },
+        data: { leida: true },
+      });
+    } else {
+      // Si es cliente, obtener clienteId desde query params
+      const { searchParams } = new URL(request.url);
+      const clienteId = searchParams.get('clienteId');
+      
+      if (!clienteId) {
+        return NextResponse.json(
+          { error: 'clienteId es requerido para clientes' },
+          { status: 400 }
+        );
+      }
 
-    await prisma.notificacion.updateMany({
-      where: { 
-        clienteId: primeCliente.id,
-        leida: false 
-      },
-      data: { leida: true },
-    });
+      await prisma.notificacion.updateMany({
+        where: { clienteId: clienteId, leida: false, adminId: null },
+        data: { leida: true },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
