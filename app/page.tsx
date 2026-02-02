@@ -1,44 +1,152 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.logoContainer}>
-          <div className={styles.logoWrapper}>
-            <Image
-              src="/logo.svg.jpeg"
-              alt="Destino Rent Car Logo"
-              width={500}
-              height={250}
-              priority
-              className={styles.logoImage}
-            />
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={`${styles.logoContainer} ${mounted ? styles.logoAnimated : ''}`}>
+            <div className={styles.logoWrapper}>
+              <Image
+                src="/logo.svg.jpeg"
+                alt="Destino Rent Car Logo"
+                width={500}
+                height={250}
+                priority
+                className={styles.logoImage}
+              />
+            </div>
+          </div>
+          
+          <h1 className={`${styles.heroTitle} ${mounted ? styles.titleAnimated : ''}`}>
+            Tu viaje perfecto comienza aquí
+          </h1>
+          
+          <p className={`${styles.heroSubtitle} ${mounted ? styles.subtitleAnimated : ''}`}>
+            Descubre la libertad de viajar con nuestra flota de vehículos premium.
+            Reserva en minutos, disfruta por días.
+          </p>
+
+          <div className={`${styles.ctaButtons} ${mounted ? styles.buttonsAnimated : ''}`}>
+            <Link href="/vehiculos" className={styles.primaryButton}>
+              <span>Explorar Vehículos</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
+            <Link href="/registro" className={styles.secondaryButton}>
+              Crear Cuenta
+            </Link>
           </div>
         </div>
-        
-        <h1 className={styles.title}>Bienvenido a Destino Rent Car</h1>
-        
-        <p className={styles.description}>
-          Tu solución completa para la renta de vehículos
-        </p>
 
-        <div className={styles.grid}>
-          <Link href="/vehiculos" className={styles.card}>
-            <h2>Ver Vehículos &rarr;</h2>
-            <p>Explora nuestra flota de vehículos disponibles para alquilar</p>
-          </Link>
-
-          <Link href="/registro" className={styles.card}>
-            <h2>Registrarse &rarr;</h2>
-            <p>Regístrate como cliente para hacer reservas online</p>
-          </Link>
-
+        {/* Floating Elements */}
+        <div className={styles.floatingElements}>
+          <div className={styles.floatingCircle1}></div>
+          <div className={styles.floatingCircle2}></div>
+          <div className={styles.floatingCircle3}></div>
         </div>
-      </div>
+      </section>
+
+      {/* Features Section */}
+      <section className={styles.features}>
+        <div className={styles.featuresContainer}>
+          <h2 className={styles.sectionTitle}>¿Por qué elegir Destino Rent Car?</h2>
+          
+          <div className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Reserva Rápida</h3>
+              <p>Proceso simple y rápido. Reserva tu vehículo en minutos desde cualquier dispositivo.</p>
+            </div>
+
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Flota Premium</h3>
+              <p>Vehículos modernos, mantenidos y listos para tu aventura. Calidad garantizada.</p>
+            </div>
+
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Atención 24/7</h3>
+              <p>Soporte disponible cuando lo necesites. Estamos aquí para ayudarte en cada paso.</p>
+            </div>
+
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Precios Transparentes</h3>
+              <p>Sin sorpresas. Precios claros y competitivos sin costos ocultos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className={styles.stats}>
+        <div className={styles.statsContainer}>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>500+</div>
+            <div className={styles.statLabel}>Vehículos Disponibles</div>
+          </div>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>10K+</div>
+            <div className={styles.statLabel}>Clientes Satisfechos</div>
+          </div>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>98%</div>
+            <div className={styles.statLabel}>Satisfacción</div>
+          </div>
+          <div className={styles.statItem}>
+            <div className={styles.statNumber}>24/7</div>
+            <div className={styles.statLabel}>Soporte</div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className={styles.ctaSection}>
+        <div className={styles.ctaContainer}>
+          <h2 className={styles.ctaTitle}>¿Listo para tu próxima aventura?</h2>
+          <p className={styles.ctaText}>
+            Explora nuestra flota y encuentra el vehículo perfecto para tu viaje.
+          </p>
+          <Link href="/vehiculos" className={styles.ctaButton}>
+            Ver Vehículos Disponibles
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
-
