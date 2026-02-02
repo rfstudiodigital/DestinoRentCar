@@ -45,7 +45,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2.5rem;
+  padding: 2.5rem 3rem;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border-radius: 32px;
@@ -53,9 +53,9 @@
     0 20px 60px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  min-height: 180px;
+  min-height: 200px;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   position: relative;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -114,7 +114,7 @@
 .logoWrapper {
   position: relative;
   width: 100%;
-  max-width: 550px;
+  max-width: 600px;
   height: auto;
   display: flex;
   justify-content: center;
@@ -124,11 +124,13 @@
 .logoImage {
   width: 100% !important;
   height: auto !important;
-  max-width: 550px;
-  max-height: 280px;
+  max-width: 600px;
+  max-height: 300px;
   object-fit: contain;
   object-position: center center;
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.15));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .heroTitle {
@@ -550,14 +552,20 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero {
-    padding: 1.5rem;
-    min-height: 90vh;
+    padding: 1.5rem 1rem;
+    min-height: 85vh;
+    padding-top: 2rem;
+  }
+
+  .heroContent {
+    gap: 1.5rem;
   }
 
   .logoContainer {
-    padding: 2rem;
-    min-height: 150px;
+    padding: 2rem 1.5rem;
+    min-height: 160px;
     max-width: 100%;
+    border-radius: 24px;
   }
 
   .logoWrapper {
@@ -566,27 +574,50 @@
 
   .logoImage {
     max-width: 100% !important;
-    max-height: 200px !important;
+    max-height: 220px !important;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
   }
 
   .ctaButtons {
     flex-direction: column;
     width: 100%;
+    gap: 1rem;
+    padding: 0 1rem;
   }
 
   .primaryButton,
   .secondaryButton {
     width: 100%;
     justify-content: center;
+    padding: 1rem 2rem;
+    font-size: 1rem;
   }
 
   .features {
     padding: 4rem 1.5rem;
   }
 
+  .sectionTitle {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
   .featuresGrid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+
+  .featureCard {
+    padding: 2rem 1.5rem;
   }
 
   .stats {
@@ -598,33 +629,145 @@
     gap: 2rem;
   }
 
+  .statNumber {
+    font-size: 2.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.95rem;
+  }
+
   .ctaSection {
     padding: 4rem 1.5rem;
   }
 
   .ctaContainer {
     padding: 2.5rem 1.5rem;
+    border-radius: 24px;
+  }
+
+  .ctaTitle {
+    font-size: 1.75rem;
+  }
+
+  .ctaText {
+    font-size: 1.1rem;
+  }
+
+  .ctaButton {
+    width: 100%;
+    justify-content: center;
+    padding: 1.1rem 2rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero {
-    min-height: 85vh;
+    min-height: 80vh;
+    padding: 1rem 0.75rem;
+    padding-top: 1.5rem;
+  }
+
+  .heroContent {
+    gap: 1.25rem;
   }
 
   .logoContainer {
-    padding: 1.5rem;
-    min-height: 120px;
-    border-radius: 24px;
+    padding: 1.5rem 1rem;
+    min-height: 140px;
+    border-radius: 20px;
+    max-width: 95%;
   }
 
   .logoImage {
-    max-height: 150px !important;
+    max-height: 180px !important;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+    padding: 0 0.5rem;
+  }
+
+  .ctaButtons {
+    padding: 0 0.5rem;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .features {
+    padding: 3rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .featureCard {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .featureIcon {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 1.25rem;
+  }
+
+  .featureCard h3 {
+    font-size: 1.25rem;
+  }
+
+  .featureCard p {
+    font-size: 0.95rem;
+  }
+
+  .stats {
+    padding: 2.5rem 1rem;
   }
 
   .statsContainer {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+  }
+
+  .statNumber {
+    font-size: 2.25rem;
+  }
+
+  .statLabel {
+    font-size: 0.9rem;
+  }
+
+  .ctaSection {
+    padding: 3rem 1rem;
+  }
+
+  .ctaContainer {
+    padding: 2rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .ctaTitle {
+    font-size: 1.5rem;
+  }
+
+  .ctaText {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .ctaButton {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
   }
 
   .floatingCircle1,

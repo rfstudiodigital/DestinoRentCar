@@ -7,14 +7,16 @@ import Image from 'next/image';
 import { useToast } from '@/components/ToastProvider';
 import InstallPWAButton from '@/components/InstallPWAButton';
 import NotificationBell from '@/components/NotificationBell';
-import LocaleSwitcher from '@/components/LocaleSwitcher';
+import LocaleSwitcher, { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './Header.module.css';
 
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [clienteLogueado, setClienteLogueado] = useState<{ nombre: string; email: string } | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Verificar si hay sesión de cliente
@@ -36,7 +38,8 @@ export default function Header() {
     localStorage.removeItem('clienteTelefono');
     localStorage.removeItem('clienteDireccion');
     setClienteLogueado(null);
-    showToast('Sesión cerrada', 'info');
+    showToast(t('nav.logout'), 'info');
+    setIsMobileMenuOpen(false);
     if (pathname?.startsWith('/alquilar') || pathname?.startsWith('/rentas')) {
       router.push('/vehiculos');
     }
@@ -51,7 +54,7 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <Link href="/" className={styles.logoLink}>
+      <Link href="/" className={styles.logoLink} onClick={() => setIsMobileMenuOpen(false)}>
         <div className={styles.logoWrapper}>
           <Image
             src="/logo.svg.jpeg"
@@ -63,35 +66,46 @@ export default function Header() {
           />
         </div>
       </Link>
-      <nav className={styles.nav}>
-        <Link href="/vehiculos" className={styles.navLink}>
-          Vehículos
+      
+      {/* Mobile Menu Button */}
+      <button 
+        className={styles.mobileMenuButton}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span className={isMobileMenuOpen ? styles.closeIcon : styles.menuIcon}>
+          {isMobileMenuOpen ? '✕' : '☰'}
+        </span>
+      </button>
+
+      <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.navOpen : ''}`}>
+        <Link href="/vehiculos" className={styles.navLink} onClick={() => setIsMobileMenuOpen(false)}>
+          {t('nav.vehicles')}
         </Link>
         {clienteLogueado ? (
           <>
-            <Link href="/perfil" className={styles.navLink}>
-              Mi Perfil
+            <Link href="/perfil" className={styles.navLink} onClick={() => setIsMobileMenuOpen(false)}>
+              {t('nav.profile')}
             </Link>
             <NotificationBell />
             <span className={styles.userInfo}>
-              Hola, {clienteLogueado.nombre}
+              {t('nav.hello')} {clienteLogueado.nombre}
             </span>
             <button onClick={handleLogout} className={styles.logoutButton}>
-              Cerrar Sesión
+              {t('nav.logout')}
             </button>
           </>
         ) : (
-          <Link href={getRedirectUrl()} className={styles.loginLink}>
-            Iniciar Sesión
+          <Link href={getRedirectUrl()} className={styles.loginLink} onClick={() => setIsMobileMenuOpen(false)}>
+            {t('nav.login')}
           </Link>
         )}
         <LocaleSwitcher />
         <InstallPWAButton />
-        <Link href="/admin/login" className={styles.adminLink}>
-          Admin
+        <Link href="/admin/login" className={styles.adminLink} onClick={() => setIsMobileMenuOpen(false)}>
+          {t('nav.admin')}
         </Link>
       </nav>
     </header>
   );
 }
-

@@ -48,7 +48,6 @@ export default function RootLayout({
         <link rel="canonical" href="https://destinorentcar.com" />
       </head>
       <body className={inter.className}>
-        <SkipToContent />
         <ToastProvider>
           <Header />
           <main id="main-content">

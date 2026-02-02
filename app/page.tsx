@@ -3,13 +3,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './page.module.css';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const { t, locale } = useTranslation();
 
   useEffect(() => {
     setMounted(true);
+    
+    // Listen for locale changes
+    const handleLocaleChange = () => {
+      window.location.reload();
+    };
+    
+    window.addEventListener('localechange', handleLocaleChange);
+    return () => window.removeEventListener('localechange', handleLocaleChange);
   }, []);
 
   return (
@@ -22,32 +32,32 @@ export default function Home() {
               <Image
                 src="/logo.svg.jpeg"
                 alt="Destino Rent Car Logo"
-                width={500}
-                height={250}
+                width={600}
+                height={300}
                 priority
                 className={styles.logoImage}
+                quality={95}
               />
             </div>
           </div>
           
           <h1 className={`${styles.heroTitle} ${mounted ? styles.titleAnimated : ''}`}>
-            Tu viaje perfecto comienza aquí
+            {t('home.title')}
           </h1>
           
           <p className={`${styles.heroSubtitle} ${mounted ? styles.subtitleAnimated : ''}`}>
-            Descubre la libertad de viajar con nuestra flota de vehículos premium.
-            Reserva en minutos, disfruta por días.
+            {t('home.subtitle')}
           </p>
 
           <div className={`${styles.ctaButtons} ${mounted ? styles.buttonsAnimated : ''}`}>
             <Link href="/vehiculos" className={styles.primaryButton}>
-              <span>Explorar Vehículos</span>
+              <span>{t('home.explore')}</span>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
             <Link href="/registro" className={styles.secondaryButton}>
-              Crear Cuenta
+              {t('home.register')}
             </Link>
           </div>
         </div>
@@ -63,7 +73,7 @@ export default function Home() {
       {/* Features Section */}
       <section className={styles.features}>
         <div className={styles.featuresContainer}>
-          <h2 className={styles.sectionTitle}>¿Por qué elegir Destino Rent Car?</h2>
+          <h2 className={styles.sectionTitle}>{t('features.title')}</h2>
           
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
@@ -72,8 +82,8 @@ export default function Home() {
                   <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <h3>Reserva Rápida</h3>
-              <p>Proceso simple y rápido. Reserva tu vehículo en minutos desde cualquier dispositivo.</p>
+              <h3>{t('features.quick')}</h3>
+              <p>{t('features.quickDesc')}</p>
             </div>
 
             <div className={styles.featureCard}>
@@ -82,8 +92,8 @@ export default function Home() {
                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <h3>Flota Premium</h3>
-              <p>Vehículos modernos, mantenidos y listos para tu aventura. Calidad garantizada.</p>
+              <h3>{t('features.premium')}</h3>
+              <p>{t('features.premiumDesc')}</p>
             </div>
 
             <div className={styles.featureCard}>
@@ -93,8 +103,8 @@ export default function Home() {
                 <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <h3>Atención 24/7</h3>
-              <p>Soporte disponible cuando lo necesites. Estamos aquí para ayudarte en cada paso.</p>
+              <h3>{t('features.support')}</h3>
+              <p>{t('features.supportDesc')}</p>
             </div>
 
             <div className={styles.featureCard}>
@@ -103,8 +113,8 @@ export default function Home() {
                 <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <h3>Precios Transparentes</h3>
-              <p>Sin sorpresas. Precios claros y competitivos sin costos ocultos.</p>
+              <h3>{t('features.prices')}</h3>
+              <p>{t('features.pricesDesc')}</p>
             </div>
           </div>
         </div>
@@ -115,19 +125,19 @@ export default function Home() {
         <div className={styles.statsContainer}>
           <div className={styles.statItem}>
             <div className={styles.statNumber}>500+</div>
-            <div className={styles.statLabel}>Vehículos Disponibles</div>
+            <div className={styles.statLabel}>{t('stats.vehicles')}</div>
           </div>
           <div className={styles.statItem}>
             <div className={styles.statNumber}>10K+</div>
-            <div className={styles.statLabel}>Clientes Satisfechos</div>
+            <div className={styles.statLabel}>{t('stats.clients')}</div>
           </div>
           <div className={styles.statItem}>
             <div className={styles.statNumber}>98%</div>
-            <div className={styles.statLabel}>Satisfacción</div>
+            <div className={styles.statLabel}>{t('stats.satisfaction')}</div>
           </div>
           <div className={styles.statItem}>
             <div className={styles.statNumber}>24/7</div>
-            <div className={styles.statLabel}>Soporte</div>
+            <div className={styles.statLabel}>{t('stats.support')}</div>
           </div>
         </div>
       </section>
@@ -135,12 +145,12 @@ export default function Home() {
       {/* CTA Section */}
       <section className={styles.ctaSection}>
         <div className={styles.ctaContainer}>
-          <h2 className={styles.ctaTitle}>¿Listo para tu próxima aventura?</h2>
+          <h2 className={styles.ctaTitle}>{t('cta.title')}</h2>
           <p className={styles.ctaText}>
-            Explora nuestra flota y encuentra el vehículo perfecto para tu viaje.
+            {t('cta.text')}
           </p>
           <Link href="/vehiculos" className={styles.ctaButton}>
-            Ver Vehículos Disponibles
+            {t('cta.button')}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>

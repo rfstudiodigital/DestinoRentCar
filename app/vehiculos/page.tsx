@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
 import SearchFilters from '@/components/SearchFilters';
-import styles from '../page.module.css';
+import styles from './page.module.css';
 
 interface Vehiculo {
   id: string;
@@ -160,26 +160,36 @@ export default function VehiculosPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', background: 'linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '2rem' }}>
-          Vehículos Disponibles
-        </h1>
+        <div className={styles.header}>
+          <h1 className={styles.title}>
+            Vehículos Disponibles
+          </h1>
+          <p className={styles.subtitle}>
+            Encuentra el vehículo perfecto para tu próximo viaje
+          </p>
+        </div>
 
         <SearchFilters onFilterChange={handleFilterChange} />
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '4rem 0', fontSize: '1.25rem', color: '#6B7280' }}>
-            Cargando vehículos...
+          <div className={styles.loadingState}>
+            <div className={styles.spinner}></div>
+            <p>Cargando vehículos...</p>
           </div>
         ) : vehiculosFiltrados.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem 0', fontSize: '1.25rem', color: '#6B7280' }}>
-            No hay vehículos que coincidan con los filtros seleccionados.
+          <div className={styles.emptyState}>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 17H15M12 12V12.01M12 3C7.58172 3 4 6.58172 4 11C4 14.5265 6.17157 17.5 9.2 19.2C9.5 19.4 9.5 19.8 9.5 20.2V21H14.5V20.2C14.5 19.8 14.5 19.4 14.8 19.2C17.8284 17.5 20 14.5265 20 11C20 6.58172 16.4183 3 12 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <h3>No se encontraron vehículos</h3>
+            <p>No hay vehículos que coincidan con los filtros seleccionados.</p>
           </div>
         ) : (
           <>
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1rem', fontWeight: '600', color: 'var(--text-light)' }}>
+            <div className={styles.resultsCount}>
               {vehiculosFiltrados.length} vehículo{vehiculosFiltrados.length !== 1 ? 's' : ''} encontrado{vehiculosFiltrados.length !== 1 ? 's' : ''}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div className={styles.grid}>
               {vehiculosFiltrados.map((vehiculo) => (
                 <VehiculoCard key={vehiculo.id} vehiculo={vehiculo} />
               ))}
