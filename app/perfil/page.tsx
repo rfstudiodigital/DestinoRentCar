@@ -50,14 +50,15 @@ export default function PerfilPage() {
         return;
       }
 
-      console.log('🔍 Cargando perfil del cliente:', clienteId);
-      
       // Obtener datos del cliente autenticado (incluye sus rentas)
       const clienteResponse = await fetch(`/api/clientes/${clienteId}`);
       
       if (!clienteResponse.ok) {
         const errorData = await clienteResponse.json().catch(() => ({ error: 'Error desconocido' }));
-        console.error('❌ Error cargando cliente:', errorData);
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error cargando cliente:', errorData);
+        }
         
         // Si el cliente no existe o hay error, limpiar localStorage (solo en cliente)
         if ((clienteResponse.status === 404 || clienteResponse.status === 500) && typeof window !== 'undefined') {
@@ -72,7 +73,6 @@ export default function PerfilPage() {
       }
 
       const clienteData = await clienteResponse.json();
-      console.log('✅ Cliente cargado:', clienteData);
       
       // Establecer datos del cliente
       setCliente({
@@ -85,17 +85,12 @@ export default function PerfilPage() {
 
       // Procesar rentas incluidas en la respuesta
       if (clienteData.rentas && Array.isArray(clienteData.rentas)) {
-        console.log('📋 Rentas incluidas en respuesta:', clienteData.rentas.length);
-        
         const activas = clienteData.rentas.filter((r: any) => 
           r.estado === 'activa' || r.estado === 'pendiente'
         );
         const completadas = clienteData.rentas.filter((r: any) => 
           r.estado === 'completada'
         );
-        
-        console.log('✅ Rentas activas:', activas.length);
-        console.log('✅ Rentas completadas:', completadas.length);
         
         setRentasActivas(activas.map((r: any) => ({
           id: r.id,
@@ -123,14 +118,13 @@ export default function PerfilPage() {
           },
         })));
       } else {
-        console.log('⚠️  No hay rentas en la respuesta');
         setRentasActivas([]);
         setHistorial([]);
       }
     } catch (error: any) {
-      console.error('❌ Error fetching cliente data:', error);
-      console.error('Error message:', error?.message);
-      console.error('Error stack:', error?.stack);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching cliente data:', error);
+      }
     } finally {
       setIsLoading(false);
     }

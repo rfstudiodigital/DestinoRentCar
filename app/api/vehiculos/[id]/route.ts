@@ -33,10 +33,17 @@ export async function GET(
     }
 
     return NextResponse.json(vehiculo);
-  } catch (error) {
-    console.error('Error obteniendo vehículo:', error);
+  } catch (error: any) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error obteniendo vehículo:', error);
+    }
     return NextResponse.json(
-      { error: 'Error al obtener vehículo' },
+      { 
+        error: 'Error al obtener vehículo',
+        ...(process.env.NODE_ENV === 'development' && { 
+          details: error?.message 
+        })
+      },
       { status: 500 }
     );
   }
@@ -75,7 +82,9 @@ export async function PUT(
 
     return NextResponse.json(vehiculo);
   } catch (error: any) {
-    console.error('Error actualizando vehículo:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error actualizando vehículo:', error);
+    }
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Vehículo no encontrado' },
@@ -89,7 +98,12 @@ export async function PUT(
       );
     }
     return NextResponse.json(
-      { error: 'Error al actualizar vehículo' },
+      { 
+        error: 'Error al actualizar vehículo',
+        ...(process.env.NODE_ENV === 'development' && { 
+          details: error?.message 
+        })
+      },
       { status: 500 }
     );
   }
@@ -129,7 +143,9 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Vehículo eliminado correctamente' });
   } catch (error: any) {
-    console.error('Error eliminando vehículo:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error eliminando vehículo:', error);
+    }
     if (error.code === 'P2025') {
       return NextResponse.json(
         { error: 'Vehículo no encontrado' },
@@ -137,7 +153,12 @@ export async function DELETE(
       );
     }
     return NextResponse.json(
-      { error: 'Error al eliminar vehículo' },
+      { 
+        error: 'Error al eliminar vehículo',
+        ...(process.env.NODE_ENV === 'development' && { 
+          details: error?.message 
+        })
+      },
       { status: 500 }
     );
   }

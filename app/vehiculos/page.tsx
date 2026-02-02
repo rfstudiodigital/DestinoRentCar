@@ -28,7 +28,6 @@ export default function VehiculosPage() {
 
   const fetchVehiculos = async () => {
     try {
-      console.log('📡 Iniciando fetch a /api/vehiculos');
       const res = await fetch('/api/vehiculos', {
         cache: 'no-store',
         headers: {
@@ -36,63 +35,40 @@ export default function VehiculosPage() {
         },
       });
       
-      console.log('📡 Respuesta API vehículos:', res.status, res.statusText, res.ok);
-      
       if (!res.ok) {
-        const errorData = await res.json().catch((parseError) => {
-          console.error('❌ Error parseando respuesta de error:', parseError);
-          return { error: 'Error desconocido', message: 'No se pudo parsear la respuesta del servidor' };
-        });
-        console.error('❌ Error en API vehículos:', errorData);
+        const errorData = await res.json().catch(() => ({
+          error: 'Error desconocido',
+          message: 'No se pudo parsear la respuesta del servidor'
+        }));
         
-        // Mostrar detalles completos del error
-        const errorMessage = errorData.message || errorData.error || 'Error desconocido';
-        const errorCode = errorData.code || '';
-        const errorName = errorData.name || '';
+        const errorMessage = errorData.message || errorData.error || 'Error al cargar vehículos';
         
-        console.error('Error completo:', {
-          status: res.status,
-          message: errorMessage,
-          code: errorCode,
-          name: errorName,
-          fullError: errorData,
-        });
-        
-        // Si es error 500, sugerir revisar /api/debug
-        if (res.status === 500) {
-          alert(`Error del servidor (500): ${errorMessage}${errorCode ? `\nCódigo: ${errorCode}` : ''}\n\nVisita /api/debug para más detalles`);
-        } else {
-          alert(`Error cargando vehículos (${res.status}): ${errorMessage}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error en API vehículos:', {
+            status: res.status,
+            message: errorMessage,
+            details: errorData
+          });
         }
+        
         return;
       }
 
       const data = await res.json();
-      console.log('✅ Datos recibidos:', data);
-      console.log('✅ Tipo de dato:', Array.isArray(data) ? 'array' : typeof data);
-      console.log('✅ Longitud:', Array.isArray(data) ? data.length : 'N/A');
       
       if (!Array.isArray(data)) {
-        console.error('❌ Los datos no son un array:', data);
-        console.error('❌ Tipo recibido:', typeof data);
-        alert(`Error: Se esperaba un array pero se recibió ${typeof data}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error: Se esperaba un array pero se recibió', typeof data);
+        }
         return;
       }
 
-      console.log('✅ Vehículos recibidos:', data.length, 'vehículos');
       setTodosVehiculos(data);
       setVehiculosFiltrados(data.filter((v: Vehiculo) => v.disponible));
-      
-      if (data.length === 0) {
-        console.log('⚠️  Array vacío - no hay vehículos en la base de datos');
-        console.log('💡 Ejecuta: npm run db:seed para crear datos de ejemplo');
-      }
     } catch (error) {
-      console.error('❌ Error cargando vehículos:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      console.error('Error tipo:', error instanceof Error ? error.constructor.name : typeof error);
-      console.error('Error completo:', error);
-      alert(`Error de conexión: ${errorMessage}\n\nVisita /api/test-db para diagnosticar el problema`);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error cargando vehículos:', error);
+      }
     } finally {
       setLoading(false);
     }

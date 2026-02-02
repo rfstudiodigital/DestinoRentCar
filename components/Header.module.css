@@ -194,6 +194,20 @@
   border-left-color: var(--primary-color);
 }
 
+@media (max-width: 968px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -224,6 +238,10 @@
     max-width: 180px !important;
     max-height: 60px !important;
     object-position: center center;
+  }
+
+  .userInfo {
+    display: none;
   }
 }
 

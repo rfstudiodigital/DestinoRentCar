@@ -213,9 +213,32 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(renta, { status: 201 });
   } catch (error: any) {
-    console.error('Error creando renta:', error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error creando renta:', error);
+    }
+    
+    // Manejo de errores específicos de Prisma
+    if (error?.code === 'P2002') {
+      return NextResponse.json(
+        { error: 'Ya existe una renta con estos datos' },
+        { status: 400 }
+      );
+    }
+    
+    if (error?.code === 'P2003') {
+      return NextResponse.json(
+        { error: 'Cliente o vehículo no encontrado' },
+        { status: 404 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Error al crear renta' },
+      { 
+        error: 'Error al crear renta',
+        ...(process.env.NODE_ENV === 'development' && { 
+          details: error?.message 
+        })
+      },
       { status: 500 }
     );
   }
