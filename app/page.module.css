@@ -124,13 +124,14 @@
 .logoImage {
   width: 100% !important;
   height: auto !important;
-  max-width: 600px;
-  max-height: 300px;
+  max-width: 650px;
+  max-height: 320px;
   object-fit: contain;
   object-position: center center;
-  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.15));
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.2));
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .heroTitle {

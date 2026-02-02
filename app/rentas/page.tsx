@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './rentas.module.css';
 
 interface Renta {
@@ -31,9 +32,15 @@ interface Renta {
 function RentasContent() {
   const searchParams = useSearchParams();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [rentas, setRentas] = useState<Renta[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('todas');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchRentas = async () => {
     try {
@@ -49,11 +56,12 @@ function RentasContent() {
         const data = await res.json();
         setRentas(data);
       } else if (res.status === 403) {
-        // Si no es admin, redirigir
         window.location.href = '/';
       }
     } catch (error) {
-      console.error('Error cargando rentas:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error cargando rentas:', error);
+      }
     } finally {
       setLoading(false);
     }
@@ -62,7 +70,6 @@ function RentasContent() {
   useEffect(() => {
     fetchRentas();
     
-    // Mostrar mensaje de éxito si viene de crear renta
     if (searchParams.get('success') === 'true') {
       showToast('¡Renta creada exitosamente!', 'success');
     }
@@ -121,38 +128,48 @@ function RentasContent() {
 
   return (
     <>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Rentas</h1>
+      <div className={`${styles.header} ${mounted ? styles.headerAnimated : ''}`}>
+        <h1 className={styles.title}>{t('rentals.title')}</h1>
         <div className={styles.actions}>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             className={styles.filter}
           >
-            <option value="todas">Todas</option>
-            <option value="activa">Activas</option>
-            <option value="completada">Completadas</option>
-            <option value="cancelada">Canceladas</option>
+            <option value="todas">{t('common.all')}</option>
+            <option value="activa">{t('rentals.active')}</option>
+            <option value="completada">{t('rentals.completed')}</option>
+            <option value="cancelada">{t('rentals.cancelled')}</option>
           </select>
           <Link href="/admin" className={styles.link}>
-            Panel Admin
+            {t('nav.admin')}
           </Link>
         </div>
       </div>
 
       {loading ? (
-        <div className={styles.loading}>Cargando rentas...</div>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <p>{t('rentals.loading')}</p>
+        </div>
       ) : rentas.length === 0 ? (
-        <div className={styles.empty}>
-          <p>No hay rentas registradas</p>
+        <div className={`${styles.empty} ${mounted ? styles.emptyAnimated : ''}`}>
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 17H15M12 12V12.01M12 3C7.58172 3 4 6.58172 4 11C4 14.5265 6.17157 17.5 9.2 19.2C9.5 19.4 9.5 19.8 9.5 20.2V21H14.5V20.2C14.5 19.8 14.5 19.4 14.8 19.2C17.8284 17.5 20 14.5265 20 11C20 6.58172 16.4183 3 12 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <p>{t('rentals.empty')}</p>
           <Link href="/vehiculos" className={styles.button}>
-            Ver Vehículos Disponibles
+            {t('cta.button')}
           </Link>
         </div>
       ) : (
         <div className={styles.grid}>
-          {rentas.map((renta) => (
-            <div key={renta.id} className={styles.card}>
+          {rentas.map((renta, index) => (
+            <div 
+              key={renta.id} 
+              className={`${styles.card} ${mounted ? styles.cardAnimated : ''}`}
+              style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
+            >
               <div className={styles.cardHeader}>
                 <h3>
                   {renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}
@@ -161,42 +178,42 @@ function RentasContent() {
                   className={styles.badge}
                   style={{ backgroundColor: getEstadoColor(renta.estado) }}
                 >
-                  {renta.estado.toUpperCase()}
+                  {t(`rentals.${renta.estado}`).toUpperCase()}
                 </span>
               </div>
 
               <div className={styles.cardBody}>
                 <div className={styles.infoRow}>
-                  <strong>Cliente:</strong>
+                  <strong>{t('rentals.client')}:</strong>
                   <span>{renta.cliente.nombre}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Email:</strong>
+                  <strong>{t('register.email')}:</strong>
                   <span>{renta.cliente.email}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Teléfono:</strong>
+                  <strong>{t('register.phone')}:</strong>
                   <span>{renta.cliente.telefono}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Placa:</strong>
+                  <strong>{t('vehicleDetail.plates')}:</strong>
                   <span>{renta.vehiculo.placa}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Fecha Inicio:</strong>
+                  <strong>{t('rentals.startDate')}:</strong>
                   <span>{formatearFecha(renta.fechaInicio)}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Fecha Fin:</strong>
+                  <strong>{t('rentals.endDate')}:</strong>
                   <span>{formatearFecha(renta.fechaFin)}</span>
                 </div>
                 <div className={styles.infoRow}>
-                  <strong>Precio Total:</strong>
+                  <strong>{t('rentals.total')}:</strong>
                   <span className={styles.price}>{formatearPrecio(renta.precioTotal)}</span>
                 </div>
                 {renta.observaciones && (
                   <div className={styles.observaciones}>
-                    <strong>Observaciones:</strong>
+                    <strong>{t('rentals.observations')}:</strong>
                     <p>{renta.observaciones}</p>
                   </div>
                 )}
@@ -208,17 +225,17 @@ function RentasContent() {
                     onClick={() => handleCambiarEstado(renta.id, 'completada')}
                     className={styles.completeButton}
                   >
-                    Marcar como Completada
+                    {t('rentals.markCompleted')}
                   </button>
                   <button
                     onClick={() => {
-                      if (confirm('¿Estás seguro de cancelar esta renta?')) {
+                      if (confirm(t('rentals.confirmCancel'))) {
                         handleCambiarEstado(renta.id, 'cancelada');
                       }
                     }}
                     className={styles.cancelButton}
                   >
-                    Cancelar
+                    {t('common.cancel')}
                   </button>
                 </div>
               )}
@@ -232,14 +249,13 @@ function RentasContent() {
 
 export default function RentasPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Verificar si es admin (solo en cliente)
     if (typeof window !== 'undefined') {
       const isAdmin = localStorage.getItem('adminAuthenticated') === 'true';
       if (!isAdmin) {
-        // Si no es admin, redirigir a la página principal
         router.push('/');
       } else {
         setCheckingAuth(false);
@@ -251,7 +267,7 @@ export default function RentasPage() {
     return (
       <main className={styles.main}>
         <div className={styles.container}>
-          <div className={styles.loading}>Verificando acceso...</div>
+          <div className={styles.loading}>{t('common.loading')}</div>
         </div>
       </main>
     );
@@ -260,7 +276,7 @@ export default function RentasPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <Suspense fallback={<div className={styles.loading}>Cargando...</div>}>
+        <Suspense fallback={<div className={styles.loading}>{t('common.loading')}</div>}>
           <RentasContent />
         </Suspense>
       </div>

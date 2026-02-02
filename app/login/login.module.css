@@ -38,14 +38,42 @@
 }
 
 .loginBox {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   padding: 3rem;
-  border-radius: 24px;
-  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  border-radius: 28px;
+  box-shadow: 
+    var(--shadow-xl), 
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.15);
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loginBox.animated {
+  animation: slideUpFade 0.6s ease-out;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loginBox:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    var(--shadow-xl), 
+    0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 25px 70px rgba(0, 0, 0, 0.2);
 }
 
 .loginBox::before {
@@ -67,7 +95,29 @@
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(251, 185, 19, 0.1) 100%);
+  border-radius: 20px;
+  color: var(--primary-color);
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .title {
@@ -111,22 +161,32 @@
   font-size: 0.9rem;
 }
 
-.field input {
-  padding: 1rem;
+.field input,
+.input {
+  padding: 1rem 1.25rem;
   border: 2px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
-  transition: all var(--transition-base);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   background: var(--background);
+  position: relative;
 }
 
-.field input:focus {
+.field input:focus,
+.input:focus {
   outline: none;
   border-color: var(--primary-color);
   background: white;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 4px rgba(59, 130, 246, 0.1),
+    0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.field input:hover,
+.input:hover {
+  border-color: var(--primary-light);
 }
 
 .submitButton {

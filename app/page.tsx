@@ -32,11 +32,12 @@ export default function Home() {
               <Image
                 src="/logo.svg.jpeg"
                 alt="Destino Rent Car Logo"
-                width={600}
-                height={300}
+                width={650}
+                height={320}
                 priority
                 className={styles.logoImage}
-                quality={95}
+                quality={100}
+                unoptimized={false}
               />
             </div>
           </div>

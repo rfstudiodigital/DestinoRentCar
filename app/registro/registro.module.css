@@ -2,11 +2,60 @@
   min-height: 100vh;
   padding: 2rem;
   background: linear-gradient(135deg, #ebf4ff 0%, #fff9e5 50%, #ebf4ff 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.main::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.1) 0%,
+    transparent 70%
+  );
+  animation: pulse 20s ease-in-out infinite;
 }
 
 .container {
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.headerAnimated {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formAnimated {
+  animation: slideUpFade 0.6s ease-out 0.2s backwards;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header {
@@ -53,14 +102,48 @@
 }
 
 .formContainer {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: var(--shadow-xl);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  padding: 3rem;
+  border-radius: 28px;
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 20px 60px rgba(0, 0, 0, 0.15);
   border: 2px solid transparent;
   position: relative;
   overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.formContainer:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    var(--shadow-xl),
+    0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 25px 70px rgba(0, 0, 0, 0.2);
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(251, 185, 19, 0.1) 100%);
+  border-radius: 20px;
+  color: var(--primary-color);
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .formContainer::before {
@@ -114,22 +197,31 @@
   font-size: 0.9rem;
 }
 
-.field input {
-  padding: 0.875rem;
+.field input,
+.input {
+  padding: 1rem 1.25rem;
   border: 2px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
-  transition: all var(--transition-base);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   background: var(--background);
 }
 
-.field input:focus {
+.field input:focus,
+.input:focus {
   outline: none;
   border-color: var(--primary-color);
   background: white;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 4px rgba(59, 130, 246, 0.1),
+    0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.field input:hover,
+.input:hover {
+  border-color: var(--primary-light);
 }
 
 .actions {

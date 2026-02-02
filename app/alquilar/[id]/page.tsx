@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import ImageGallery from '@/components/ImageGallery';
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import ReviewForm from '@/components/ReviewForm';
@@ -44,6 +45,7 @@ export default function AlquilarPage() {
   const params = useParams();
   const router = useRouter();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [vehiculo, setVehiculo] = useState<Vehiculo | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -53,6 +55,11 @@ export default function AlquilarPage() {
   const [precioTotal, setPrecioTotal] = useState<number>(0);
   const [reviewRefresh, setReviewRefresh] = useState(0);
   const [clienteRegistrado, setClienteRegistrado] = useState<{ id: string; nombre: string } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchVehiculo = async (id: string) => {
     try {
@@ -61,13 +68,13 @@ export default function AlquilarPage() {
         const data = await res.json();
         setVehiculo(data);
       } else {
-        setError('Vehículo no encontrado');
-        showToast('Vehículo no encontrado', 'error');
+        setError(t('vehicleDetail.error'));
+        showToast(t('vehicleDetail.error'), 'error');
         router.push('/vehiculos');
       }
     } catch (error) {
-      setError('Error al cargar vehículo');
-      showToast('Error al cargar vehículo', 'error');
+      setError(t('vehicleDetail.error'));
+      showToast(t('vehicleDetail.error'), 'error');
     } finally {
       setLoading(false);
     }
@@ -105,37 +112,34 @@ export default function AlquilarPage() {
     e.preventDefault();
 
     if (!clienteRegistrado) {
-      showToast('Debes iniciar sesión para rentar', 'error');
+      showToast(t('vehicleDetail.loginRequired'), 'error');
       router.push(`/login?redirect=/alquilar/${params.id}`);
       return;
     }
 
     if (!fechaInicio || !fechaFin) {
-      showToast('Selecciona las fechas de renta', 'error');
+      showToast(t('vehicleDetail.selectDates'), 'error');
       return;
     }
 
-    // Validar que la fecha de inicio sea anterior a la de fin
     if (fechaFin <= fechaInicio) {
-      showToast('La fecha de fin debe ser posterior a la fecha de inicio', 'error');
+      showToast(t('vehicleDetail.invalidDates'), 'error');
       return;
     }
 
-    // Validar que la fecha de inicio no sea en el pasado
     const ahora = new Date();
     ahora.setHours(0, 0, 0, 0);
     const inicio = new Date(fechaInicio);
     inicio.setHours(0, 0, 0, 0);
     
     if (inicio < ahora) {
-      showToast('La fecha de inicio no puede ser en el pasado', 'error');
+      showToast(t('vehicleDetail.pastDate'), 'error');
       return;
     }
 
-    // Validar que la renta sea de al menos 1 día
     const dias = Math.ceil((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24));
     if (dias < 1) {
-      showToast('La renta debe ser de al menos 1 día', 'error');
+      showToast(t('vehicleDetail.minDays'), 'error');
       return;
     }
 
@@ -160,7 +164,7 @@ export default function AlquilarPage() {
         throw new Error(error.error || 'Error al crear renta');
       }
 
-      showToast('¡Reserva enviada exitosamente! El administrador revisará tu solicitud y te notificará.', 'success');
+      showToast(t('vehicleDetail.reservationSent'), 'success');
       router.push('/rentas');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Error al crear renta', 'error');
@@ -173,7 +177,10 @@ export default function AlquilarPage() {
     return (
       <main className={styles.main}>
         <div className={styles.container}>
-          <div className={styles.loading}>Cargando...</div>
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>{t('vehicleDetail.loading')}</p>
+          </div>
         </div>
       </main>
     );
@@ -184,9 +191,9 @@ export default function AlquilarPage() {
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.error}>
-            <p>{error || 'Vehículo no encontrado'}</p>
+            <p>{error || t('vehicleDetail.error')}</p>
             <Link href="/vehiculos" className={styles.button}>
-              Volver a Vehículos
+              {t('vehicleDetail.back')}
             </Link>
           </div>
         </div>
@@ -197,8 +204,8 @@ export default function AlquilarPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <Link href="/vehiculos" className={styles.backButton}>
-          ← Volver a Vehículos
+        <Link href="/vehiculos" className={`${styles.backButton} ${mounted ? styles.backAnimated : ''}`}>
+          ← {t('vehicleDetail.back')}
         </Link>
 
         {/* Galería de Imágenes */}
@@ -220,57 +227,57 @@ export default function AlquilarPage() {
         )}
 
         {/* Información Principal */}
-        <div className={styles.header}>
+        <div className={`${styles.header} ${mounted ? styles.headerAnimated : ''}`}>
           <h1 className={styles.title}>{vehiculo.marca} {vehiculo.modelo} ({vehiculo.anio})</h1>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <span className={styles.statValue}>{formatearPrecioSimple(vehiculo.precioDiario)}</span>
-              <span className={styles.statLabel}>por día</span>
+              <span className={styles.statLabel}>{t('vehicles.perDay')}</span>
             </div>
             {vehiculo.calificacionPromedio && vehiculo.calificacionPromedio > 0 && (
               <div className={styles.stat}>
                 <span className={styles.statValue}>⭐ {vehiculo.calificacionPromedio.toFixed(1)}</span>
-                <span className={styles.statLabel}>{vehiculo.vecesRentado || 0} rentas</span>
+                <span className={styles.statLabel}>{vehiculo.vecesRentado || 0} {t('rentals.title')}</span>
               </div>
             )}
             <div className={styles.stat}>
               <span className={`${styles.badge} ${vehiculo.disponible ? styles.badgeSuccess : styles.badgeDanger}`}>
-                {vehiculo.disponible ? '✓ Disponible' : '✗ No disponible'}
+                {vehiculo.disponible ? `✓ ${t('vehicles.available')}` : `✗ ${t('vehicles.notAvailable')}`}
               </span>
             </div>
           </div>
         </div>
 
         {/* Grid de Información */}
-        <div className={styles.infoGrid}>
-          <div className={styles.infoCard}>
-            <h3>📋 Especificaciones</h3>
+        <div className={`${styles.infoGrid} ${mounted ? styles.gridAnimated : ''}`}>
+          <div className={`${styles.infoCard} ${mounted ? styles.cardAnimated : ''}`} style={mounted ? { animationDelay: '0.1s' } : {}}>
+            <h3>📋 {t('vehicleDetail.specifications')}</h3>
             <ul className={styles.infoList}>
-              <li><strong>Tipo:</strong> {vehiculo.tipoVehiculo || 'No especificado'}</li>
-              <li><strong>Transmisión:</strong> {vehiculo.transmision || 'No especificada'}</li>
-              <li><strong>Combustible:</strong> {vehiculo.combustible || 'No especificado'}</li>
-              <li><strong>Motor:</strong> {vehiculo.motor || 'No especificado'}</li>
-              <li><strong>Color:</strong> {vehiculo.color}</li>
-              <li><strong>Placas:</strong> {vehiculo.placas}</li>
+              <li><strong>{t('vehicleDetail.type')}:</strong> {vehiculo.tipoVehiculo || t('vehicleDetail.notSpecified')}</li>
+              <li><strong>{t('vehicleDetail.transmission')}:</strong> {vehiculo.transmision || t('vehicleDetail.notSpecified')}</li>
+              <li><strong>{t('vehicleDetail.fuel')}:</strong> {vehiculo.combustible || t('vehicleDetail.notSpecified')}</li>
+              <li><strong>{t('vehicleDetail.motor')}:</strong> {vehiculo.motor || t('vehicleDetail.notSpecified')}</li>
+              <li><strong>{t('vehicleDetail.color')}:</strong> {vehiculo.color}</li>
+              <li><strong>{t('vehicleDetail.plates')}:</strong> {vehiculo.placas || t('vehicleDetail.notSpecified')}</li>
             </ul>
           </div>
 
-          <div className={styles.infoCard}>
-            <h3>👥 Capacidad</h3>
+          <div className={`${styles.infoCard} ${mounted ? styles.cardAnimated : ''}`} style={mounted ? { animationDelay: '0.2s' } : {}}>
+            <h3>👥 {t('vehicleDetail.capacity')}</h3>
             <ul className={styles.infoList}>
-              <li><strong>Pasajeros:</strong> {vehiculo.pasajeros || 'No especificado'}</li>
-              <li><strong>Puertas:</strong> {vehiculo.puertas || 'No especificado'}</li>
+              <li><strong>{t('vehicleDetail.passengers')}:</strong> {vehiculo.pasajeros || t('vehicleDetail.notSpecified')}</li>
+              <li><strong>{t('vehicleDetail.doors')}:</strong> {vehiculo.puertas || t('vehicleDetail.notSpecified')}</li>
             </ul>
           </div>
 
-          <div className={styles.infoCard}>
-            <h3>🔧 Características</h3>
+          <div className={`${styles.infoCard} ${mounted ? styles.cardAnimated : ''}`} style={mounted ? { animationDelay: '0.3s' } : {}}>
+            <h3>🔧 {t('vehicleDetail.features')}</h3>
             <ul className={styles.featuresList}>
-              {vehiculo.aireAcondicionado && <li>❄️ Aire acondicionado</li>}
-              {vehiculo.gps && <li>🗺️ GPS</li>}
-              {vehiculo.bluetooth && <li>📱 Bluetooth</li>}
-              {vehiculo.camaraReversa && <li>📹 Cámara de reversa</li>}
-              {vehiculo.sensoresEstacionamiento && <li>🔔 Sensores de estacionamiento</li>}
+              {vehiculo.aireAcondicionado && <li>❄️ {t('vehicleDetail.airConditioning')}</li>}
+              {vehiculo.gps && <li>🗺️ {t('vehicleDetail.gps')}</li>}
+              {vehiculo.bluetooth && <li>📱 {t('vehicleDetail.bluetooth')}</li>}
+              {vehiculo.camaraReversa && <li>📹 {t('vehicleDetail.reverseCamera')}</li>}
+              {vehiculo.sensoresEstacionamiento && <li>🔔 {t('vehicleDetail.parkingSensors')}</li>}
               {vehiculo.caracteristicas && vehiculo.caracteristicas.length > 0 && 
                 vehiculo.caracteristicas.split(',').map((feat, idx) => (
                   <li key={idx}>✓ {feat.trim()}</li>
@@ -280,16 +287,16 @@ export default function AlquilarPage() {
           </div>
 
           {vehiculo.descripcion && (
-            <div className={`${styles.infoCard} ${styles.fullWidth}`}>
-              <h3>📝 Descripción</h3>
+            <div className={`${styles.infoCard} ${styles.fullWidth} ${mounted ? styles.cardAnimated : ''}`} style={mounted ? { animationDelay: '0.4s' } : {}}>
+              <h3>📝 {t('vehicleDetail.description')}</h3>
               <p>{vehiculo.descripcion}</p>
             </div>
           )}
         </div>
 
         {/* Calendario de Disponibilidad */}
-        <div className={styles.calendarSection}>
-          <h2>📅 Selecciona las Fechas</h2>
+        <div className={`${styles.calendarSection} ${mounted ? styles.sectionAnimated : ''}`}>
+          <h2>📅 {t('vehicleDetail.selectDates')}</h2>
           {clienteRegistrado ? (
             <AvailabilityCalendar
               vehiculoId={vehiculo.id}
@@ -299,15 +306,15 @@ export default function AlquilarPage() {
           ) : (
             <div className={styles.loginPrompt}>
               <p>
-                <strong>Inicia sesión</strong> para ver el calendario de disponibilidad y hacer tu reserva.
+                <strong>{t('vehicleDetail.loginRequired')}</strong>
               </p>
               <Link href={`/login?redirect=/alquilar/${params.id}`} className={styles.loginButton}>
-                Iniciar Sesión
+                {t('vehicleDetail.loginButton')}
               </Link>
               <p className={styles.registerPrompt}>
-                ¿No tienes cuenta?{' '}
+                {t('vehicleDetail.noAccount')}{' '}
                 <Link href="/registro" className={styles.registerLink}>
-                  Regístrate aquí
+                  {t('vehicleDetail.register')}
                 </Link>
               </p>
             </div>
@@ -315,26 +322,26 @@ export default function AlquilarPage() {
 
           {/* Resumen de Precio */}
           {clienteRegistrado && fechaInicio && fechaFin && precioTotal > 0 && (
-            <div className={styles.resumenPrecio}>
-              <h3>💰 Resumen del Alquiler</h3>
+            <div className={`${styles.resumenPrecio} ${mounted ? styles.resumenAnimated : ''}`}>
+              <h3>💰 {t('vehicleDetail.rentalSummary')}</h3>
               <div className={styles.resumenLine}>
-                <span>Fechas:</span>
+                <span>{t('vehicleDetail.dates')}:</span>
                 <strong>
                   {fechaInicio.toLocaleDateString('es-ES')} - {fechaFin.toLocaleDateString('es-ES')}
                 </strong>
               </div>
               <div className={styles.resumenLine}>
-                <span>Días:</span>
+                <span>{t('vehicleDetail.days')}:</span>
                 <strong>
-                  {Math.ceil((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24))} día(s)
+                  {Math.ceil((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24))} {t('vehicleDetail.days').toLowerCase()}
                 </strong>
               </div>
               <div className={styles.resumenLine}>
-                <span>Precio por día:</span>
+                <span>{t('vehicleDetail.pricePerDay')}:</span>
                 <strong>{formatearPrecioSimple(vehiculo.precioDiario)}</strong>
               </div>
               <div className={styles.resumenTotal}>
-                <span>Total a pagar:</span>
+                <span>{t('vehicleDetail.totalPrice')}:</span>
                 <strong>{formatearPrecioSimple(precioTotal)}</strong>
               </div>
               <button
@@ -342,15 +349,15 @@ export default function AlquilarPage() {
                 disabled={submitting || !vehiculo.disponible}
                 className={styles.reserveButton}
               >
-                {submitting ? 'Procesando...' : '🚗 Reservar Ahora'}
+                {submitting ? t('common.loading') : `🚗 ${t('vehicleDetail.reserveNow')}`}
               </button>
             </div>
           )}
         </div>
 
         {/* Sección de Reseñas */}
-        <div className={styles.reviewsSection}>
-          <h2>⭐ Reseñas</h2>
+        <div className={`${styles.reviewsSection} ${mounted ? styles.sectionAnimated : ''}`}>
+          <h2>⭐ {t('vehicleDetail.reviews')}</h2>
           <ReviewList vehiculoId={vehiculo.id} key={reviewRefresh} />
           {clienteRegistrado && (
             <ReviewForm

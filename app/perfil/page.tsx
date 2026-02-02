@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './perfil.module.css';
 
 interface Cliente {
@@ -26,18 +27,20 @@ interface Renta {
 }
 
 export default function PerfilPage() {
+  const { t } = useTranslation();
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [rentasActivas, setRentasActivas] = useState<Renta[]>([]);
   const [historial, setHistorial] = useState<Renta[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     fetchClienteData();
   }, []);
 
   const fetchClienteData = async () => {
     try {
-      // Obtener ID del cliente autenticado del localStorage (solo en cliente)
       if (typeof window === 'undefined') {
         setIsLoading(false);
         return;
@@ -50,7 +53,6 @@ export default function PerfilPage() {
         return;
       }
 
-      // Obtener datos del cliente autenticado (incluye sus rentas)
       const clienteResponse = await fetch(`/api/clientes/${clienteId}`);
       
       if (!clienteResponse.ok) {
@@ -60,7 +62,6 @@ export default function PerfilPage() {
           console.error('Error cargando cliente:', errorData);
         }
         
-        // Si el cliente no existe o hay error, limpiar localStorage (solo en cliente)
         if ((clienteResponse.status === 404 || clienteResponse.status === 500) && typeof window !== 'undefined') {
           localStorage.removeItem('clienteId');
           localStorage.removeItem('clienteNombre');
@@ -74,7 +75,6 @@ export default function PerfilPage() {
 
       const clienteData = await clienteResponse.json();
       
-      // Establecer datos del cliente
       setCliente({
         id: clienteData.id,
         nombre: clienteData.nombre,
@@ -83,7 +83,6 @@ export default function PerfilPage() {
         licencia: clienteData.licencia || null,
       });
 
-      // Procesar rentas incluidas en la respuesta
       if (clienteData.rentas && Array.isArray(clienteData.rentas)) {
         const activas = clienteData.rentas.filter((r: any) => 
           r.estado === 'activa' || r.estado === 'pendiente'
@@ -131,15 +130,20 @@ export default function PerfilPage() {
   };
 
   if (isLoading) {
-    return <div className={styles.loading}>Cargando perfil...</div>;
+    return (
+      <div className={styles.loading}>
+        <div className={styles.spinner}></div>
+        <p>{t('profile.loading')}</p>
+      </div>
+    );
   }
 
   if (!cliente) {
     return (
       <div className={styles.error}>
-        <h2>No se pudo cargar el perfil</h2>
+        <h2>{t('profile.error')}</h2>
         <Link href="/login" className={styles.loginLink}>
-          Iniciar Sesión
+          {t('profile.login')}
         </Link>
       </div>
     );
@@ -147,62 +151,68 @@ export default function PerfilPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>Mi Perfil</h1>
+      <h1 className={`${styles.pageTitle} ${mounted ? styles.titleAnimated : ''}`}>
+        {t('profile.title')}
+      </h1>
 
       {/* Información Personal */}
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>Información Personal</h2>
+      <div className={`${styles.card} ${mounted ? styles.cardAnimated : ''}`}>
+        <h2 className={styles.cardTitle}>{t('profile.personalInfo')}</h2>
         <div className={styles.infoGrid}>
           <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Nombre Completo</span>
+            <span className={styles.infoLabel}>{t('profile.fullName')}</span>
             <span className={styles.infoValue}>{cliente.nombre}</span>
           </div>
           <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Email</span>
+            <span className={styles.infoLabel}>{t('profile.email')}</span>
             <span className={styles.infoValue}>{cliente.email}</span>
           </div>
           <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Teléfono</span>
+            <span className={styles.infoLabel}>{t('profile.phone')}</span>
             <span className={styles.infoValue}>{cliente.telefono}</span>
           </div>
           <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Licencia</span>
-            <span className={styles.infoValue}>{cliente.licencia || 'No registrada'}</span>
+            <span className={styles.infoLabel}>{t('profile.license')}</span>
+            <span className={styles.infoValue}>{cliente.licencia || t('profile.licenseNotRegistered')}</span>
           </div>
         </div>
       </div>
 
       {/* Rentas Activas */}
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>Rentas Activas</h2>
+      <div className={`${styles.card} ${mounted ? styles.cardAnimated : ''}`} style={{ animationDelay: '0.1s' }}>
+        <h2 className={styles.cardTitle}>{t('profile.activeRentals')}</h2>
         {rentasActivas.length === 0 ? (
           <div className={styles.empty}>
-            <p>No tienes rentas activas</p>
+            <p>{t('profile.noActiveRentals')}</p>
             <Link href="/vehiculos" className={styles.browseButton}>
-              Explorar Vehículos
+              {t('profile.explore')}
             </Link>
           </div>
         ) : (
           <div className={styles.rentasList}>
-            {rentasActivas.map((renta) => (
-              <div key={renta.id} className={`${styles.rentaCard} ${styles.active}`}>
+            {rentasActivas.map((renta, index) => (
+              <div 
+                key={renta.id} 
+                className={`${styles.rentaCard} ${styles.active}`}
+                style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
+              >
                 <div className={styles.rentaHeader}>
                   <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}</h3>
                   <span className={`${styles.badge} ${styles[renta.estado]}`}>
-                    {renta.estado.toUpperCase()}
+                    {t(`rentals.${renta.estado}`)}
                   </span>
                 </div>
                 <div className={styles.rentaDetails}>
                   <div className={styles.detailRow}>
-                    <span>Inicio:</span>
+                    <span>{t('rentals.startDate')}:</span>
                     <strong>{new Date(renta.fechaInicio).toLocaleDateString('es-ES')}</strong>
                   </div>
                   <div className={styles.detailRow}>
-                    <span>Fin:</span>
+                    <span>{t('rentals.endDate')}:</span>
                     <strong>{new Date(renta.fechaFin).toLocaleDateString('es-ES')}</strong>
                   </div>
                   <div className={styles.detailRow}>
-                    <span>Total:</span>
+                    <span>{t('rentals.total')}:</span>
                     <strong className={styles.price}>${renta.precioTotal.toLocaleString()}</strong>
                   </div>
                 </div>
@@ -213,31 +223,35 @@ export default function PerfilPage() {
       </div>
 
       {/* Historial */}
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>Historial de Rentas</h2>
+      <div className={`${styles.card} ${mounted ? styles.cardAnimated : ''}`} style={{ animationDelay: '0.2s' }}>
+        <h2 className={styles.cardTitle}>{t('profile.history')}</h2>
         {historial.length === 0 ? (
           <div className={styles.empty}>
-            <p>No tienes rentas completadas</p>
+            <p>{t('profile.noHistory')}</p>
           </div>
         ) : (
           <div className={styles.rentasList}>
-            {historial.map((renta) => (
-              <div key={renta.id} className={styles.rentaCard}>
+            {historial.map((renta, index) => (
+              <div 
+                key={renta.id} 
+                className={styles.rentaCard}
+                style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
+              >
                 <div className={styles.rentaHeader}>
                   <h3>{renta.vehiculo.marca} {renta.vehiculo.modelo} {renta.vehiculo.anio}</h3>
                   <span className={`${styles.badge} ${styles.completada}`}>
-                    COMPLETADA
+                    {t('rentals.completed')}
                   </span>
                 </div>
                 <div className={styles.rentaDetails}>
                   <div className={styles.detailRow}>
-                    <span>Período:</span>
+                    <span>{t('rentals.startDate')} - {t('rentals.endDate')}:</span>
                     <strong>
                       {new Date(renta.fechaInicio).toLocaleDateString('es-ES')} - {new Date(renta.fechaFin).toLocaleDateString('es-ES')}
                     </strong>
                   </div>
                   <div className={styles.detailRow}>
-                    <span>Total:</span>
+                    <span>{t('rentals.total')}:</span>
                     <strong className={styles.price}>${renta.precioTotal.toLocaleString()}</strong>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VehiculoCard from '@/components/VehiculoCard';
 import SearchFilters from '@/components/SearchFilters';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './page.module.css';
 
 interface Vehiculo {
@@ -22,9 +23,15 @@ interface Vehiculo {
 }
 
 export default function VehiculosPage() {
+  const { t } = useTranslation();
   const [todosVehiculos, setTodosVehiculos] = useState<Vehiculo[]>([]);
   const [vehiculosFiltrados, setVehiculosFiltrados] = useState<Vehiculo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchVehiculos = async () => {
     try {
@@ -160,38 +167,46 @@ export default function VehiculosPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <div className={styles.header}>
+        <div className={`${styles.header} ${mounted ? styles.headerAnimated : ''}`}>
           <h1 className={styles.title}>
-            Vehículos Disponibles
+            {t('vehicles.title')}
           </h1>
           <p className={styles.subtitle}>
-            Encuentra el vehículo perfecto para tu próximo viaje
+            {t('vehicles.subtitle')}
           </p>
         </div>
 
-        <SearchFilters onFilterChange={handleFilterChange} />
+        <div className={mounted ? styles.filtersAnimated : ''}>
+          <SearchFilters onFilterChange={handleFilterChange} />
+        </div>
 
         {loading ? (
           <div className={styles.loadingState}>
             <div className={styles.spinner}></div>
-            <p>Cargando vehículos...</p>
+            <p>{t('vehicles.loading')}</p>
           </div>
         ) : vehiculosFiltrados.length === 0 ? (
-          <div className={styles.emptyState}>
+          <div className={`${styles.emptyState} ${mounted ? styles.emptyAnimated : ''}`}>
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 17H15M12 12V12.01M12 3C7.58172 3 4 6.58172 4 11C4 14.5265 6.17157 17.5 9.2 19.2C9.5 19.4 9.5 19.8 9.5 20.2V21H14.5V20.2C14.5 19.8 14.5 19.4 14.8 19.2C17.8284 17.5 20 14.5265 20 11C20 6.58172 16.4183 3 12 3Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <h3>No se encontraron vehículos</h3>
-            <p>No hay vehículos que coincidan con los filtros seleccionados.</p>
+            <h3>{t('vehicles.empty')}</h3>
+            <p>{t('vehicles.emptyDesc')}</p>
           </div>
         ) : (
           <>
-            <div className={styles.resultsCount}>
-              {vehiculosFiltrados.length} vehículo{vehiculosFiltrados.length !== 1 ? 's' : ''} encontrado{vehiculosFiltrados.length !== 1 ? 's' : ''}
+            <div className={`${styles.resultsCount} ${mounted ? styles.countAnimated : ''}`}>
+              {vehiculosFiltrados.length} {vehiculosFiltrados.length === 1 ? t('vehicles.found') : t('vehicles.foundPlural')}
             </div>
             <div className={styles.grid}>
-              {vehiculosFiltrados.map((vehiculo) => (
-                <VehiculoCard key={vehiculo.id} vehiculo={vehiculo} />
+              {vehiculosFiltrados.map((vehiculo, index) => (
+                <div 
+                  key={vehiculo.id} 
+                  className={mounted ? styles.cardWrapper : ''}
+                  style={mounted ? { animationDelay: `${index * 0.1}s` } : {}}
+                >
+                  <VehiculoCard vehiculo={vehiculo} />
+                </div>
               ))}
             </div>
           </>

@@ -1,16 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useToast } from '@/components/ToastProvider';
+import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './registro.module.css';
 
 export default function RegistroPage() {
   const router = useRouter();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +40,6 @@ export default function RegistroPage() {
       if (res.ok) {
         const cliente = await res.json();
         showToast('¡Registro exitoso! Ya puedes hacer reservas', 'success');
-        // Guardar ID del cliente en localStorage para futuras reservas
         if (typeof window !== 'undefined') {
           localStorage.setItem('clienteId', cliente.id);
           localStorage.setItem('clienteNombre', cliente.nombre);
@@ -43,7 +49,6 @@ export default function RegistroPage() {
         const errorData = await res.json();
         if (res.status === 400 && errorData.error?.includes('Ya existe')) {
           showToast('Ya tienes una cuenta con este email. Redirigiendo al login...', 'info');
-          // Redirigir al login con el email prellenado
           router.push(`/login?email=${encodeURIComponent(email)}`);
           return;
         }
@@ -60,79 +65,89 @@ export default function RegistroPage() {
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Registro de Cliente</h1>
+        <div className={`${styles.header} ${mounted ? styles.headerAnimated : ''}`}>
+          <h1 className={styles.title}>{t('register.title')}</h1>
           <Link href="/" className={styles.backLink}>
-            ← Volver al inicio
+            {t('register.back')}
           </Link>
         </div>
 
-        <div className={styles.formContainer}>
+        <div className={`${styles.formContainer} ${mounted ? styles.formAnimated : ''}`}>
+          <div className={styles.iconWrapper}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
           <p className={styles.description}>
-            Regístrate para poder hacer reservas de vehículos online
+            {t('register.subtitle')}
           </p>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             {error && <div className={styles.errorMessage}>{error}</div>}
 
             <div className={styles.field}>
-              <label htmlFor="nombre">Nombre Completo *</label>
+              <label htmlFor="nombre">{t('register.name')} *</label>
               <input
                 type="text"
                 id="nombre"
                 name="nombre"
                 required
-                placeholder="Juan Pérez"
+                placeholder={t('register.namePlaceholder')}
+                className={styles.input}
               />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="email">Email *</label>
+              <label htmlFor="email">{t('register.email')} *</label>
               <input
                 type="email"
                 id="email"
                 name="email"
                 required
-                placeholder="juan@ejemplo.com"
+                placeholder={t('register.emailPlaceholder')}
+                className={styles.input}
               />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="telefono">Teléfono *</label>
+              <label htmlFor="telefono">{t('register.phone')} *</label>
               <input
                 type="tel"
                 id="telefono"
                 name="telefono"
                 required
-                placeholder="+598 99 123 456"
+                placeholder={t('register.phonePlaceholder')}
+                className={styles.input}
               />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="direccion">Dirección</label>
+              <label htmlFor="direccion">{t('register.address')}</label>
               <input
                 type="text"
                 id="direccion"
                 name="direccion"
-                placeholder="Calle y número"
+                placeholder={t('register.addressPlaceholder')}
+                className={styles.input}
               />
             </div>
 
             <div className={styles.actions}>
               <Link href="/vehiculos" className={styles.cancelButton}>
-                Cancelar
+                {t('register.cancel')}
               </Link>
               <button type="submit" disabled={loading} className={styles.submitButton}>
-                {loading ? 'Registrando...' : 'Registrarse'}
+                {loading ? t('register.loading') : t('register.button')}
               </button>
             </div>
           </form>
 
           <div className={styles.login}>
             <p>
-              ¿Ya tienes cuenta?{' '}
+              {t('register.hasAccount')}{' '}
               <Link href="/vehiculos" className={styles.loginLink}>
-                Ver vehículos disponibles
+                {t('register.viewVehicles')}
               </Link>
             </p>
           </div>
