@@ -41,12 +41,8 @@ export default function Home() {
     <main className={styles.main}>
       {/* Hero */}
       <section className={styles.hero}>
-        <div className={styles.heroBg}>
-          <div className={styles.heroGradient} />
-        </div>
-
         <div className={`${styles.heroContent} ${mounted ? styles.heroReveal : ''}`}>
-          <h1 className={styles.heroTitle}>{t('home.title')}</h1>
+          <h1 className={styles.heroTitle}>Destino Rent Car</h1>
           <p className={styles.heroSubtitle}>{t('home.subtitle')}</p>
 
           <div className={styles.ctaButtons}>
@@ -59,19 +55,12 @@ export default function Home() {
             </Link>
           </div>
         </div>
-
-        <div className={styles.floatingOrbs}>
-          <span className={styles.orb1} />
-          <span className={styles.orb2} />
-          <span className={styles.orb3} />
-        </div>
       </section>
 
       {/* Features */}
       <section id="features" ref={featuresRef} className={`${styles.features} ${visibleSections.features ? styles.visible : ''}`}>
         <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>{t('features.title')}</h2>
-          <div className={styles.titleBar} />
           <div className={styles.featuresGrid}>
             {[
               { icon: 'check', key: 'quick', desc: 'quickDesc' },

@@ -1,28 +1,28 @@
 .main {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 68px);
   padding: 2rem;
-  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+  background: var(--background);
 }
 
 .container {
-  max-width: 1320px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 1.5rem 0;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
 }
 
 .headerAnimated {
-  animation: fadeDown 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: fadeDown 0.4s ease;
 }
 
 @keyframes fadeDown {
   from {
     opacity: 0;
-    transform: translateY(-16px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;
@@ -31,17 +31,14 @@
 }
 
 .title {
-  font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 800;
-  margin: 0 0 0.5rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 0.35rem;
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-light);
   margin: 0;
 }
@@ -54,19 +51,20 @@
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
-  min-height: 360px;
+  min-height: 320px;
 }
 
 .loadingState p,
 .emptyState p {
   margin-top: 1rem;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-light);
 }
 
 .emptyState h3 {
   margin-top: 1rem;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 600;
   color: var(--text-color);
 }
 
@@ -76,12 +74,12 @@
 }
 
 .spinner {
-  width: 44px;
-  height: 44px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border);
+  border-top-color: var(--text-color);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
 
 @keyframes spin {
@@ -90,37 +88,27 @@
 
 .resultsCount {
   text-align: center;
-  margin: 1.5rem 0 1.25rem;
-  font-size: 1rem;
-  font-weight: 600;
+  margin: 1.25rem 0 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
   color: var(--text-light);
-  padding: 0.75rem 1.25rem;
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(30, 58, 138, 0.06);
-  transition: var(--transition-base);
-}
-
-.resultsCount:hover {
-  box-shadow: var(--shadow-md);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
 }
 
 .cardWrapper {
-  animation: cardIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation: cardIn 0.35s ease backwards;
 }
 
 @keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -128,12 +116,9 @@
   }
 }
 
-.emptyAnimated {
-  animation: fadeDown 0.5s ease-out;
-}
-
+.emptyAnimated,
 .countAnimated {
-  animation: fadeDown 0.4s ease-out;
+  animation: fadeDown 0.4s ease;
 }
 
 @media (max-width: 768px) {
@@ -142,7 +127,11 @@
   }
 
   .header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
   }
 
   .grid {

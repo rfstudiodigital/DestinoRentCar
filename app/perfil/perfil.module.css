@@ -1,37 +1,16 @@
 .container {
-  min-height: calc(100vh - 80px);
-  padding: 3rem 2rem;
+  min-height: calc(100vh - 68px);
+  padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
-  position: relative;
-}
-
-.container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 300px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(251, 185, 19, 0.03) 100%);
-  pointer-events: none;
-  z-index: 0;
+  background: var(--background);
 }
 
 .pageTitle {
-  font-size: clamp(2rem, 4vw, 2.5rem);
-  font-weight: 900;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 2rem;
-  position: relative;
-  z-index: 1;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
 }
 
 .titleAnimated {
@@ -76,22 +55,18 @@
 .loginLink {
   display: inline-block;
   margin-top: 1rem;
-  padding: 1rem 2rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
-  color: white;
+  padding: 0.75rem 1.5rem;
+  background: var(--text-color);
+  color: #fff;
   text-decoration: none;
-  border-radius: 12px;
-  font-weight: 800;
-  transition: all var(--transition-base);
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: var(--transition-base);
 }
 
 .loginLink:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  opacity: 0.9;
 }
 
 .card {

@@ -2,22 +2,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(30, 58, 138, 0.08);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
 .logoLink {
   display: flex;
   align-items: center;
-  min-height: 52px;
-  max-width: 200px;
+  min-height: 44px;
+  max-width: 180px;
   flex-shrink: 0;
 }
 
@@ -31,101 +28,90 @@
 .logoImage {
   width: 100% !important;
   height: auto !important;
-  max-width: 180px;
-  max-height: 64px;
+  max-width: 160px;
+  max-height: 52px;
   object-fit: contain;
   object-position: left center;
 }
 
 .nav {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   align-items: center;
 }
 
 .navLink {
   color: var(--text-color);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: var(--radius-md);
   transition: var(--transition-base);
 }
 
 .navLink:hover {
   color: var(--primary-color);
-  background: rgba(30, 58, 138, 0.06);
 }
 
 .loginLink {
   color: var(--primary-color);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 0.9rem;
-  padding: 0.5rem 1.25rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
   transition: var(--transition-base);
 }
 
 .loginLink:hover {
   background: var(--primary-color);
-  color: white;
+  color: #fff;
 }
 
 .userInfo {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.85rem;
   color: var(--text-light);
-  padding: 0 0.75rem;
+  padding: 0 0.5rem;
 }
 
 .logoutButton {
-  background: transparent;
-  color: var(--error-color);
-  font-weight: 600;
+  background: none;
+  color: var(--text-light);
+  font-weight: 500;
   font-size: 0.9rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(220, 38, 38, 0.3);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: var(--transition-base);
 }
 
 .logoutButton:hover {
-  background: var(--error-bg);
+  color: var(--error-color);
   border-color: var(--error-color);
 }
 
 .adminLink {
   font-size: 0.8rem;
-  font-weight: 600;
   color: var(--text-light);
   padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-md);
   border-left: 1px solid var(--border);
   margin-left: 0.5rem;
   transition: var(--transition-base);
 }
 
 .adminLink:hover {
-  color: var(--primary-color);
+  color: var(--text-color);
 }
 
 .mobileMenuButton {
   display: none;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: var(--text-color);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: var(--radius-md);
-  transition: var(--transition-base);
-}
-
-.mobileMenuButton:hover {
-  background: rgba(30, 58, 138, 0.06);
-  color: var(--primary-color);
 }
 
 @media (max-width: 768px) {
@@ -139,12 +125,12 @@
   }
 
   .logoLink {
-    max-width: 140px;
+    max-width: 130px;
   }
 
   .logoImage {
-    max-width: 140px !important;
-    max-height: 48px !important;
+    max-width: 130px !important;
+    max-height: 44px !important;
   }
 
   .nav {
@@ -154,15 +140,14 @@
     right: 0;
     flex-direction: column;
     align-items: stretch;
-    background: white;
+    background: #fff;
     padding: 1rem;
-    gap: 0.5rem;
+    gap: 0.25rem;
     border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow-lg);
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
   }
 
   .navOpen {
@@ -177,16 +162,12 @@
   .adminLink {
     width: 100%;
     text-align: center;
-    padding: 0.75rem 1rem;
-    border: 1px solid transparent;
+    padding: 0.75rem;
   }
 
   .userInfo {
-    display: block;
     text-align: center;
     padding: 0.75rem;
-    background: var(--info-bg);
-    border-radius: var(--radius-md);
   }
 
   .adminLink {

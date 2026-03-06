@@ -1,9 +1,8 @@
 .card {
-  background: white;
-  border-radius: var(--radius-xl);
+  background: #fff;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(30, 58, 138, 0.06);
+  border: 1px solid var(--border);
   transition: var(--transition-base);
   display: flex;
   flex-direction: column;
@@ -11,16 +10,14 @@
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(59, 130, 246, 0.12);
+  border-color: var(--text-light);
 }
 
 .imageContainer {
   position: relative;
   width: 100%;
-  height: 190px;
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  height: 180px;
+  background: var(--background);
 }
 
 .image {
@@ -33,22 +30,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3.5rem;
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.08) 0%, rgba(245, 179, 24, 0.06) 100%);
+  font-size: 2.5rem;
+  background: var(--background);
+  color: var(--text-light);
 }
 
 .badge {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.5rem;
+  right: 0.5rem;
   background: var(--error-color);
-  color: white;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
   font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
 .content {
@@ -59,10 +55,10 @@
 }
 
 .title {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--text-color);
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.25rem;
 }
 
 .color {
@@ -72,17 +68,14 @@
 }
 
 .price {
-  font-size: 1.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-color);
   margin: 0.75rem 0;
 }
 
 .description {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--text-light);
   margin: 0.5rem 0;
   flex: 1;
@@ -92,61 +85,62 @@
 .actions {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
 .editButton,
 .deleteButton {
   flex: 1;
-  padding: 0.6rem 1rem;
-  border: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 500;
+  font-size: 0.85rem;
   cursor: pointer;
+  background: #fff;
   transition: var(--transition-base);
 }
 
 .editButton {
-  background: var(--primary-color);
-  color: white;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .editButton:hover {
-  background: var(--primary-dark);
+  background: var(--primary-color);
+  color: #fff;
 }
 
 .deleteButton {
-  background: var(--error-bg);
   color: var(--error-color);
+  border-color: var(--error-color);
 }
 
 .deleteButton:hover {
   background: var(--error-color);
-  color: white;
+  color: #fff;
 }
 
 .rentButton {
   display: block;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
-  color: #1a1f36;
+  margin-top: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: var(--text-color);
+  color: #fff;
   text-align: center;
   border-radius: var(--radius-md);
-  font-weight: 700;
+  font-weight: 500;
   font-size: 0.875rem;
   text-decoration: none;
   transition: var(--transition-base);
 }
 
 .rentButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(245, 179, 24, 0.35);
+  opacity: 0.9;
 }
 
 @media (max-width: 768px) {
   .imageContainer {
-    height: 160px;
+    height: 150px;
   }
 }

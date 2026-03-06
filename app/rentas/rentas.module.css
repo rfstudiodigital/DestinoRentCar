@@ -1,20 +1,7 @@
 .main {
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
-  position: relative;
-  overflow-x: hidden;
-}
-
-.main::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 300px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(251, 185, 19, 0.03) 100%);
-  pointer-events: none;
+  background: var(--background);
 }
 
 .container {
@@ -80,18 +67,10 @@
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
   margin: 0;
-  letter-spacing: -0.02em;
 }
 
 .actions {
