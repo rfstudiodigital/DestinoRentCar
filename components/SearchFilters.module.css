@@ -3,6 +3,7 @@
   border-radius: 8px;
   padding: 1.25rem;
   border: 1px solid var(--border);
+  border-top: 2px solid var(--primary-color);
   margin-bottom: 1.5rem;
 }
 
@@ -27,7 +28,7 @@
 }
 
 .searchInput:focus {
-  border-color: var(--text-color);
+  border-color: var(--primary-color);
 }
 
 .searchIcon {
@@ -73,7 +74,7 @@
 
 .advancedButton {
   padding: 0.5rem 1rem;
-  background: var(--text-color);
+  background: var(--primary-color);
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
@@ -85,7 +86,7 @@
 }
 
 .advancedButton:hover {
-  opacity: 0.9;
+  background: var(--primary-dark);
 }
 
 .advancedFilters {
@@ -145,8 +146,8 @@
 }
 
 .resetButton:hover {
-  color: var(--text-color);
-  border-color: var(--text-light);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 @media (max-width: 768px) {

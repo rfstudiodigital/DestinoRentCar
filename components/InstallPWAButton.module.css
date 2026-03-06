@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #10b981;
-  color: white;
+  background: var(--secondary-color);
+  color: #1a1f36;
   border: none;
   padding: 0.5rem 1rem;
   min-height: 44px;
@@ -18,8 +18,7 @@
 }
 
 .installButton:hover {
-  background: #059669;
-  transform: scale(1.05);
+  background: var(--secondary-light);
 }
 
 .installIcon {

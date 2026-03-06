@@ -5,19 +5,19 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-  color: white;
-  border: none;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
   font-size: 1.75rem;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
   transition: all var(--transition-base);
   z-index: 999;
 }
 
 .floatingButton:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(245, 179, 24, 0.4);
 }
 
 .chatPanel {
@@ -29,7 +29,7 @@
   background: white;
   border-radius: 16px;
   box-shadow: var(--shadow-lg);
-  border: 2px solid var(--border);
+  border: 2px solid var(--primary-light);
   z-index: 1000;
   display: flex;
   flex-direction: column;

@@ -5,7 +5,7 @@
   padding: 1rem 1.5rem;
   padding-top: max(1rem, env(safe-area-inset-top));
   background: #fff;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--secondary-color);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -101,13 +101,13 @@
   font-size: 0.8rem;
   color: var(--text-light);
   padding: 0.5rem 0.75rem;
-  border-left: 1px solid var(--border);
+  border-left: 1px solid var(--secondary-color);
   margin-left: 0.5rem;
   transition: var(--transition-base);
 }
 
 .adminLink:hover {
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .mobileMenuButton {

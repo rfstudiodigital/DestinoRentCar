@@ -13,7 +13,7 @@
   padding: 3rem 1.5rem;
   padding-top: max(3rem, env(safe-area-inset-top));
   padding-bottom: max(3rem, env(safe-area-inset-bottom));
-  background: #0f172a;
+  background: var(--primary-color);
 }
 
 .heroContent {
@@ -69,8 +69,8 @@
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
   min-height: 48px;
-  background: #fff;
-  color: #0f172a;
+  background: var(--secondary-color);
+  color: #1a1f36;
   font-weight: 600;
   font-size: 0.95rem;
   border-radius: 6px;
@@ -79,7 +79,7 @@
 }
 
 .btnPrimary:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--secondary-light);
 }
 
 .btnSecondary {
@@ -93,13 +93,13 @@
   font-weight: 500;
   font-size: 0.95rem;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--secondary-color);
   text-decoration: none;
   transition: var(--transition-base);
 }
 
 .btnSecondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(245, 179, 24, 0.15);
 }
 
 /* Features */
@@ -118,7 +118,7 @@
   font-weight: 600;
   text-align: center;
   margin: 0 0 2.5rem;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .featuresGrid {
@@ -142,7 +142,7 @@
 }
 
 .featureCard:hover {
-  border-color: var(--text-light);
+  border-color: var(--primary-light);
 }
 
 @keyframes cardUp {
@@ -163,7 +163,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .featureIcon svg {
@@ -175,7 +175,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin: 0 0 0.4rem;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .featureCard p {
@@ -188,7 +188,7 @@
 /* Stats */
 .stats {
   padding: 4rem 2rem;
-  background: var(--text-color);
+  background: var(--primary-color);
 }
 
 .statsInner {
@@ -213,7 +213,7 @@
   display: block;
   font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 600;
-  color: #fff;
+  color: var(--secondary-color);
   line-height: 1;
   margin-bottom: 0.35rem;
 }
@@ -221,7 +221,7 @@
 .statLabel {
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* CTA */
@@ -246,7 +246,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .ctaBox p {
@@ -261,7 +261,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--text-color);
+  background: var(--primary-color);
   color: #fff;
   font-weight: 500;
   font-size: 0.95rem;
@@ -271,7 +271,7 @@
 }
 
 .btnCta:hover {
-  opacity: 0.9;
+  background: var(--primary-dark);
 }
 
 @media (max-width: 1024px) {

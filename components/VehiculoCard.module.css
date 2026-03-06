@@ -10,7 +10,7 @@
 }
 
 .card:hover {
-  border-color: var(--text-light);
+  border-color: var(--primary-light);
 }
 
 .imageContainer {
@@ -31,8 +31,8 @@
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  background: var(--background);
-  color: var(--text-light);
+  background: rgba(30, 58, 138, 0.06);
+  color: var(--primary-color);
 }
 
 .badge {
@@ -70,7 +70,7 @@
 .price {
   font-size: 1.35rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin: 0.75rem 0;
 }
 
@@ -128,18 +128,18 @@
   margin-top: 0.75rem;
   padding: 0.75rem 1rem;
   min-height: 48px;
-  background: var(--text-color);
-  color: #fff;
+  background: var(--secondary-color);
+  color: #1a1f36;
   text-align: center;
   border-radius: var(--radius-md);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
   transition: var(--transition-base);
 }
 
 .rentButton:hover {
-  opacity: 0.9;
+  background: var(--secondary-light);
 }
 
 @media (max-width: 768px) {

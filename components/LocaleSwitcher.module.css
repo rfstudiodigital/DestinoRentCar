@@ -23,14 +23,14 @@
 }
 
 .button:hover {
-  border-color: var(--text-light);
-  color: var(--text-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .button.active {
-  background: var(--text-color);
+  background: var(--primary-color);
   color: #fff;
-  border-color: var(--text-color);
+  border-color: var(--primary-color);
 }
 
 .flag {

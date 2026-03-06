@@ -40,7 +40,7 @@
 .title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin: 0;
 }
 
@@ -56,7 +56,8 @@
 }
 
 .backLink:hover {
-  border-color: var(--text-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .formContainer {
@@ -64,6 +65,7 @@
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid var(--border);
+  border-top: 3px solid var(--primary-color);
 }
 
 .formAnimated {
@@ -138,7 +140,7 @@
 }
 
 .input:focus {
-  border-color: var(--text-color);
+  border-color: var(--primary-color);
 }
 
 .actions {
@@ -168,18 +170,18 @@
 .submitButton {
   flex: 1;
   padding: 0.75rem;
-  background: var(--text-color);
-  color: #fff;
+  background: var(--secondary-color);
+  color: #1a1f36;
   border: none;
   border-radius: var(--radius-md);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: var(--transition-base);
 }
 
 .submitButton:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--secondary-light);
 }
 
 .submitButton:disabled {

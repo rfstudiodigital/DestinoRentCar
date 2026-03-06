@@ -21,6 +21,7 @@
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid var(--border);
+  border-top: 3px solid var(--primary-color);
 }
 
 .loginBox.animated {
@@ -50,7 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .iconWrapper svg {
@@ -107,14 +108,14 @@
 }
 
 .input:focus {
-  border-color: var(--text-color);
+  border-color: var(--primary-color);
 }
 
 .submitButton {
   width: 100%;
   padding: 0.75rem;
   min-height: 48px;
-  background: var(--text-color);
+  background: var(--primary-color);
   color: #fff;
   border: none;
   border-radius: var(--radius-md);
@@ -126,7 +127,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--primary-dark);
 }
 
 .submitButton:disabled {
@@ -166,7 +167,7 @@
 }
 
 .backLink:hover {
-  color: var(--text-color);
+  color: var(--primary-color);
 }
 
 .loading {

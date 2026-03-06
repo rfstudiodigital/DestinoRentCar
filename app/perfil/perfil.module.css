@@ -9,7 +9,7 @@
 .pageTitle {
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin-bottom: 1.5rem;
 }
 
@@ -56,7 +56,7 @@
   display: inline-block;
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background: var(--text-color);
+  background: var(--primary-color);
   color: #fff;
   text-decoration: none;
   border-radius: 6px;
@@ -66,7 +66,7 @@
 }
 
 .loginLink:hover {
-  opacity: 0.9;
+  background: var(--primary-dark);
 }
 
 .card {
