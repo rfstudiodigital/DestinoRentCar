@@ -1,31 +1,33 @@
 {
   "name": "Destino Rent Car",
   "short_name": "Destino",
-  "description": "Sistema de renta de autos",
+  "description": "Sistema de renta de autos - Alquiler de vehículos fácil y rápido",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#ffffff",
   "theme_color": "#1E3A8A",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
+  "categories": ["business", "travel"],
   "icons": [
     {
-      "src": "/logo.svg.jpeg",
+      "src": "/icon.svg",
       "sizes": "any",
-      "type": "image/jpeg",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "/logo.svg.jpeg",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "/logo.svg.jpeg",
+      "src": "/icon.svg",
       "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }

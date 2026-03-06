@@ -122,15 +122,18 @@
 }
 
 .rentButton {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 0.75rem;
-  padding: 0.625rem 1rem;
+  padding: 0.75rem 1rem;
+  min-height: 48px;
   background: var(--text-color);
   color: #fff;
   text-align: center;
   border-radius: var(--radius-md);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   text-decoration: none;
   transition: var(--transition-base);
 }

@@ -1,6 +1,9 @@
 .main {
+  min-height: calc(100dvh - 68px);
   min-height: calc(100vh - 68px);
-  padding: 2rem;
+  padding: 2rem 1rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
   background: var(--background);
 }
 

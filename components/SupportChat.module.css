@@ -1,9 +1,9 @@
 .floatingButton {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 60px;
-  height: 60px;
+  bottom: max(1.5rem, calc(1rem + env(safe-area-inset-bottom)));
+  right: max(1rem, env(safe-area-inset-right));
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
   color: white;
@@ -192,13 +192,14 @@
 @media (max-width: 768px) {
   .chatPanel {
     width: calc(100vw - 2rem);
-    right: 1rem;
-    bottom: 6rem;
-    max-height: calc(100vh - 10rem);
+    right: max(1rem, env(safe-area-inset-right));
+    left: max(1rem, env(safe-area-inset-left));
+    bottom: max(5rem, calc(4rem + env(safe-area-inset-bottom)));
+    max-height: calc(100dvh - 8rem);
   }
 
   .floatingButton {
-    bottom: 1rem;
-    right: 1rem;
+    bottom: max(1rem, calc(0.5rem + env(safe-area-inset-bottom)));
+    right: max(1rem, env(safe-area-inset-right));
   }
 }

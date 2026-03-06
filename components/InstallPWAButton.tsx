@@ -16,8 +16,11 @@ export default function InstallPWAButton() {
   const [isInstalled, setIsInstalled] = useState(false);
 
   useEffect(() => {
-    // Verificar si ya está instalada
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Verificar si ya está instalada (PWA standalone o iOS Add to Home Screen)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+      || (window.navigator as any).standalone === true
+      || document.referrer.includes('android-app://');
+    if (isStandalone) {
       setIsInstalled(true);
       return;
     }

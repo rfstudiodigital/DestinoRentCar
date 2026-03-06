@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   viewport: {
     width: 'device-width',
     initialScale: 1,
-    maximumScale: 1,
+    viewportFit: 'cover',
   },
   openGraph: {
     title: 'Destino Rent Car - Alquiler de Vehículos',
@@ -42,9 +42,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" href="/logo.svg.jpeg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/logo.svg.jpeg" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
         <meta name="robots" content="index, follow" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="canonical" href="https://destinorentcar.com" />
       </head>
       <body className={inter.className}>

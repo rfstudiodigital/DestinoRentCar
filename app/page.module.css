@@ -5,11 +5,14 @@
 
 .hero {
   position: relative;
+  min-height: 100dvh;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem 2rem;
+  padding: 3rem 1.5rem;
+  padding-top: max(3rem, env(safe-area-inset-top));
+  padding-bottom: max(3rem, env(safe-area-inset-bottom));
   background: #0f172a;
 }
 
@@ -62,8 +65,10 @@
 .btnPrimary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
+  min-height: 48px;
   background: #fff;
   color: #0f172a;
   font-weight: 600;
@@ -80,7 +85,9 @@
 .btnSecondary {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0.875rem 1.75rem;
+  min-height: 48px;
   background: transparent;
   color: #fff;
   font-weight: 500;
@@ -279,6 +286,9 @@
 @media (max-width: 768px) {
   .hero {
     padding: 2rem 1rem;
+    padding-top: max(2rem, env(safe-area-inset-top));
+    padding-bottom: max(2rem, env(safe-area-inset-bottom));
+    min-height: 85dvh;
     min-height: 85vh;
   }
 
@@ -293,7 +303,9 @@
   }
 
   .features {
-    padding: 4rem 1.5rem;
+    padding: 4rem 1rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 
   .sectionTitle {
@@ -306,7 +318,9 @@
   }
 
   .stats {
-    padding: 3rem 1.5rem;
+    padding: 3rem 1rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 
   .statsInner {
@@ -315,7 +329,9 @@
   }
 
   .cta {
-    padding: 4rem 1.5rem;
+    padding: 4rem 1rem;
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
   }
 }
 

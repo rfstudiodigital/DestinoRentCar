@@ -1,11 +1,14 @@
 .installButton {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   background: #10b981;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
