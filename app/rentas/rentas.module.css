@@ -1,7 +1,7 @@
 .main {
   min-height: 100vh;
-  padding: 2rem;
-  background: var(--background);
+  padding: 2.5rem;
+  background: linear-gradient(180deg, #fff 0%, var(--background) 100%);
 }
 
 .container {
@@ -67,10 +67,11 @@
 }
 
 .title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--primary-color);
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--primary-dark);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .actions {
@@ -97,28 +98,19 @@
 }
 
 .link {
-  padding: 0.875rem 1.75rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
+  padding: 1rem 2rem;
+  background: var(--gradient-accent);
   color: white;
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   font-weight: 700;
-  transition: all var(--transition-base);
-  box-shadow: var(--shadow-md);
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
 }
 
 .link:hover {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 0%,
-    var(--primary-color) 100%
-  );
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-blue);
 }
 
 .grid {
@@ -128,14 +120,13 @@
 }
 
 .card {
-  background: white;
-  border-radius: 24px;
-  box-shadow: 
-    var(--shadow-md),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+  background: var(--gradient-card);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid transparent;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(30, 58, 138, 0.08);
 }
 
 .cardAnimated {

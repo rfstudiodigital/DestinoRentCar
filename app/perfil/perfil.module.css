@@ -1,16 +1,17 @@
 .container {
   min-height: calc(100vh - 68px);
-  padding: 2rem;
+  padding: 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
-  background: var(--background);
+  background: linear-gradient(180deg, #fff 0%, var(--background) 100%);
 }
 
 .pageTitle {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--primary-color);
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--primary-dark);
   margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
 }
 
 .titleAnimated {
@@ -55,27 +56,29 @@
 .loginLink {
   display: inline-block;
   margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--primary-color);
+  padding: 0.875rem 1.75rem;
+  background: var(--gradient-accent);
   color: #fff;
   text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
   font-size: 0.95rem;
-  transition: var(--transition-base);
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
 }
 
 .loginLink:hover {
-  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-blue);
 }
 
 .card {
-  background: white;
-  border-radius: 24px;
+  background: var(--gradient-card);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
   padding: 2.5rem;
-  box-shadow: 
-    var(--shadow-md),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(30, 58, 138, 0.08);
   margin-bottom: 2rem;
   position: relative;
   z-index: 1;
@@ -120,17 +123,14 @@
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 
-    var(--shadow-xl),
-    0 0 0 1px rgba(59, 130, 246, 0.1),
-    0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .cardTitle {
   font-size: 1.75rem;
   font-weight: 800;
-  color: var(--text-color);
+  color: var(--primary-dark);
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 3px solid var(--primary-color);

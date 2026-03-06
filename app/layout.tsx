@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import Header from '@/components/Header';
 import { ToastProvider } from '@/components/ToastProvider';
 import InstallPWA from '@/components/InstallPWA';
@@ -7,7 +7,7 @@ import SupportChat from '@/components/SupportChat';
 import SkipToContent from '@/components/SkipToContent';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta' });
 
 export const metadata: Metadata = {
   title: 'Destino Rent Car - Sistema de Renta de Autos',
@@ -50,7 +50,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="canonical" href="https://destinorentcar.com" />
       </head>
-      <body className={inter.className}>
+      <body className={jakarta.className}>
         <ToastProvider>
           <Header />
           <main id="main-content">

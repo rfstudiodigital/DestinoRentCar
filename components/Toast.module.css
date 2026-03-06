@@ -1,10 +1,11 @@
 .toast {
   min-width: 260px;
   max-width: 380px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-md);
+  background: var(--gradient-card);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(30, 58, 138, 0.08);
+  box-shadow: var(--shadow-premium);
   animation: toastIn 0.3s ease;
 }
 
