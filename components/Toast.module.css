@@ -1,114 +1,88 @@
 .toast {
-  position: relative;
-  min-width: 300px;
-  max-width: 500px;
+  min-width: 280px;
+  max-width: 420px;
   background: white;
-  border-radius: 12px;
-  box-shadow: var(--shadow-xl);
-  animation: slideInBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  border-left: 4px solid;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(30, 58, 138, 0.08);
+  animation: toastIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
 }
 
-@keyframes slideInBounce {
-  0% {
-    transform: translateX(100%) scale(0.8);
+@keyframes toastIn {
+  from {
     opacity: 0;
+    transform: translateX(100%) scale(0.95);
   }
-  60% {
-    transform: translateX(-10px) scale(1.05);
+  to {
     opacity: 1;
-  }
-  100% {
     transform: translateX(0) scale(1);
-    opacity: 1;
   }
 }
 
 .toast.success {
-  border-left-color: #10b981;
+  border-left: 4px solid var(--success-color);
 }
 
 .toast.error {
-  border-left-color: #ef4444;
+  border-left: 4px solid var(--error-color);
 }
 
 .toast.info {
-  border-left-color: var(--primary-light);
+  border-left: 4px solid var(--primary-color);
 }
 
 .content {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
 }
 
 .icon {
-  font-size: 1.5rem;
-  font-weight: bold;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--radius-md);
   flex-shrink: 0;
-  box-shadow: var(--shadow-sm);
+  font-size: 1.25rem;
 }
 
 .success .icon {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
+  background: var(--success-bg);
+  color: var(--success-color);
 }
 
 .error .icon {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
+  background: var(--error-bg);
+  color: var(--error-color);
 }
 
 .info .icon {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
-  color: white;
+  background: var(--info-bg);
+  color: var(--primary-color);
 }
 
 .message {
   flex: 1;
-  color: var(--text-color);
   font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-color);
 }
 
 .closeButton {
-  background: transparent;
+  background: none;
   border: none;
-  font-size: 1.5rem;
+  padding: 0.35rem;
   color: var(--text-light);
   cursor: pointer;
-  padding: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-base);
 }
 
 .closeButton:hover {
   background: var(--background);
   color: var(--text-color);
-  transform: rotate(90deg);
-}
-
-@media (max-width: 768px) {
-  .toast {
-    min-width: auto;
-    max-width: none;
-    width: 100%;
-  }
 }

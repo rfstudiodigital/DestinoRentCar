@@ -1,60 +1,28 @@
 .main {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 70px);
   padding: 2rem;
-  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
-  position: relative;
-  overflow-x: hidden;
-}
-
-.main::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 300px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(251, 185, 19, 0.03) 100%);
-  pointer-events: none;
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1320px;
   margin: 0 auto;
-  width: 100%;
-  position: relative;
-  z-index: 1;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem 0;
-  position: relative;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem 0;
 }
 
 .headerAnimated {
-  animation: fadeInDown 0.6s ease-out;
+  animation: fadeDown 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes fadeInDown {
+@keyframes fadeDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.filtersAnimated {
-  animation: fadeInUp 0.6s ease-out 0.2s backwards;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(-16px);
   }
   to {
     opacity: 1;
@@ -63,17 +31,17 @@
 }
 
 .title {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 900;
-  margin: 0 0 1rem;
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .subtitle {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: var(--text-light);
   margin: 0;
 }
@@ -86,19 +54,19 @@
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
-  min-height: 400px;
+  min-height: 360px;
 }
 
 .loadingState p,
 .emptyState p {
   margin-top: 1rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-light);
 }
 
 .emptyState h3 {
   margin-top: 1rem;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: var(--text-color);
 }
 
@@ -108,90 +76,64 @@
 }
 
 .spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--border);
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--border);
   border-top-color: var(--primary-color);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 .resultsCount {
   text-align: center;
-  margin: 2rem 0 1.5rem;
-  font-size: 1.1rem;
+  margin: 1.5rem 0 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-light);
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   background: white;
-  border-radius: 16px;
-  box-shadow: 
-    var(--shadow-sm),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(30, 58, 138, 0.06);
+  transition: var(--transition-base);
 }
 
 .resultsCount:hover {
-  box-shadow: 
-    var(--shadow-md),
-    0 0 0 1px rgba(59, 130, 246, 0.1);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .cardWrapper {
-  animation: cardSlideIn 0.5s ease-out backwards;
+  animation: cardIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-@keyframes cardSlideIn {
+@keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
 .emptyAnimated {
-  animation: fadeInScale 0.6s ease-out;
-}
-
-@keyframes fadeInScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  animation: fadeDown 0.5s ease-out;
 }
 
 .countAnimated {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  animation: fadeDown 0.4s ease-out;
 }
 
 @media (max-width: 768px) {
@@ -201,49 +143,9 @@
 
   .header {
     margin-bottom: 2rem;
-    padding: 1.5rem 0;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-
-  .subtitle {
-    font-size: 1.1rem;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .resultsCount {
-    margin: 1.5rem 0 1rem;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .main {
-    padding: 1rem 0.75rem;
-  }
-
-  .header {
-    padding: 1rem 0;
-    margin-bottom: 1.5rem;
-  }
-
-  .title {
-    font-size: 1.75rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .loadingState,
-  .emptyState {
-    padding: 3rem 1rem;
-    min-height: 300px;
   }
 }

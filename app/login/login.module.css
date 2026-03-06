@@ -1,12 +1,7 @@
 .main {
   min-height: 100vh;
   padding: 2rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 50%,
-    var(--secondary-color) 100%
-  );
+  background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 40%, #2563eb 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,50 +12,33 @@
 .main::before {
   content: "";
   position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 70%
-  );
-  animation: pulse 20s ease-in-out infinite;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 80% 20%, rgba(245, 179, 24, 0.1) 0%, transparent 50%);
 }
 
 .container {
   width: 100%;
-  max-width: 450px;
+  max-width: 420px;
   position: relative;
   z-index: 1;
-  animation: fadeIn 0.8s ease-out;
 }
 
 .loginBox {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px);
-  padding: 3rem;
-  border-radius: 28px;
-  box-shadow: 
-    var(--shadow-xl), 
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 20px 60px rgba(0, 0, 0, 0.15);
-  border: 2px solid transparent;
-  position: relative;
-  overflow: hidden;
-  transform: translateY(0);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  padding: 2.5rem;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .loginBox.animated {
-  animation: slideUpFade 0.6s ease-out;
+  animation: boxUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes slideUpFade {
+@keyframes boxUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -68,178 +46,99 @@
   }
 }
 
-.loginBox:hover {
-  transform: translateY(-4px);
-  box-shadow: 
-    var(--shadow-xl), 
-    0 0 0 1px rgba(255, 255, 255, 0.3),
-    0 25px 70px rgba(0, 0, 0, 0.2);
-}
-
-.loginBox::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(
-    90deg,
-    var(--primary-color) 0%,
-    var(--secondary-color) 50%,
-    var(--primary-color) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
-}
-
 .header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .iconWrapper {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(251, 185, 19, 0.1) 100%);
-  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.1), rgba(245, 179, 24, 0.08));
+  border-radius: var(--radius-lg);
   color: var(--primary-color);
-  animation: iconFloat 3s ease-in-out infinite;
 }
 
-@keyframes iconFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
+.iconWrapper svg {
+  width: 32px;
+  height: 32px;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--text-color);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.35rem;
 }
 
 .subtitle {
+  font-size: 0.95rem;
   color: var(--text-light);
-  font-size: 1rem;
   margin: 0;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .errorMessage {
-  background: #fee2e2;
-  color: #dc2626;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-  border: 1px solid #fecaca;
+  background: var(--error-bg);
+  color: var(--error-color);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
   font-size: 0.9rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
+  gap: 0.4rem;
 }
 
 .field label {
   font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
   font-size: 0.9rem;
+  color: var(--text-color);
 }
 
-.field input,
 .input {
-  padding: 1rem 1.25rem;
-  border: 2px solid var(--border);
-  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
-  background: var(--background);
-  position: relative;
+  transition: var(--transition-base);
 }
 
-.field input:focus,
 .input:focus {
   outline: none;
   border-color: var(--primary-color);
-  background: white;
-  box-shadow: 
-    0 0 0 4px rgba(59, 130, 246, 0.1),
-    0 4px 12px rgba(59, 130, 246, 0.15);
-  transform: translateY(-2px) scale(1.01);
-}
-
-.field input:hover,
-.input:hover {
-  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
 .submitButton {
   width: 100%;
-  padding: 1.125rem;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color) 0%,
-    var(--primary-light) 100%
-  );
+  padding: 0.875rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: var(--transition-base);
   margin-top: 0.5rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.submitButton::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: left 0.5s;
-}
-
-.submitButton:hover:not(:disabled)::before {
-  left: 100%;
 }
 
 .submitButton:hover:not(:disabled) {
-  background: linear-gradient(
-    135deg,
-    var(--primary-dark) 0%,
-    var(--primary-color) 100%
-  );
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl), 0 0 20px rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.35);
 }
 
 .submitButton:disabled {
@@ -250,52 +149,36 @@
 
 .footer {
   margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
   text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
 }
 
 .footerText {
   color: var(--text-light);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .link {
   color: var(--primary-color);
+  font-weight: 600;
   text-decoration: none;
-  font-weight: 700;
-  transition: all var(--transition-base);
-  position: relative;
-}
-
-.link::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--secondary-color);
-  transition: width var(--transition-base);
-}
-
-.link:hover::after {
-  width: 100%;
+  transition: var(--transition-base);
 }
 
 .link:hover {
-  color: var(--primary-light);
+  text-decoration: underline;
 }
 
 .backLink {
-  color: var(--primary-color);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
   display: inline-block;
   margin-top: 0.5rem;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: var(--transition-base);
 }
 
 .backLink:hover {
@@ -305,8 +188,7 @@
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #666;
-  font-size: 1rem;
+  color: var(--text-light);
 }
 
 @media (max-width: 768px) {
@@ -319,6 +201,6 @@
   }
 
   .title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 }

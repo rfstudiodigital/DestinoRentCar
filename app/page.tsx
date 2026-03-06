@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/components/LocaleSwitcher';
@@ -30,7 +29,7 @@ export default function Home() {
           }
         });
       },
-      { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
     );
     [featuresRef.current, statsRef.current, ctaRef.current].forEach((el) => {
       if (el) observer.observe(el);
@@ -40,137 +39,103 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {/* Hero Section */}
+      {/* Hero - Logo integrado como marca */}
       <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <div className={`${styles.logoContainer} ${mounted ? styles.logoAnimated : ''}`}>
-            <div className={styles.logoWrapper}>
-              <Image
-                src="/logo.svg.jpeg"
-                alt="Destino Rent Car Logo"
-                width={650}
-                height={320}
-                priority
-                className={styles.logoImage}
-                quality={100}
-                unoptimized={false}
-              />
-            </div>
+        <div className={styles.heroBg}>
+          <div className={styles.heroGradient} />
+          <div className={styles.logoWatermark} aria-hidden>
+            <svg viewBox="0 0 500 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 50 80 Q 120 50 200 60 Q 280 65 350 58 Q 420 55 450 75" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round"/>
+              <path d="M 50 100 Q 120 130 200 120 Q 280 115 350 122 Q 420 125 450 105" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round"/>
+            </svg>
           </div>
-          
-          <h1 className={`${styles.heroTitle} ${mounted ? styles.titleAnimated : ''}`}>
-            {t('home.title')}
-          </h1>
-          
-          <p className={`${styles.heroSubtitle} ${mounted ? styles.subtitleAnimated : ''}`}>
-            {t('home.subtitle')}
-          </p>
+        </div>
 
-          <div className={`${styles.ctaButtons} ${mounted ? styles.buttonsAnimated : ''}`}>
-            <Link href="/vehiculos" className={styles.primaryButton}>
-              <span>{t('home.explore')}</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+        <div className={`${styles.heroContent} ${mounted ? styles.heroReveal : ''}`}>
+          {/* Logo integrado - tipografía + líneas del auto */}
+          <div className={styles.brandBlock}>
+            <svg className={styles.carLines} viewBox="0 0 500 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 20 35 Q 80 15 180 22 Q 280 28 360 20 Q 440 15 480 35" stroke="var(--secondary-color)" strokeWidth="6" fill="none" strokeLinecap="round"/>
+              <path d="M 20 55 Q 80 70 180 62 Q 280 56 360 65 Q 440 72 480 52" stroke="rgba(255,255,255,0.9)" strokeWidth="6" fill="none" strokeLinecap="round"/>
+            </svg>
+            <h1 className={styles.brandTitle}>
+              <span className={styles.brandDestino}>DESTINO</span>
+              <span className={styles.brandSub}>RENT A CAR</span>
+            </h1>
+          </div>
+
+          <p className={styles.heroSubtitle}>{t('home.subtitle')}</p>
+
+          <div className={styles.ctaButtons}>
+            <Link href="/vehiculos" className={styles.btnPrimary}>
+              {t('home.explore')}
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </Link>
-            <Link href="/registro" className={styles.secondaryButton}>
+            <Link href="/registro" className={styles.btnSecondary}>
               {t('home.register')}
             </Link>
           </div>
         </div>
 
-        {/* Floating Elements */}
-        <div className={styles.floatingElements}>
-          <div className={styles.floatingCircle1}></div>
-          <div className={styles.floatingCircle2}></div>
-          <div className={styles.floatingCircle3}></div>
+        <div className={styles.floatingOrbs}>
+          <span className={styles.orb1} />
+          <span className={styles.orb2} />
+          <span className={styles.orb3} />
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" ref={featuresRef} className={`${styles.features} ${visibleSections.features ? styles.sectionVisible : ''}`}>
-        <div className={styles.featuresContainer}>
+      {/* Features */}
+      <section id="features" ref={featuresRef} className={`${styles.features} ${visibleSections.features ? styles.visible : ''}`}>
+        <div className={styles.sectionInner}>
           <h2 className={styles.sectionTitle}>{t('features.title')}</h2>
-          <div className={styles.sectionDivider} />
+          <div className={styles.titleBar} />
           <div className={styles.featuresGrid}>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>{t('features.quick')}</h3>
-              <p>{t('features.quickDesc')}</p>
-            </div>
-
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>{t('features.premium')}</h3>
-              <p>{t('features.premiumDesc')}</p>
-            </div>
-
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>{t('features.support')}</h3>
-              <p>{t('features.supportDesc')}</p>
-            </div>
-
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3>{t('features.prices')}</h3>
-              <p>{t('features.pricesDesc')}</p>
-            </div>
+            {[
+              { icon: 'check', key: 'quick', desc: 'quickDesc' },
+              { icon: 'star', key: 'premium', desc: 'premiumDesc' },
+              { icon: 'clock', key: 'support', desc: 'supportDesc' },
+              { icon: 'tag', key: 'prices', desc: 'pricesDesc' },
+            ].map((f, i) => (
+              <article key={f.key} className={styles.featureCard} style={{ animationDelay: `${i * 0.08}s` }}>
+                <div className={styles.featureIcon}>
+                  {f.icon === 'check' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  {f.icon === 'star' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  {f.icon === 'clock' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  {f.icon === 'tag' && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2L9 5z" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </div>
+                <h3>{t(`features.${f.key}`)}</h3>
+                <p>{t(`features.${f.desc}`)}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section id="stats" ref={statsRef} className={`${styles.stats} ${visibleSections.stats ? styles.sectionVisible : ''}`}>
-        <div className={styles.statsContainer}>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>500+</div>
-            <div className={styles.statLabel}>{t('stats.vehicles')}</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>10K+</div>
-            <div className={styles.statLabel}>{t('stats.clients')}</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>98%</div>
-            <div className={styles.statLabel}>{t('stats.satisfaction')}</div>
-          </div>
-          <div className={styles.statItem}>
-            <div className={styles.statNumber}>24/7</div>
-            <div className={styles.statLabel}>{t('stats.support')}</div>
-          </div>
+      {/* Stats */}
+      <section id="stats" ref={statsRef} className={`${styles.stats} ${visibleSections.stats ? styles.visible : ''}`}>
+        <div className={styles.statsInner}>
+          {[
+            { num: '500+', label: t('stats.vehicles') },
+            { num: '10K+', label: t('stats.clients') },
+            { num: '98%', label: t('stats.satisfaction') },
+            { num: '24/7', label: t('stats.support') },
+          ].map((s, i) => (
+            <div key={s.num} className={styles.statItem} style={{ animationDelay: `${i * 0.1}s` }}>
+              <span className={styles.statNum}>{s.num}</span>
+              <span className={styles.statLabel}>{s.label}</span>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="cta" ref={ctaRef} className={`${styles.ctaSection} ${visibleSections.cta ? styles.sectionVisible : ''}`}>
-        <div className={styles.ctaContainer}>
-          <h2 className={styles.ctaTitle}>{t('cta.title')}</h2>
-          <p className={styles.ctaText}>
-            {t('cta.text')}
-          </p>
-          <Link href="/vehiculos" className={styles.ctaButton}>
+      {/* CTA */}
+      <section id="cta" ref={ctaRef} className={`${styles.cta} ${visibleSections.cta ? styles.visible : ''}`}>
+        <div className={styles.ctaBox}>
+          <h2>{t('cta.title')}</h2>
+          <p>{t('cta.text')}</p>
+          <Link href="/vehiculos" className={styles.btnCta}>
             {t('cta.button')}
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </Link>
         </div>
       </section>
