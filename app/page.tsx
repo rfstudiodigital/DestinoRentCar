@@ -2,25 +2,41 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/components/LocaleSwitcher';
 import styles from './page.module.css';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const { t, locale } = useTranslation();
+  const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({});
+  const featuresRef = useRef<HTMLElement>(null);
+  const statsRef = useRef<HTMLElement>(null);
+  const ctaRef = useRef<HTMLElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setMounted(true);
-    
-    // Listen for locale changes
-    const handleLocaleChange = () => {
-      window.location.reload();
-    };
-    
-    window.addEventListener('localechange', handleLocaleChange);
-    return () => window.removeEventListener('localechange', handleLocaleChange);
+    const onLocaleChange = () => window.location.reload();
+    window.addEventListener('localechange', onLocaleChange);
+    return () => window.removeEventListener('localechange', onLocaleChange);
   }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => ({ ...prev, [entry.target.id]: true }));
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+    );
+    [featuresRef.current, statsRef.current, ctaRef.current].forEach((el) => {
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [mounted]);
 
   return (
     <main className={styles.main}>
@@ -72,10 +88,10 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className={styles.features}>
+      <section id="features" ref={featuresRef} className={`${styles.features} ${visibleSections.features ? styles.sectionVisible : ''}`}>
         <div className={styles.featuresContainer}>
           <h2 className={styles.sectionTitle}>{t('features.title')}</h2>
-          
+          <div className={styles.sectionDivider} />
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
               <div className={styles.featureIcon}>
@@ -122,7 +138,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className={styles.stats}>
+      <section id="stats" ref={statsRef} className={`${styles.stats} ${visibleSections.stats ? styles.sectionVisible : ''}`}>
         <div className={styles.statsContainer}>
           <div className={styles.statItem}>
             <div className={styles.statNumber}>500+</div>
@@ -144,7 +160,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className={styles.ctaSection}>
+      <section id="cta" ref={ctaRef} className={`${styles.ctaSection} ${visibleSections.cta ? styles.sectionVisible : ''}`}>
         <div className={styles.ctaContainer}>
           <h2 className={styles.ctaTitle}>{t('cta.title')}</h2>
           <p className={styles.ctaText}>
