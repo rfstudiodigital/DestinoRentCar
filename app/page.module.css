@@ -14,6 +14,44 @@
   padding-top: max(3rem, env(safe-area-inset-top));
   padding-bottom: max(3rem, env(safe-area-inset-bottom));
   background: var(--primary-color);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(245, 179, 24, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(245, 179, 24, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  animation: heroGlow 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 60px,
+    rgba(255, 255, 255, 0.02) 60px,
+    rgba(255, 255, 255, 0.02) 61px
+  );
+  animation: heroGrid 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes heroGlow {
+  from { opacity: 0.7; transform: scale(1) translate(0, 0); }
+  to { opacity: 1; transform: scale(1.05) translate(2%, 1%); }
+}
+
+@keyframes heroGrid {
+  from { transform: translateY(0); }
+  to { transform: translateY(60px); }
 }
 
 .heroContent {
@@ -187,11 +225,51 @@
 
 /* Stats */
 .stats {
+  position: relative;
   padding: 4rem 2rem;
   background: var(--primary-color);
+  overflow: hidden;
+}
+
+.stats::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 80%, rgba(245, 179, 24, 0.1) 0%, transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(245, 179, 24, 0.08) 0%, transparent 40%);
+  animation: statsGlow 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.stats::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 80px,
+    rgba(255, 255, 255, 0.02) 80px,
+    rgba(255, 255, 255, 0.02) 81px
+  );
+  animation: statsShift 15s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes statsGlow {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+@keyframes statsShift {
+  from { transform: translateX(0); }
+  to { transform: translateX(80px); }
 }
 
 .statsInner {
+  position: relative;
+  z-index: 1;
   max-width: 900px;
   margin: 0 auto;
   display: grid;
