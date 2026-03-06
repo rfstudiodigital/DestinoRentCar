@@ -39,31 +39,14 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      {/* Hero - Logo integrado como marca */}
+      {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroBg}>
           <div className={styles.heroGradient} />
-          <div className={styles.logoWatermark} aria-hidden>
-            <svg viewBox="0 0 500 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M 50 80 Q 120 50 200 60 Q 280 65 350 58 Q 420 55 450 75" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round"/>
-              <path d="M 50 100 Q 120 130 200 120 Q 280 115 350 122 Q 420 125 450 105" stroke="currentColor" strokeWidth="8" fill="none" strokeLinecap="round"/>
-            </svg>
-          </div>
         </div>
 
         <div className={`${styles.heroContent} ${mounted ? styles.heroReveal : ''}`}>
-          {/* Logo integrado - tipografía + líneas del auto */}
-          <div className={styles.brandBlock}>
-            <svg className={styles.carLines} viewBox="0 0 500 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M 20 35 Q 80 15 180 22 Q 280 28 360 20 Q 440 15 480 35" stroke="var(--secondary-color)" strokeWidth="6" fill="none" strokeLinecap="round"/>
-              <path d="M 20 55 Q 80 70 180 62 Q 280 56 360 65 Q 440 72 480 52" stroke="rgba(255,255,255,0.9)" strokeWidth="6" fill="none" strokeLinecap="round"/>
-            </svg>
-            <h1 className={styles.brandTitle}>
-              <span className={styles.brandDestino}>DESTINO</span>
-              <span className={styles.brandSub}>RENT A CAR</span>
-            </h1>
-          </div>
-
+          <h1 className={styles.heroTitle}>{t('home.title')}</h1>
           <p className={styles.heroSubtitle}>{t('home.subtitle')}</p>
 
           <div className={styles.ctaButtons}>
